@@ -1,29 +1,27 @@
 {
-	"private": true,
-	"author": {
-		"name": "RATIU5"
-	},
-	"license": "MIT",
-	"type": "module",
-	"packageManager": "bun@1.2.0",
-	"workspaces": [
-		"packages/*"
-	],
-	"scripts": {
-		"format:check": "biome format",
-		"format:write": "biome format --write",
-		"typecheck": "tsgo --noEmit --project tsconfig.base.json",
-		"lint:check": "biome lint",
-		"lint:write": "biome lint --write",
-		"test": "vitest"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@effect/build-utils": "^0.8.3",
-		"@effect/language-service": "^0.16.6",
-		"@effect/vitest": "latest",
-		"@types/bun": "^1.2.14",
-		"@typescript/native-preview": "^7.0.0-dev.20250522.2",
-		"vitest": "^3.1.4"
-	}
+  "private": true,
+  "author": {
+    "name": "RATIU5"
+  },
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "bun@1.2.0",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "format:check": "biome format --verbose",
+    "format:write": "biome format --write",
+    "typecheck": "tsgo --noEmit --project tsconfig.base.json",
+    "lint:check": "biome lint",
+    "lint:write": "biome lint --write",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@effect/build-utils": "^0.8.3",
+    "@effect/language-service": "^0.16.6",
+    "@effect/vitest": "latest",
+    "@types/bun": "^1.2.14",
+    "@typescript/native-preview": "^7.0.0-dev.20250522.2",
+    "vitest": "^3.1.4"
+  }
 }
