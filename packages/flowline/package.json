@@ -1,13 +1,13 @@
 {
-	"name": "flowline",
-	"version": "0.0.0",
-	"description": "A multi-user task/project system augmented with customizable workflows.",
-	"type": "module",
-	"scripts": {
-		"serve": "bun --bun ./src/index.ts"
-	},
-	"dependencies": {
-		"effect": "^3.15.2",
-		"h3": "^1.15.3"
-	}
+  "name": "flowline",
+  "version": "0.0.0",
+  "description": "A multi-user task/project system augmented with customizable workflows.",
+  "type": "module",
+  "scripts": {
+    "serve": "bun --bun ./src/index.ts"
+  },
+  "dependencies": {
+    "effect": "^3.15.2",
+    "h3": "^1.15.3"
+  }
 }
