@@ -1,5 +1,5 @@
 name: Setup
-description: Perform standard setup and install dependencies using pnpm.
+description: Perform standard setup and install dependencies using bun.
 
 runs:
   using: composite
