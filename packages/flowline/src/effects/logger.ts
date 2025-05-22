@@ -1,4 +1,12 @@
-import { Context, Effect, FiberRef, FiberRefs, Logger, Option } from "effect";
+import {
+	Context,
+	Effect,
+	FiberId,
+	FiberRef,
+	FiberRefs,
+	Logger,
+	Option,
+} from "effect";
 
 export class LogOptions extends Context.Tag("LogOptions")<
 	LogOptions,
@@ -14,13 +22,13 @@ export const BunLogger = Effect.gen(function* () {
 			Option.map((_) => _.style),
 			Option.getOrElse(() => "none"),
 		);
+		const id = FiberId.threadName(_.fiberId);
 		switch (currentStyle) {
 			case "debug": {
 				const parts = [
 					`[${new Date(_.date).toISOString()}]`,
 					`[${_.logLevel.label}]`,
-					// @ts-ignore
-					`[fiber-${_.fiberId.id}]`,
+					`[${id}]`,
 					_.message,
 				];
 				const structured = Object.entries(_.annotations)
