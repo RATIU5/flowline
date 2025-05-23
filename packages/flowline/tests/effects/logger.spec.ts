@@ -5,7 +5,7 @@ import { BunLogger, LogOptions } from "../../src/effects/logger";
 // Mock Bun.stdout.write
 const writeMock = vi.fn();
 
-describe("BunLogger", () => {
+describe.runIf(globalThis.Bun?.stdout)("BunLogger", () => {
   beforeAll(() => {
     Object.defineProperty(globalThis.Bun.stdout, "write", {
       value: writeMock,
