@@ -9,11 +9,6 @@ const program = Effect.gen(function* () {
     port: 3000,
     fetch: (req) => toWebHandler(mainApp)(req),
   });
-  yield* Effect.logInfo("Test message", {
-    foo: "bar",
-    _internal: "shouldBeFiltered",
-  }).pipe(Effect.provideService(LogOptions, { style: "debug" }));
-
   yield* Effect.logInfo(
     `Server listening on http://localhost:${server.port}`,
   ).pipe(Effect.provideService(LogOptions, { style: "raw" }));

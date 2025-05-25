@@ -5,6 +5,7 @@ import { BunLogger, LogOptions } from "../../src/effects/logger";
 // Mock Bun.stdout.write
 const writeMock = vi.fn();
 
+// TODO: Use different mock for BunLogger, or use node for testing on CI
 describe.runIf(globalThis.Bun?.stdout)("BunLogger", () => {
   beforeAll(() => {
     Object.defineProperty(globalThis.Bun.stdout, "write", {

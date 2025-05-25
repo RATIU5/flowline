@@ -19,6 +19,11 @@ import {
   yellow,
 } from "kleur/colors";
 
+/**
+ * The `LogOptions` context tag allows additional options to be provided
+ * to the logger, such as the logging style. The style can be piped to a
+ * function or usage of a log function.
+ */
 export class LogOptions extends Context.Tag("LogOptions")<
   LogOptions,
   {
@@ -26,6 +31,9 @@ export class LogOptions extends Context.Tag("LogOptions")<
   }
 >() {}
 
+/**
+ * Serializes a value to a string for logging purposes.
+ */
 const serialize = (value: unknown): string => {
   if (
     typeof value === "string" ||
@@ -48,12 +56,35 @@ const serialize = (value: unknown): string => {
   }
 };
 
+/**
+ * Formats annotations for logging, filtering out internal keys.
+ */
 const formatAnnotations = (annotations: HashMap.HashMap<string, unknown>) =>
   Array.from(HashMap.entries(annotations))
     .filter(([key]) => !key.startsWith("_"))
     .map(([key, value]) => `${key}=${serialize(value)}`)
     .join(" ");
 
+/**
+ * The `BunLogger` is an Effect that provides a logger that writes logs to
+ * `Bun.stdout` with different styles based on the `LogOptions` context.
+ * It supports three styles: "basic", "debug", and "raw".
+ *
+ * @example
+ * ```ts
+ * import { BunLogger, LogOptions } from "./effects/logger";
+ * import { Effect, Logger } from "effect";
+ *
+ * Effect.runPromise(
+ *   Effect.flatMap(BunLogger, (logger) =>
+ *     Effect.logInfo("Hello, World!").pipe(
+ *       Effect.provide(Logger.replace(Logger.defaultLogger, logger)),
+ *       Effect.provideService(LogOptions, { style: "basic" }),
+ *     ),
+ *   ),
+ * );
+ * ```
+ */
 export const BunLogger = Effect.gen(function* () {
   return Logger.make((_) => {
     const currentStyle = FiberRefs.get(_.context, FiberRef.currentContext).pipe(
