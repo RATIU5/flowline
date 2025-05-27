@@ -15,3 +15,10 @@ scratchpad/*
 .env.development.local
 .env.test.local
 .env.production.local
+**/*.trace
+**/*.zip
+**/*.tar.gz
+**/*.tgz
+**/*.log
+package-lock.json
+**/*.bun
