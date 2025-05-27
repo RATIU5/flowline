@@ -1,6 +1,6 @@
 # Flowline
 
-A task management and team chat platform where conversations and tasks live together. Stop losing context between Slack and Linear.
+A task management and team chat platform where conversations and tasks live together. (Think Slack + Linear)
 
 ## Features
 
