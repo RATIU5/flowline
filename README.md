@@ -1,19 +1,32 @@
 # Flowline
 
-A multi-user task/project system augmented with customizable workflows. (Think Linear + Zapier)
+A task management and team chat platform where conversations and tasks live together. Stop losing context between Slack and Linear.
 
 ## Features
 
 These are the current ideas that Flowline could have, which are subject to change as the project evolves.
 
 - **Multi-user**: Support for multiple users with different roles and permissions.
-- **Customizable Workflows**: Create and manage workflows that can be tailored to specific project needs.
-- **Task Management**: Create, assign, and track tasks within projects.
-- **Integrations**: Connect with external services to automate workflows (e.g., Zapier-like functionality).
+- **Conversational Tasks**: Tasks that grow from chat messages naturally - no separate "create task" workflow needed.
+- **Context-Aware Chat**: Smart threading that automatically links related messages, tasks, and decisions without manual tagging.
+- **Intelligent Task Creation**: Task extracts, due dates, and assignees from natural conversation ("Can you review the design by Friday?" becomes a task).
+- **Unified Timeline**: See tasks, messages, and decisions in one chronological view - never lose track of how decisions were made.
+- **Real-time**: WebSocket connections for live updates across tasks and conversations.
+- **Offline-first**: Local-first data sync with conflict resolution.
 
 ## Tech Stack
 
 This is the current tech stack to be used in Flowline, which is subject to change as the project evolves.
+
+### Development
+
+- **Format/Lint**: [Biome](https://biomejs.dev/)
+- **Package Manager**: [Bun](https://bun.sh/)
+- **Code Editor**: [Visual Studio Code](https://code.visualstudio.com/)
+- **Version Control**: [Git](https://git-scm.com/)
+- **Testing**: [Vitest](https://vitest.dev/)
+- **Observability**: [OpenTelemetry](https://opentelemetry.io/)
+- **Monorepo**: Single repository with frontend and backend
 
 ### Web App
 
@@ -21,8 +34,10 @@ This is the current tech stack to be used in Flowline, which is subject to chang
 - **Runtime**: [Bun](https://bun.sh/)
 - **Framework**: [Svelte](https://svelte.dev/)
 - **Meta Framework**: [SvelteKit](https://kit.svelte.dev/)
-- **Local Database**: [libSQL](https://turso.tech/blog/turso-offline-sync-public-beta)
-- **Rendering**: Transitional (SSR + SPA)
+- **CSS**: [Tailwind CSS](https://tailwindcss.com/)
+- **Sync & Offline**: [ElectricSQL](https://electric-sql.com/)
+- **Architecture Library**: [Effect](https://effect.dev/)
+- **Rendering**: Transitional (SSR + SPA)*
 
 ### Server
 
@@ -34,13 +49,16 @@ This is the current tech stack to be used in Flowline, which is subject to chang
 
 ### Storage
 
-- **Database**: [libSQL](https://turso.tech/libsql)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
 
 ### Infrastructure
 
 - **Frontend**: [Fly.io](https://fly.io/)
 - **Backend**: [Fly.io](https://fly.io/)
-- **Database**: [Turso](https://turso.tech/)
+- **Database**: [Neon](https://neon.tech/)
+- **Files**: [Bunny CDN](https://bunny.net/cdn/)
+
+<sub>_*Initial SSR page with client hydration into a full SPA experience._</sub>
 
 ## Development
 
