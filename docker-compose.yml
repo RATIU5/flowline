@@ -1,13 +1,10 @@
-version: "3.3"
-name: "flowline"
-
 services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: electric
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - 54321:5432
     tmpfs:
@@ -22,7 +19,7 @@ services:
   electric:
     image: electricsql/electric
     environment:
-      DATABASE_URL: postgresql://postgres:password@postgres:5432/electric?sslmode=disable
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
       # Not suitable for production. Only use insecure mode in development or if you've otherwise secured the Electric API.
       # See https://electric-sql.com/docs/guides/security
       ELECTRIC_INSECURE: true
