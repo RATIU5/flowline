@@ -20,8 +20,8 @@
     "@effect/build-utils": "^0.8.3",
     "@effect/language-service": "^0.16.7",
     "@effect/vitest": "latest",
-    "@types/bun": "^1.2.14",
-    "@typescript/native-preview": "^7.0.0-dev.20250527.1",
-    "vitest": "^3.1.4"
+    "@types/bun": "^1.2.15",
+    "@typescript/native-preview": "^7.0.0-dev.20250604.1",
+    "vitest": "^3.2.1"
   }
 }
