@@ -65,7 +65,7 @@ This is the current tech stack to be used in Flowline, which is subject to chang
 ### Prerequisites
 
 - [Bun](https://bun.sh/) (v1.2.0 or later)
-- [libSQL](https://turso.tech/libsql) (for local development)
+- [Docker](https://www.docker.com/)
 
 ### Setup
 
@@ -78,6 +78,16 @@ This is the current tech stack to be used in Flowline, which is subject to chang
 2. Install dependencies:
    ```bash
    bun install
+   ```
+
+3. Start the database (PostgreSQL):
+   ```bash
+   docker compose up
+   ```
+
+4. Run the migrations:
+   ```bash
+   bun migrate up
    ```
 
 ### Development
