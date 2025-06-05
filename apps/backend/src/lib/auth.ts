@@ -8,6 +8,7 @@ const dialect = new BunDialect({
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
   },
   database: {
     dialect,
