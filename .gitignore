@@ -22,3 +22,5 @@ scratchpad/*
 **/*.log
 package-lock.json
 **/*.bun
+TODO.md
+

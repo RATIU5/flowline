@@ -1,6 +1,14 @@
 <script lang="ts">
+import * as Form from "@flowline/forms";
 
+const registerForm = Form.struct({
+  displayName: Form.TextInput.Optional,
+});
 
+const form = Form.make(registerForm);
+
+console.log(form.displayName.errors);
+console.log(form.displayName.placeholder);
 </script>
 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -13,21 +21,24 @@
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form class="space-y-4" action="#" method="POST">
+    <form class="space-y-4" method="POST">
       <div>
-        <label for="dname" class="block text-sm/6 font-medium text-gray-900"
-          >Display Name</label
-        >
+        <label
+          for={form.id}
+          class="block text-sm/6 font-medium text-gray-900">
+            {form.attributes.label}
+          </label>
         <div class="mt-2">
           <input
-            type="text"
-            name="dname"
-            id="dname"
-            autocomplete="name"
+            {...form.attributes}
             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
           />
         </div>
-        <p class="text-xs text-red-700 mt-2 h-4">{}</p>
+        <p class="text-xs text-red-700 mt-2 h-4">
+          {#if form.error}
+            {form.error}
+          {/if}
+        </p>
       </div>
 
       <div>
@@ -70,7 +81,7 @@
       <div>
         <div class="flex items-center justify-between">
           <label
-            for="password"
+            for="confirmPassword"
             class="block text-sm/6 font-medium text-gray-900"
             >Confirm Password</label
           >
@@ -78,8 +89,8 @@
         <div class="mt-2">
           <input
             type="password"
-            name="password"
-            id="password"
+            name="confirmPassword"
+            id="confirmPassword"
             autocomplete="new-password"
             required
             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"

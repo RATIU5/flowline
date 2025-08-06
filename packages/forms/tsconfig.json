@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "inputs": [
+    "./src/**/*.ts",
+  ],
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "composite": false,
+    "incremental": false
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@flowline/forms",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "bun run --watch src/mod.ts"
+  },
+  "type": "module",
+  "main": "src/mod.js",
+  "exports": {
+    ".": {
+      "import": "./src/mod.js",
+      "require": "./src/mod.js"
+    }
+  },
+  "files": ["src"],
+  "dependencies": {
+    "@effect/platform": "^0.90.0",
+    "effect": "^3.17.6"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "module": "src/mod.js"
+}
