@@ -1,0 +1,13 @@
+{
+  "name": "@flowline/examples-forms",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Example forms for Flowline",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@flowline/forms": "workspace:*"
+  }
+}

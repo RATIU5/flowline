@@ -1,38 +1,9 @@
+import { Effect, Ref, Schema, Either, pipe } from "effect";
 import {
-  Context,
-  Effect,
-  Data,
-  Ref,
-  Schema,
-  Either,
-  Option,
-  pipe,
-} from "effect";
-
-export class FieldValidationError extends Data.TaggedError(
-  "@flowline/forms/FieldBase/ValidationError",
-)<{
-  readonly message: string;
-  readonly path?: ReadonlyArray<string>;
-  readonly code?: string;
-}> {}
-
-export class FieldError extends Data.TaggedError(
-  "@flowline/forms/FieldBase/FieldError",
-)<{
-  readonly message: string;
-  readonly operation: string;
-}> {}
-
-export interface FieldState<T> {
-  readonly value: T;
-  readonly initialValue: T;
-  readonly errors: ReadonlyArray<string>;
-  readonly isValidating: boolean;
-  readonly isDirty: boolean;
-  readonly isValid: boolean;
-  readonly validationCount: number;
-}
+  FieldValidationError,
+  FieldError,
+  type FieldState,
+} from "../../core/types.js";
 
 export interface FieldConfig<T> {
   readonly initialValue: T;
@@ -65,14 +36,7 @@ export interface Field<T> {
   readonly getErrors: Effect.Effect<ReadonlyArray<string>>;
 }
 
-export class FieldService extends Context.Tag("@flowline/forms/FieldService")<
-  FieldService,
-  {
-    readonly make: <T>(config: FieldConfig<T>) => Effect.Effect<Field<T>>;
-  }
->() {}
-
-export const makeField = <T>(config: FieldConfig<T>): Effect.Effect<Field<T>> =>
+const makeField = <T>(config: FieldConfig<T>): Effect.Effect<Field<T>> =>
   Effect.gen(function* () {
     const initialState: FieldState<T> = {
       value: config.initialValue,
@@ -218,7 +182,7 @@ export const makeField = <T>(config: FieldConfig<T>): Effect.Effect<Field<T>> =>
 
     const getErrors: Effect.Effect<ReadonlyArray<string>, never> = pipe(
       Ref.get(stateRef),
-      Effect.map((state) => state.errors),
+      Effect.map((state) => state.errors.map((e) => e.message)),
       Effect.orElse(() => Effect.succeed([])),
     );
 
@@ -236,7 +200,12 @@ export const makeField = <T>(config: FieldConfig<T>): Effect.Effect<Field<T>> =>
     };
   });
 
-// Service implementation for dependency injection
-export const FieldServiceLive = FieldService.of({
-  make: makeField,
-});
+export class FieldService extends Effect.Service<FieldService>()(
+  "@flowline/forms/FieldService",
+  {
+    effect: Effect.succeed({
+      make: makeField,
+    }),
+    dependencies: [],
+  },
+) {}

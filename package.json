@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "packageManager": "bun@1.2.0",
-  "workspaces": ["packages/*"],
+  "workspaces": ["packages/*", "examples/*", "apps/*"],
   "scripts": {
     "format:check": "biome format --verbose",
     "format:write": "biome format --write",

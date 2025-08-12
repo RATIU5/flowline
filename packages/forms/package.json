@@ -2,14 +2,15 @@
   "name": "@flowline/forms",
   "version": "0.0.1",
   "scripts": {
-    "dev": "bun run --watch src/mod.ts"
+    "dev": "bun run --watch src/mod.ts",
+    "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "type": "module",
-  "main": "src/mod.js",
+  "main": "src/mod.ts",
   "exports": {
     ".": {
-      "import": "./src/mod.js",
-      "require": "./src/mod.js"
+      "import": "./src/mod.ts",
+      "require": "./src/mod.ts"
     }
   },
   "files": ["src"],
