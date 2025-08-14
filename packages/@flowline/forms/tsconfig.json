@@ -1,10 +1,9 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../../tsconfig.base.json",
   "inputs": ["./src/**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "outDir": "./dist",
-    "emitDeclarationOnly": true,
     "resolveJsonModule": true,
     "rootDir": "./src",
     "removeComments": false

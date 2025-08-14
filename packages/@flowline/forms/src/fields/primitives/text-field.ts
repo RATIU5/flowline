@@ -1,14 +1,16 @@
-import { Context, Effect, Layer, Schema } from "effect";
+import { Effect, Schema } from "effect";
 import {
   type InputConfig,
   type InputField,
+  type InputService,
   type InputTransformConfig,
-  InputService,
-} from "../base/input-base.js";
-import type { FieldError } from "../../core/types.js";
+  createInputField,
+} from "../../services/mod.js";
+import type { FieldError } from "../../core/mod.js";
 
 export interface TextFieldConfig
   extends Omit<InputConfig<string>, "initialValue"> {
+  readonly name: string;
   readonly initialValue?: string;
   readonly trim?: boolean;
   readonly lowercase?: boolean;
@@ -69,101 +71,102 @@ const buildTextTransforms = (
   };
 };
 
-export class TextFieldService extends Effect.Service<TextFieldService>()(
-  "@flowline/forms/TextFieldService",
-  {
-    effect: Effect.gen(function* () {
-      const inputService = yield* InputService;
-
-      return {
-        make: (config: TextFieldConfig): Effect.Effect<TextField, FieldError> =>
-          Effect.gen(function* () {
-            const transforms = buildTextTransforms(config);
-
-            const inputConfig: InputConfig<string> = {
-              ...config,
-              initialValue: config.initialValue ?? "",
-              transform: transforms,
-            };
-
-            const inputField = yield* inputService.make(inputConfig);
-
-            return {
-              ...inputField,
-              textConfig: config,
-            };
-          }),
-      };
-    }),
-    dependencies: [InputService.Default],
-  },
-) {}
-
-export const makeTextField = (config: TextFieldConfig) =>
+export const createTextField = (
+  config: TextFieldConfig,
+): Effect.Effect<TextField, FieldError, InputService> =>
   Effect.gen(function* () {
-    const textFieldService = yield* TextFieldService;
-    return yield* textFieldService.make(config);
+    const transforms = buildTextTransforms(config);
+
+    const inputConfig: InputConfig<string> = {
+      ...config,
+      initialValue: config.initialValue ?? "",
+      transform: transforms,
+    };
+
+    const inputField = yield* createInputField(inputConfig);
+
+    return {
+      ...inputField,
+      textConfig: config,
+    };
   });
 
-// Builder API for common text field patterns
 export const textField = {
-  text: (config?: Partial<TextFieldConfig>): TextFieldConfig => ({
+  text: (
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name">>,
+  ): TextFieldConfig => ({
+    name,
     initialValue: "",
     ...config,
   }),
 
   trimmed: (
-    config?: Partial<Omit<TextFieldConfig, "trim">>,
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name" | "trim">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     trim: true,
     ...config,
   }),
 
   lowercase: (
-    config?: Partial<Omit<TextFieldConfig, "lowercase">>,
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name" | "lowercase">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     lowercase: true,
     ...config,
   }),
 
   uppercase: (
-    config?: Partial<Omit<TextFieldConfig, "uppercase">>,
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name" | "uppercase">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     uppercase: true,
     ...config,
   }),
 
   capitalize: (
-    config?: Partial<Omit<TextFieldConfig, "capitalize">>,
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name" | "capitalize">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     capitalize: true,
     ...config,
   }),
 
   alphaOnly: (
-    config?: Partial<Omit<TextFieldConfig, "stripNonAlphabetic">>,
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name" | "stripNonAlphabetic">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     stripNonAlphabetic: true,
     ...config,
   }),
 
   numericOnly: (
-    config?: Partial<Omit<TextFieldConfig, "stripNonNumeric">>,
+    name: string,
+    config?: Partial<Omit<TextFieldConfig, "name" | "stripNonNumeric">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     stripNonNumeric: true,
     ...config,
   }),
 
   withCustomTransform: (
+    name: string,
     transforms: ReadonlyArray<Schema.Schema<string, string>>,
-    config?: Partial<Omit<TextFieldConfig, "customTransforms">>,
+    config?: Partial<Omit<TextFieldConfig, "name" | "customTransforms">>,
   ): TextFieldConfig => ({
+    name,
     initialValue: "",
     customTransforms: transforms,
     ...config,

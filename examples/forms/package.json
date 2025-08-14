@@ -5,7 +5,8 @@
   "description": "Example forms for Flowline",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "exe": "bun src/main.ts",
+    "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "dependencies": {
     "@flowline/forms": "workspace:*"

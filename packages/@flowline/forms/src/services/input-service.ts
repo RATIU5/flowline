@@ -1,6 +1,6 @@
-import { Context, Effect, Layer, Schema, pipe } from "effect";
-import { type Field, type FieldConfig, FieldService } from "./field-base.js";
-import { FieldError } from "../../core/types.js";
+import { Effect, Schema, pipe } from "effect";
+import { FieldError } from "../core/mod.js";
+import { FieldService, type Field, type FieldConfig } from "./field-service.js";
 
 export interface InputTransformConfig<T> {
   readonly inputTransforms?: ReadonlyArray<Schema.Schema<string, string>>;
@@ -16,21 +16,13 @@ export interface InputConfig<T> extends FieldConfig<T> {
   readonly minLength?: number;
   readonly maxLength?: number;
   readonly transform?: InputTransformConfig<T>;
-  readonly onFocus?: Effect.Effect<void, FieldError>;
-  readonly onBlur?: Effect.Effect<void, FieldError>;
 }
 
-export interface InputMethods {
-  readonly focus: Effect.Effect<void, FieldError>;
-  readonly blur: Effect.Effect<void, FieldError>;
-  readonly select: Effect.Effect<void, FieldError>;
-  readonly clear: Effect.Effect<void, FieldError>;
-  readonly isFocused: Effect.Effect<boolean>;
-}
-
-export interface InputField<T> extends Field<T>, InputMethods {
+export interface InputField<T> extends Field<T> {
   readonly inputConfig: InputConfig<T>;
   readonly setRawValue: (rawValue: string) => Effect.Effect<void, FieldError>;
+  readonly select: () => Effect.Effect<void>;
+  readonly clear: () => Effect.Effect<void, FieldError>;
 }
 
 export class InputService extends Effect.Service<InputService>()(
@@ -40,11 +32,11 @@ export class InputService extends Effect.Service<InputService>()(
       const fieldService = yield* FieldService;
 
       return {
-        make: <T>(
+        createInputField: <T>(
           config: InputConfig<T>,
         ): Effect.Effect<InputField<T>, FieldError> =>
           Effect.gen(function* () {
-            const baseField = yield* fieldService.make(config);
+            const baseField = yield* fieldService.createField(config);
 
             const setRawValue = (
               rawValue: string,
@@ -84,31 +76,17 @@ export class InputService extends Effect.Service<InputService>()(
                 yield* baseField.setValue(parsedValue);
               });
 
-            const focus: Effect.Effect<void, FieldError> =
-              config.onFocus ?? Effect.succeed(void 0);
+            const select = (): Effect.Effect<void> => Effect.succeed(void 0);
 
-            const blur: Effect.Effect<void, FieldError> =
-              config.onBlur ?? Effect.succeed(void 0);
-
-            const select: Effect.Effect<void, FieldError> = Effect.succeed(
-              void 0,
-            );
-
-            const clear: Effect.Effect<void, FieldError> = baseField.setValue(
-              config.initialValue,
-            );
-
-            const isFocused: Effect.Effect<boolean> = Effect.succeed(false);
+            const clear = (): Effect.Effect<void, FieldError> =>
+              baseField.setValue(config.initialValue);
 
             return {
               ...baseField,
               inputConfig: config,
               setRawValue,
-              focus,
-              blur,
               select,
               clear,
-              isFocused,
             };
           }),
       };
@@ -117,8 +95,10 @@ export class InputService extends Effect.Service<InputService>()(
   },
 ) {}
 
-export const makeInput = <T>(config: InputConfig<T>) =>
+export const createInputField = <T>(
+  config: InputConfig<T>,
+): Effect.Effect<InputField<T>, FieldError, InputService> =>
   Effect.gen(function* () {
     const inputService = yield* InputService;
-    return yield* inputService.make(config);
+    return yield* inputService.createInputField(config);
   });
