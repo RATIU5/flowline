@@ -9,6 +9,7 @@
     "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "dependencies": {
-    "@flowline/forms": "workspace:*"
+    "@flowline/forms": "workspace:*",
+    "@flowline/forms-vanilla": "workspace:*"
   }
 }
