@@ -11,10 +11,16 @@
         h1 { color: #1a1a1a; text-align: center; }
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
-        input { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         .field-error { color: #d93025; font-size: 0.875rem; margin-top: 0.5rem; }
-        input.field-invalid { border-color: #d93025; }
-        input.field-valid { border-color: #1e8e3e; }
+        .custom-error { background: #ffeaea; padding: 0.5rem; border-radius: 4px; border-left: 3px solid #d93025; }
+        input[data-state="invalid"] { border-color: #d93025; }
+        input[data-state="valid"] { border-color: #1e8e3e; }
+        input[data-state="invalid"][data-touched="true"] {
+            background-color: #fff8f8; /* Show a background tint only after user interaction */
+        }
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
+        .checkbox-group input[type="checkbox"] { width: auto; }
         button { width: 100%; padding: 1rem; background: #1a73e8; color: #fff; border: none; border-radius: 4px; font-size: 1rem; cursor: pointer; }
         button:hover { background: #185abc; }
         .form-state { margin-top: 2rem; padding: 1rem; background: #eee; border-radius: 4px; white-space: pre-wrap; font-family: monospace; }
@@ -22,7 +28,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Flowline Forms Demo</h1>
+        <h1>@flowline/forms-vanilla Demo</h1>
+        <p>This example showcases the key features of the @flowline/forms-vanilla library:</p>
+        <ul>
+            <li><strong>Typed Input Values:</strong> Age field uses <code>data-type="number"</code> for automatic type conversion</li>
+            <li><strong>Custom Error Rendering:</strong> Errors display with custom styling and icons</li>
+            <li><strong>Effect-based Architecture:</strong> Proper resource management and cleanup</li>
+            <li><strong>Reactive State:</strong> Real-time form state display below</li>
+            <li><strong>Validation:</strong> Comprehensive field validation with custom messages</li>
+        </ul>
         <form id="user-form" novalidate>
             <div class="form-group">
                 <label for="firstName">First Name</label>
@@ -40,9 +54,28 @@
                 <div class="field-error" id="email-error"></div>
             </div>
             <div class="form-group">
-                <label for="age">Age</label>
-                <input type="text" id="age" name="age" placeholder="Enter age">
+                <label for="age">Age (demonstrates typed number input)</label>
+                <input type="number" id="age" name="age" data-type="number" placeholder="Enter age" min="18" max="120">
                 <div class="field-error" id="age-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="">Select country</option>
+                    <option value="us">United States</option>
+                    <option value="ca">Canada</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="de">Germany</option>
+                    <option value="fr">France</option>
+                </select>
+                <div class="field-error" id="country-error"></div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter" data-type="boolean">
+                    <label for="newsletter">Subscribe to newsletter (demonstrates typed boolean input)</label>
+                </div>
+                <div class="field-error" id="newsletter-error"></div>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>

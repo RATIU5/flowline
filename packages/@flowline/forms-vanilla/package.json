@@ -10,20 +10,17 @@
     "reactive"
   ],
   "scripts": {
-    "build": "tsc --build",
-    "build:watch": "tsc --build --watch",
-    "clean": "rm -rf dist",
-    "dev": "bun run build:watch",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run clean && bun run build"
+    "build": "buildkit build src/**/*.ts",
+    "dev": "buildkit dev src/**/*.ts",
+    "typecheck": "tsgo --noEmit"
   },
   "type": "module",
-  "main": "./dist/mod.js",
-  "types": "./dist/mod.d.ts",
+  "main": "./src/mod.ts",
+  "types": "./src/mod.ts",
   "exports": {
     ".": {
-      "import": "./dist/mod.js",
-      "types": "./dist/mod.d.ts"
+      "import": "./src/mod.ts",
+      "types": "./src/mod.ts"
     },
     "./package.json": "./package.json"
   },
@@ -41,6 +38,7 @@
     "@flowline/forms": "workspace:*"
   },
   "devDependencies": {
+    "@flowline/buildkit": "workspace:*",
     "bun-types": "latest",
     "typescript": "^5.6.0"
   },

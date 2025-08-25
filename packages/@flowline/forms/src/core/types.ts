@@ -9,4 +9,5 @@ export interface FieldState<T> {
   readonly isValid: boolean;
   readonly validationCount: number;
   readonly isFocused?: boolean;
+  readonly isTouched: boolean;
 }

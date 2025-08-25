@@ -85,10 +85,41 @@ export class DOMUtils implements ElementSelector {
     return element.value;
   }
 
+  static getTypedInputValue(element: HTMLElement): unknown {
+    if (!DOMUtils.isInputElement(element)) {
+      return '';
+    }
+
+    const dataType = element.getAttribute('data-type');
+    const rawValue = DOMUtils.getInputValue(element);
+
+    switch (dataType) {
+      case 'boolean': {
+        if (element.type === 'checkbox' && element instanceof HTMLInputElement) {
+          return element.checked;
+        }
+        return rawValue === 'true' || rawValue === '1';
+      }
+      case 'number': {
+        const num = Number(rawValue);
+        return Number.isNaN(num) ? rawValue : num;
+      }
+      case 'date': {
+        if (rawValue) {
+          const date = new Date(rawValue);
+          return Number.isNaN(date.getTime()) ? rawValue : date;
+        }
+        return rawValue;
+      }
+      default:
+        return rawValue;
+    }
+  }
+
   static setInputValue(element: HTMLElement, value: string): Effect.Effect<void, AdapterError> {
     return Effect.try({
       try: () => {
-        if (!this.isInputElement(element)) {
+        if (!DOMUtils.isInputElement(element)) {
           throw new Error('Element is not a valid input element');
         }
 

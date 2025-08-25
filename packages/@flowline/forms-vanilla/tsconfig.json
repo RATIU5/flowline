@@ -4,16 +4,8 @@
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
     "resolveJsonModule": true,
-    "removeComments": false,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": false,
-    "noEmitOnError": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true
+    "rootDir": "./src",
+    "removeComments": false
   }
 }

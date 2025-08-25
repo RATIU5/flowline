@@ -7,14 +7,21 @@ import {
   type FormConfig,
   type FieldError,
 } from "@flowline/forms";
-import type { RuntimeConfig } from "../core/types.js";
+import type { RuntimeConfig, VanillaAdapterConfig } from "../core/types.js";
 import { AdapterError } from "../core/types.js";
 import { VanillaFormAdapter } from "../adapters/form-adapter.js";
+import { DOMUtils } from "../core/dom-utils.js";
+
+// Development mode tracking for cleanup warnings
+const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined;
+const activeForms = isDevelopment ? new Set<string>() : null;
 
 // Create a single, shared runtime for the entire application lifecycle.
 // It is created asynchronously and stored in a promise.
 const FormLayer = Layer.merge(FormService.Default, FieldService.Default);
-const formRuntimePromise = Effect.runPromise(Effect.scoped(Layer.toRuntime(FormLayer)));
+const formRuntimePromise = Effect.runPromise(
+  Effect.scoped(Layer.toRuntime(FormLayer)),
+);
 
 /**
  * Create and bind a form with the vanilla adapter in a non-Effect context.
@@ -22,12 +29,26 @@ const formRuntimePromise = Effect.runPromise(Effect.scoped(Layer.toRuntime(FormL
  * ensuring proper resource management (e.g., event listeners).
  *
  * @returns A promise that resolves with the form instance, its adapter, and a cleanup function.
- * The `cleanup` function must be called to release resources when the form is no longer needed.
+ * 
+ * ⚠️ CRITICAL: The `cleanup` function MUST be called to release resources when the form 
+ * is no longer needed. Failing to call cleanup will result in memory leaks from 
+ * dangling event listeners and other resources.
+ * 
+ * Example usage:
+ * ```typescript
+ * const { form, adapter, cleanup } = await createForm(element, config, initialValues);
+ * 
+ * // Use the form...
+ * 
+ * // ALWAYS call cleanup when done (e.g., component unmount, page navigation)
+ * await cleanup();
+ * ```
  */
 export const createForm = async <T extends Record<string, unknown>>(
   element: HTMLFormElement,
   config: FormConfig<T>,
   initialValues: T,
+  adapterConfig: Partial<VanillaAdapterConfig<T>> = {},
   runtimeConfig: RuntimeConfig = {},
 ): Promise<{
   form: Form<T>;
@@ -40,13 +61,41 @@ export const createForm = async <T extends Record<string, unknown>>(
 
   const program = Effect.gen(function* () {
     const form = yield* createCoreForm(config, initialValues);
-    const adapter = new VanillaFormAdapter(element, form);
+    const adapter = new VanillaFormAdapter(element, form, adapterConfig as Partial<VanillaAdapterConfig>);
 
     const fiber = runFork(adapter.bind());
 
-    const cleanup = () => runPromise(Fiber.interrupt(fiber)).then(() => {});
-
-    return { form, adapter, cleanup };
+    // Generate a unique ID for tracking in development
+    const formId = isDevelopment ? `form-${Date.now()}-${Math.random().toString(36).substring(2, 11)}` : '';
+    
+    if (isDevelopment && activeForms) {
+      activeForms.add(formId);
+      
+      // Warn about potential cleanup issues after a delay
+      const warningTimeout = setTimeout(() => {
+        if (activeForms.has(formId)) {
+          console.warn(
+            `🚨 Form cleanup warning: Form with ID "${formId}" has been active for over 30 seconds without cleanup. ` +
+            `This may indicate a memory leak. Ensure you call the cleanup() function when the form is no longer needed.`
+          );
+        }
+      }, 30000); // 30 seconds
+      
+      // Clear the warning if cleanup is called
+      const originalCleanup = () => runPromise(Fiber.interrupt(fiber));
+      const cleanup = () => {
+        if (isDevelopment && activeForms) {
+          activeForms.delete(formId);
+          clearTimeout(warningTimeout);
+        }
+        return originalCleanup().then(() => {});
+      };
+      
+      return { form, adapter, cleanup };
+    } else {
+      const cleanup = () => runPromise(Fiber.interrupt(fiber)).then(() => {});
+      return { form, adapter, cleanup };
+    }
   }).pipe(
     Effect.catchAll((error) => {
       if (runtimeConfig.errorHandler) {
@@ -79,7 +128,8 @@ export const createFormEffect = <T extends Record<string, unknown>>(
 > => {
   return Effect.gen(function* () {
     const form = yield* createCoreForm(config, initialValues);
-    const adapter = yield* VanillaFormAdapter.create(element, form);
+    const adapter = new VanillaFormAdapter(element, form);
+    yield* adapter.bind();
 
     return { form, adapter };
   });
@@ -143,15 +193,15 @@ export const bindMultipleForms = async <
         );
         const adapter = new VanillaFormAdapter(formData.element, form);
         return { form, adapter };
-      }));
+      }),
+    );
 
     const results = yield* Effect.all(resultsEffects);
 
     const adapters = Object.values(results).map((r) => r.adapter);
     const fibers = adapters.map((adapter) => runFork(adapter.bind()));
 
-    const cleanup = () =>
-      runPromise(Fiber.interruptAll(fibers)).then(() => {});
+    const cleanup = () => runPromise(Fiber.interruptAll(fibers)).then(() => {});
 
     return { ...results, cleanup };
   }).pipe(
@@ -175,6 +225,7 @@ export const bindForm = <T extends Record<string, unknown>>(
   selector: string | HTMLFormElement,
   config: FormConfig<T>,
   initialValues: T,
+  adapterConfig: Partial<VanillaAdapterConfig<T>> = {},
   runtimeConfig?: RuntimeConfig,
 ): Promise<{
   form: Form<T>;
@@ -195,7 +246,7 @@ export const bindForm = <T extends Record<string, unknown>>(
     );
   }
 
-  return createForm(element, config, initialValues, runtimeConfig);
+  return createForm(element, config, initialValues, adapterConfig, runtimeConfig);
 };
 
 /**
@@ -222,11 +273,14 @@ export const autoBindForms = (
     const validateOnChange = element.dataset.validateOnChange !== "false";
     const validateOnBlur = element.dataset.validateOnBlur !== "false";
 
-    const formData = new FormData(element);
+    // Use DOMUtils for consistent value extraction (fixes checkbox value inconsistency)
+    const domUtils = new DOMUtils(element);
+    const fields = await Effect.runPromise(domUtils.findFormFields());
     const initialValues: Record<string, unknown> = {};
-    formData.forEach((value, key) => {
-      initialValues[key] = value;
-    });
+    
+    for (const [fieldName, fieldElement] of Object.entries(fields)) {
+      initialValues[fieldName] = DOMUtils.getTypedInputValue(fieldElement);
+    }
 
     const config: FormConfig<Record<string, unknown>> = {
       name: formName,
@@ -238,6 +292,7 @@ export const autoBindForms = (
       element,
       config,
       initialValues,
+      {}, // Default adapter config
       runtimeConfig,
     );
 

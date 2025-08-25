@@ -9,8 +9,6 @@ import { DOMUtils } from "../core/dom-utils.js";
  * Uses Effect patterns following Effect best practices
  */
 export class VanillaFieldAdapter<T> implements FieldAdapter<T> {
-  private isDestroyed = false;
-
   readonly config: VanillaAdapterConfig;
 
   constructor(
@@ -32,34 +30,10 @@ export class VanillaFieldAdapter<T> implements FieldAdapter<T> {
   }
 
   /**
-   * Create and bind a new field adapter
-   */
-  static create<T>(
-    element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
-    field: InputField<T>,
-    config?: Partial<VanillaAdapterConfig>,
-  ): Effect.Effect<VanillaFieldAdapter<T>, AdapterError> {
-    return Effect.gen(function* () {
-      const adapter = new VanillaFieldAdapter(element, field, config);
-      yield* adapter.bind();
-      return adapter;
-    });
-  }
-
-  /**
    * Bind field to DOM element with event handling using Effect streams and scoped resource management
    */
   bind(): Effect.Effect<void, AdapterError> {
     return Effect.gen(this, function* () {
-      if (this.isDestroyed) {
-        return yield* Effect.fail(
-          new AdapterError({
-            message: "Cannot bind destroyed adapter",
-            operation: "bind",
-          }),
-        );
-      }
-
       // The entire bind operation is now a Scoped resource.
       // When the scope is closed, all forked fibers are interrupted,
       // and their finalizers (like removeEventListener) are run.
@@ -125,17 +99,15 @@ export class VanillaFieldAdapter<T> implements FieldAdapter<T> {
                   this.element.value = stateValue;
                 }
 
-                // Update field display classes
-                this.element.classList.toggle("field-dirty", state.isDirty);
-                this.element.classList.toggle("field-valid", state.isValid);
-                this.element.classList.toggle("field-invalid", !state.isValid);
-                this.element.classList.toggle(
-                  "field-focused",
-                  state.isFocused ?? false,
+                // Update field display attributes
+                this.element.setAttribute("data-dirty", String(state.isDirty));
+                this.element.setAttribute(
+                  "data-touched",
+                  String(state.isTouched),
                 );
-                this.element.classList.toggle(
-                  "field-validating",
-                  state.isValidating,
+                this.element.setAttribute(
+                  "data-state",
+                  state.isValid ? "valid" : "invalid",
                 );
               }),
             ),
@@ -154,16 +126,6 @@ export class VanillaFieldAdapter<T> implements FieldAdapter<T> {
    */
   unbind(): Effect.Effect<void, AdapterError> {
     return Effect.succeed(void 0);
-  }
-
-  /**
-   * Destroy adapter and clean up all resources
-   * Note: Resource cleanup is now handled automatically by the scoped effect
-   */
-  destroy(): Effect.Effect<void, AdapterError> {
-    return Effect.sync(() => {
-      this.isDestroyed = true;
-    });
   }
 
   /**
@@ -223,12 +185,13 @@ export class VanillaFieldAdapter<T> implements FieldAdapter<T> {
       );
       yield* DOMUtils.setInputValue(this.element, String(state.value ?? ""));
 
-      // Update field display classes (this will be handled by the state stream going forward)
-      this.element.classList.toggle("field-dirty", state.isDirty);
-      this.element.classList.toggle("field-valid", state.isValid);
-      this.element.classList.toggle("field-invalid", !state.isValid);
-      this.element.classList.toggle("field-focused", state.isFocused ?? false);
-      this.element.classList.toggle("field-validating", state.isValidating);
+      // Update field display attributes (this will be handled by the state stream going forward)
+      this.element.setAttribute("data-dirty", String(state.isDirty));
+      this.element.setAttribute("data-touched", String(state.isTouched));
+      this.element.setAttribute(
+        "data-state",
+        state.isValid ? "valid" : "invalid",
+      );
     });
   }
 }
@@ -269,6 +232,8 @@ export const createFieldAdapter = <T>(
       );
     }
 
-    return yield* VanillaFieldAdapter.create(element, field, config);
+    const adapter = new VanillaFieldAdapter(element, field, config);
+    yield* adapter.bind();
+    return adapter;
   });
 };

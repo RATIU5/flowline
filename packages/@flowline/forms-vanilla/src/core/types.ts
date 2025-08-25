@@ -11,24 +11,28 @@ export interface VanillaAdapterConfig<T extends Record<string, unknown> = Record
   readonly onSubmit?: (
     values: T,
   ) => Effect.Effect<unknown, FieldValidationError, never>;
+  readonly errorRenderer?: (
+    fieldName: string,
+    errors: readonly FieldValidationError[],
+  ) => HTMLElement | null;
+  readonly errorSelector?: (fieldName: string) => string;
 }
 
-export interface Adapter<T = unknown> {
+export interface Adapter {
   readonly element: HTMLElement;
-  readonly config: VanillaAdapterConfig<any>;
+  readonly config: VanillaAdapterConfig;
   bind(): Effect.Effect<void, AdapterError>;
   unbind(): Effect.Effect<void, AdapterError>;
-  destroy(): Effect.Effect<void, AdapterError>;
 }
 
-export interface FormAdapter<T extends Record<string, unknown>> extends Adapter<T> {
+export interface FormAdapter<T extends Record<string, unknown>> extends Adapter {
   readonly form: Form<T>;
   readonly element: HTMLFormElement;
   getFieldElement(name: keyof T): Effect.Effect<HTMLElement | null, AdapterError>;
   syncFormState(): Effect.Effect<void, AdapterError>;
 }
 
-export interface FieldAdapter<T> extends Adapter<T> {
+export interface FieldAdapter<T> extends Adapter {
   readonly field: Field<T>;
   readonly element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
   getValue(): Effect.Effect<T, AdapterError>;

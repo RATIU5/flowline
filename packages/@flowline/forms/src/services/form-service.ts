@@ -6,6 +6,8 @@ import {
   Stream,
   pipe,
   Equal,
+  Context,
+  ParseResult,
 } from "effect";
 import { FieldError, FieldValidationError } from "../core/mod.js";
 import { FieldService } from "./field-service.js";
@@ -18,7 +20,7 @@ export interface FormConfig<T extends Record.ReadonlyRecord<string, unknown>> {
   readonly validateOnSubmit?: boolean;
   readonly debounceMs?: number;
   readonly validations?: {
-    readonly [K in keyof T]?: Schema.Schema<T[K], unknown>;
+    readonly [K in keyof T]?: Schema.Schema.AnyNoContext;
   };
 }
 
@@ -53,13 +55,16 @@ export interface Form<T extends Record.ReadonlyRecord<string, unknown>> {
   readonly getState: () => Effect.Effect<FormState<T>, FieldError>;
   readonly getValues: () => Effect.Effect<T, FieldError>;
   readonly setValues: (values: Partial<T>) => Effect.Effect<void, FieldError>;
+  readonly setValuesWithoutValidation?: (
+    values: Partial<T>,
+  ) => Effect.Effect<void, FieldError>;
   readonly validate: (
     values?: Partial<T>,
-  ) => Effect.Effect<T, FieldValidationError>;
+  ) => Effect.Effect<T, FieldValidationError, never>;
   readonly validateField: <K extends keyof T>(
     name: K,
     value?: T[K],
-  ) => Effect.Effect<T[K], FieldValidationError>;
+  ) => Effect.Effect<T[K], FieldValidationError, never>;
   readonly submit: <R, R2>(
     onSubmit: (values: T) => Effect.Effect<R, FieldValidationError, R2>,
   ) => Effect.Effect<FormSubmissionResult<R>, FieldError, R2>;
@@ -170,6 +175,32 @@ export class FormService extends Effect.Service<FormService>()(
                 ),
               );
 
+            const setValuesWithoutValidation = (
+              values: Partial<T>,
+            ): Effect.Effect<void, FieldError> =>
+              Effect.gen(function* () {
+                const currentState = yield* SubscriptionRef.get(stateRef);
+                const newValues = { ...currentState.values, ...values };
+
+                yield* SubscriptionRef.update(stateRef, (state) => ({
+                  ...state,
+                  values: newValues,
+                  isDirty: !Equal.equals(newValues, state.initialValues),
+                  // Don't increment validationCount to avoid triggering validation
+                }));
+
+                // Don't trigger validation even if validateOnChange is true
+              }).pipe(
+                Effect.catchAll((error) =>
+                  Effect.fail(
+                    new FieldError({
+                      message: `Failed to set values without validation: ${error}`,
+                      operation: "setValuesWithoutValidation",
+                    }),
+                  ),
+                ),
+              );
+
             const validate = (
               values?: Partial<T>,
             ): Effect.Effect<T, FieldValidationError> =>
@@ -205,17 +236,23 @@ export class FormService extends Effect.Service<FormService>()(
                 )) {
                   if (!schema) continue;
 
-                  const fieldValue = valuesToValidate[fieldName];
+                  // Form values are always strings from HTML inputs, so cast to string
+                  const fieldValue = String(valuesToValidate[fieldName] ?? "");
 
                   const validationResult = yield* Effect.either(
-                    Schema.decodeUnknown(schema)(fieldValue).pipe(
+                    Schema.decode(schema)(fieldValue).pipe(
                       Effect.mapError(
-                        (error) =>
-                          new FieldValidationError({
-                            message: error.message || "Validation failed",
+                        (error) => {
+                          // Use Effect's ArrayFormatter to get clean error message
+                          const errorArray = ParseResult.ArrayFormatter.formatErrorSync(error);
+                          const message = errorArray[0]?.message || "Validation failed";
+                          
+                          return new FieldValidationError({
+                            message,
                             name: fieldName,
                             code: "SCHEMA_VALIDATION",
-                          }),
+                          });
+                        },
                       ),
                     ),
                   );
@@ -267,18 +304,27 @@ export class FormService extends Effect.Service<FormService>()(
                 const currentState = yield* SubscriptionRef.get(stateRef);
                 const valueToValidate =
                   value !== undefined ? value : currentState.values[name];
+                
+                // Form values are always strings from HTML inputs, so cast to string
+                const stringValue = String(valueToValidate ?? "");
 
-                return yield* Schema.decodeUnknown(schema)(
-                  valueToValidate,
+                return yield* Schema.decode(schema)(
+                  stringValue,
                 ).pipe(
                   Effect.mapError(
-                    (error) =>
-                      new FieldValidationError({
-                        message: error.message || "Validation failed",
+                    (error) => {
+                      // Use Effect's ArrayFormatter to get clean error message
+                      const errorArray = ParseResult.ArrayFormatter.formatErrorSync(error);
+                      const message = errorArray[0]?.message || "Validation failed";
+                      
+                      return new FieldValidationError({
+                        message,
                         name: String(name),
                         code: "SCHEMA_VALIDATION",
-                      }),
+                      });
+                    },
                   ),
+                  Effect.provide(Context.empty()), // Provide empty context
                 );
               });
 
@@ -455,6 +501,7 @@ export class FormService extends Effect.Service<FormService>()(
               getState,
               getValues,
               setValues,
+              setValuesWithoutValidation,
               validate,
               validateField,
               submit,

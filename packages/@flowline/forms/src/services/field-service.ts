@@ -47,6 +47,7 @@ export class FieldService extends Effect.Service<FieldService>()(
             isValid: true,
             validationCount: 0,
             isFocused: false,
+            isTouched: false,
           };
 
           const stateRef = yield* SubscriptionRef.make(initialState);

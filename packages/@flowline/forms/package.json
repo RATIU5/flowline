@@ -1,27 +1,55 @@
 {
   "name": "@flowline/forms",
   "version": "0.0.1",
+  "description": "Core forms library for Flowline with Effect-based validation and state management",
+  "keywords": [
+    "effect",
+    "forms",
+    "typescript",
+    "validation",
+    "reactive",
+    "state-management"
+  ],
+  "license": "MIT",
   "scripts": {
-    "dev": "bun run --watch src/mod.ts",
+    "build": "buildkit build src/**/*.ts",
+    "dev": "buildkit dev src/**/*.ts",
     "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "type": "module",
-  "main": "src/mod.ts",
+  "main": "./src/mod.ts",
+  "types": "./src/mod.ts",
   "exports": {
     ".": {
       "import": "./src/mod.ts",
-      "require": "./src/mod.ts"
-    }
+      "types": "./src/mod.ts"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "src"
+    "dist",
+    "src",
+    "README.md"
   ],
   "dependencies": {
     "@effect/platform": "^0.90.0",
     "effect": "^3.17.6"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@flowline/buildkit": "workspace:*",
+    "bun-types": "latest",
+    "typescript": "^5.6.0"
   },
-  "module": "src/mod.js"
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RATIU5/flowline.git",
+    "directory": "packages/@flowline/forms"
+  },
+  "bugs": {
+    "url": "https://github.com/RATIU5/flowline/issues"
+  },
+  "homepage": "https://github.com/RATIU5/flowline#readme"
 }
