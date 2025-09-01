@@ -242,10 +242,11 @@ export default async function builder(cmd, args) {
         external: bundle
           ? [
               ...Object.keys(dependencies).filter(
-                (dep) => !dependencies[dep].startsWith("workspace:"),
+                (dep) => !dependencies[dep].startsWith("workspace:") && 
+                        platform !== "browser"
               ),
               "bun",
-            ]
+            ].filter(dep => platform === "browser" ? dep === "bun" : true)
           : undefined,
         entryPoints,
         outdir,

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@flowline/forms-vanilla Example</title>
-    <script type="module" src="/dist/client.js"></script>
+    <script type="module" src="/dist/app.js"></script>
     <style>
         body { font-family: sans-serif; background: #f4f4f9; color: #333; padding: 2rem; }
         .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -29,14 +29,6 @@
 <body>
     <div class="container">
         <h1>@flowline/forms-vanilla Demo</h1>
-        <p>This example showcases the key features of the @flowline/forms-vanilla library:</p>
-        <ul>
-            <li><strong>Typed Input Values:</strong> Age field uses <code>data-type="number"</code> for automatic type conversion</li>
-            <li><strong>Custom Error Rendering:</strong> Errors display with custom styling and icons</li>
-            <li><strong>Effect-based Architecture:</strong> Proper resource management and cleanup</li>
-            <li><strong>Reactive State:</strong> Real-time form state display below</li>
-            <li><strong>Validation:</strong> Comprehensive field validation with custom messages</li>
-        </ul>
         <form id="user-form" novalidate>
             <div class="form-group">
                 <label for="firstName">First Name</label>
@@ -54,7 +46,7 @@
                 <div class="field-error" id="email-error"></div>
             </div>
             <div class="form-group">
-                <label for="age">Age (demonstrates typed number input)</label>
+                <label for="age">Age</label>
                 <input type="number" id="age" name="age" data-type="number" placeholder="Enter age" min="18" max="120">
                 <div class="field-error" id="age-error"></div>
             </div>
@@ -73,7 +65,7 @@
             <div class="form-group">
                 <div class="checkbox-group">
                     <input type="checkbox" id="newsletter" name="newsletter" data-type="boolean">
-                    <label for="newsletter">Subscribe to newsletter (demonstrates typed boolean input)</label>
+                    <label for="newsletter">Subscribe to newsletter</label>
                 </div>
                 <div class="field-error" id="newsletter-error"></div>
             </div>

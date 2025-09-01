@@ -1,3 +1,3 @@
-# @flowline/forms-vanilla
+# @flowline/forms
 
-The vanilla TypeScript/JavaScript adapter for @flowline/forms
+The Effect library that Flowline uses to manage dynamic and composable forms.

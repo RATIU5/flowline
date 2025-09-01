@@ -1,18 +1,17 @@
 {
   "name": "@flowline/forms-vanilla",
   "version": "0.0.1",
-  "description": "Vanilla TypeScript/JavaScript adapter for @flowline/forms",
+  "description": "The vanilla TypeScript adapter for @flowline/forms",
   "keywords": [
     "effect",
     "forms",
-    "typescript",
-    "validation",
-    "reactive"
+    "typescript"
   ],
+  "license": "MIT",
   "scripts": {
     "build": "buildkit build src/**/*.ts",
     "dev": "buildkit dev src/**/*.ts",
-    "typecheck": "tsgo --noEmit"
+    "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "type": "module",
   "main": "./src/mod.ts",
@@ -29,13 +28,13 @@
     "src",
     "README.md"
   ],
-  "peerDependencies": {
-    "effect": "^3.17.0",
-    "typescript": "^5.0.0"
-  },
   "dependencies": {
+    "@effect-atom/atom": "^0.1.20",
     "@effect/platform": "^0.90.0",
-    "@flowline/forms": "workspace:*"
+    "@effect/platform-browser": "^0.70.0",
+    "@effect/schema": "^0.75.5",
+    "@flowline/forms": "workspace:*",
+    "effect": "^3.17.6"
   },
   "devDependencies": {
     "@flowline/buildkit": "workspace:*",
@@ -48,11 +47,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RATIU5/flowline.git",
-    "directory": "packages/@flowline/forms-vanilla"
+    "directory": "packages/@flowline/forms"
   },
   "bugs": {
     "url": "https://github.com/RATIU5/flowline/issues"
   },
-  "homepage": "https://github.com/RATIU5/flowline#readme",
-  "license": "MIT"
+  "homepage": "https://github.com/RATIU5/flowline#readme"
 }

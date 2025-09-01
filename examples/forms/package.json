@@ -3,16 +3,19 @@
   "private": true,
   "version": "0.0.1",
   "description": "Example forms for Flowline",
-  "main": "dist/index.js",
+  "main": "dist/app.js",
   "scripts": {
-    "exe": "bun src/main.ts",
-    "build": "buildkit build src/client.ts --bundle --platform=browser",
+    "exe": "bun src/server.ts",
+    "build": "buildkit build src/app.ts --bundle --platform=browser",
     "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "dependencies": {
-    "@flowline/buildkit": "workspace:*",
+    "effect": "3.17.9",
     "@flowline/forms": "workspace:*",
     "@flowline/forms-vanilla": "workspace:*",
     "typescript": "5.9.2"
+  },
+  "devDependencies": {
+    "@flowline/buildkit": "workspace:*"
   }
 }
