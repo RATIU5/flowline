@@ -35,6 +35,11 @@ export interface FormState<A, I> {
    * Used to prevent concurrent submissions and provide UI feedback.
    */
   readonly isSubmitting: boolean;
+
+  /**
+   * A flag indicating if the form has been submitted at least once.
+   */
+  readonly hasSubmitted: boolean;
 }
 
 /**
@@ -77,7 +82,7 @@ export const createForm = <A, I>(
   options: CreateFormOptions<A, I>,
 ): Effect.Effect<Form<A, I>, never, Scope.Scope | Registry.AtomRegistry> =>
   Effect.sync(() => {
-    const validationResult = Schema.decodeEither(options.schema)(
+    const validationResult = Schema.decodeEither(options.schema, { errors: "all" })(
       options.initialValues,
     );
 
@@ -87,6 +92,7 @@ export const createForm = <A, I>(
       errors: Either.getLeft(validationResult),
       touched: new Set<keyof A>(),
       isSubmitting: false,
+      hasSubmitted: false,
     };
 
     const stateAtom = Atom.make(initialState);

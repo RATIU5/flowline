@@ -8,6 +8,7 @@ export interface FieldState<A, I> {
   readonly value: Option.Option<A>;
   readonly errors: ReadonlyArray<string>;
   readonly touched: boolean;
+  readonly hasSubmitted: boolean;
 }
 
 /**
@@ -18,10 +19,10 @@ export interface FieldState<A, I> {
  * @returns An atom representing the field state.
  */
 export const selectFieldState = <A, I>(
-  form: Form<A, I>,
+  state: Form<A, I>["state"],
   key: keyof A & keyof I,
 ): Atom.Atom<FieldState<A[keyof A], I[keyof I]>> =>
-  Atom.map(form.state, (s) => {
+  Atom.map(state, (s) => {
     const formattedErrors = s.errors.pipe(
       Option.match({
         onNone: () => new Map<string | symbol, ReadonlyArray<string>>(),
@@ -34,5 +35,6 @@ export const selectFieldState = <A, I>(
       value: Option.map(s.validatedValues, (a) => a[key]),
       errors: formattedErrors.get(String(key)) ?? [],
       touched: s.touched.has(key),
+      hasSubmitted: s.hasSubmitted,
     };
   });

@@ -5,17 +5,25 @@ import { bindForm, runForm } from "@flowline/forms-vanilla";
 const FormSchema = Schema.Struct({
   firstName: pipe(
     Schema.NonEmptyString,
-    Schema.annotations({
-      label: "First Name",
-      placeholder: "Enter your first name",
-    }),
   ),
   lastName: pipe(
     Schema.NonEmptyString,
-    Schema.annotations({
-      label: "Last Name",
-      placeholder: "Enter your last name",
-    }),
+  ),
+  email: pipe(
+    Schema.NonEmptyString,
+  ),
+  age: pipe(
+    Schema.Number,
+  ),
+  country: pipe(
+    Schema.NonEmptyString,
+  ),
+  newsletter: pipe(
+    Schema.Boolean,
+  ),
+  password: pipe(
+    Schema.NonEmptyString,
+    Schema.minLength(8),
   ),
 });
 
@@ -23,7 +31,6 @@ const formProgram = Effect.gen(function* () {
   const formEl = document.querySelector(
     "form#user-form",
   ) as HTMLFormElement | null;
-  console.log("test");
   if (!formEl) return;
 
   const form = yield* createForm({
@@ -31,15 +38,21 @@ const formProgram = Effect.gen(function* () {
     initialValues: {
       firstName: "",
       lastName: "",
+      email: "",
+      age: 0,
+      country: "",
+      newsletter: false,
+      password: "",
     },
   });
 
   yield* bindForm({
     form,
     element: formEl,
-    onSubmit: (data) => Effect.sync(() => {
-      console.log("Form submitted:", data);
-    }),
+    onSubmit: (data) =>
+      Effect.sync(() => {
+        console.log("Form submitted:", data);
+      }),
   });
 });
 

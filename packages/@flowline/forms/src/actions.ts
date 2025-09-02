@@ -5,7 +5,7 @@ import type { Form } from "./form";
 
 export class FormAlreadySubmittingError extends Data.TaggedError(
   "@flowline/forms/actions/FormAlreadySubmittingError",
-) {}
+) { }
 
 /**
  * Sets the raw value of a form field.
@@ -26,7 +26,7 @@ export const setRawValue = <A, I>(
       [key]: value,
     };
 
-    const validatedValues = Schema.decodeEither(form.schema)(newRawValues);
+    const validatedValues = Schema.decodeEither(form.schema, { errors: "all" })(newRawValues);
     const newState = {
       ...currentState,
       rawValues: newRawValues,
@@ -94,11 +94,12 @@ export const submit = <A, I, E, R, R2>(
       (
         rawValues,
       ): Effect.Effect<R, E | ParseResult.ParseError, AtomRegistry | R2> => {
-        const validatedValues = Schema.decodeEither(form.schema)(rawValues);
+        const validatedValues = Schema.decodeEither(form.schema, { errors: "all" })(rawValues);
         if (Either.isLeft(validatedValues)) {
           return Atom.update(form.state, (currentState) => ({
             ...currentState,
             errors: Either.getLeft(validatedValues),
+            hasSubmitted: true,
           })).pipe(Effect.andThen(Effect.fail(validatedValues.left)));
         }
         return onSubmit(validatedValues.right);
@@ -112,6 +113,7 @@ export const submit = <A, I, E, R, R2>(
         return {
           ...currentState,
           isSubmitting: false,
+          hasSubmitted: true,
         };
       }),
     ),
