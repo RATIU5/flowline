@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "effect-mcp": {
+      "type": "stdio",
+      "command": "docker",
+      "args": ["run", "--rm", "-i", "timsmart/effect-mcp"]
+    }
+  }
+}
