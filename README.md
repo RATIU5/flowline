@@ -71,7 +71,7 @@ flowchart TB
 
 **Frontend**: SvelteKit · Tailwind CSS · IndexedDB
 
-**Backend**: Elysia · Effect Platform · Better Auth · PostgreSQL
+**Backend**: Effect Platform · Better Auth · PostgreSQL
 
 **Infrastructure**: Fly.io · Neon · Bunny CDN
 
