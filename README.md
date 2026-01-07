@@ -1,105 +1,119 @@
 # Flowline
 
-A task management and team chat platform where conversations and tasks live together. (Think Slack + Linear)
+[![Status](https://img.shields.io/badge/Status-Early%20Development-yellow)](https://github.com/RATIU5/flowline)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Effect-TS](https://img.shields.io/badge/Effect--TS-3.0-black)](https://effect.website/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-## Features
+Real-time collaborative task management and chat. Tasks emerge from conversations. Built with **operation-based sync** and **Effect-ts**.
 
-These are the current ideas that Flowline could have, which are subject to change as the project evolves.
+> [!NOTE]
+> Personal learning project for Effect-ts and distributed systems. Early development.
 
-- **Multi-user**: Support for multiple users with different roles and permissions.
-- **Conversational Tasks**: Tasks that grow from chat messages naturally - no separate "create task" workflow needed.
-- **Context-Aware Chat**: Smart threading that automatically links related messages, tasks, and decisions without manual tagging.
-- **Intelligent Task Creation**: Task extracts, due dates, and assignees from natural conversation ("Can you review the design by Friday?" becomes a task).
-- **Unified Timeline**: See tasks, messages, and decisions in one chronological view - never lose track of how decisions were made.
-- **Real-time**: WebSocket connections for live updates across tasks and conversations.
-- **Offline-first**: Local-first data sync with conflict resolution.
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph Client["Client"]
+        UI[UI Components]
+        MS[(Materialized State)]
+        EL[(Event Log)]
+    end
+
+    subgraph Server["Server"]
+        WS[WebSocket]
+        DB[(PostgreSQL)]
+    end
+
+    UI -->|Query| MS
+    UI -->|Commit| EL
+    EL -->|Materialize| MS
+    EL <-->|Sync| WS
+    WS <-->|Persist| DB
+```
+
+**Principles**: Vertical slices · Effect-first · Offline-first · Operation-based sync · Per-field LWW with Hybrid Logical Clocks
+
+---
+
+## Roadmap
+
+> [!IMPORTANT]
+> **Current Phase**: Project 1 — Basic Real-Time Chat
+
+|  #  | Project               | Status | Focus                                           |
+| :-: | --------------------- | :----: | ----------------------------------------------- |
+|  1  | Real-time chat        |   🚧   | Effect WebSocket services, message broadcasting |
+|  2  | Persistence           |   ⏳   | Postgres integration, message history           |
+|  3  | Hybrid Logical Clocks |   ⏳   | Causal ordering, out-of-order handling          |
+|  4  | Offline support       |   ⏳   | IndexedDB operation log, sync on reconnect      |
+|  5  | Conflict resolution   |   ⏳   | Per-field LWW for tasks, multi-user editing     |
+
+---
+
+## Learning Goals
+
+- **Effect-ts** — Service layers, WebSocket handling, Streams, error channels
+- **Distributed Systems** — Operation-based sync, HLCs, causal ordering, eventual consistency
+- **Conflict Resolution** — Per-field LWW, operation-based CRDTs, offline-first architecture
+- **Real-Time Systems** — WebSocket pub/sub, optimistic UI, state reconciliation
+
+---
 
 ## Tech Stack
 
-This is the current tech stack to be used in Flowline, which is subject to change as the project evolves.
+<details>
+<summary>View full stack</summary>
 
-### Development
+**Core**: Effect-ts · TypeScript · Bun
 
-- **Format/Lint**: [Biome](https://biomejs.dev/)
-- **Package Manager**: [Bun](https://bun.sh/)
-- **Code Editor**: [Visual Studio Code](https://code.visualstudio.com/)
-- **Version Control**: [Git](https://git-scm.com/)
-- **Testing**: [Vitest](https://vitest.dev/)
-- **Observability**: [OpenTelemetry](https://opentelemetry.io/)
-- **Monorepo**: Single repository with frontend and backend
+**Frontend**: SvelteKit · Tailwind CSS · IndexedDB
 
-### Web App
+**Backend**: Elysia · Effect Platform · Better Auth · PostgreSQL
 
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Runtime**: [Bun](https://bun.sh/)
-- **Framework**: [Svelte](https://svelte.dev/)
-- **Meta Framework**: [SvelteKit](https://kit.svelte.dev/)
-- **CSS**: [Tailwind CSS](https://tailwindcss.com/)
-- **Sync & Offline**: [ElectricSQL](https://electric-sql.com/)
-- **Architecture Library**: [Effect](https://effect.dev/)
-- **Rendering**: Transitional (SSR + SPA)*
+**Infrastructure**: Fly.io · Neon · Bunny CDN
 
-### Server
+**Dev**: Biome · Vitest · OpenTelemetry
 
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Runtime**: [Bun](https://bun.sh/)
-- **Server**: [Elysia](https://elysiajs.com/)
-- **Authentication**: [Better Auth](https://www.better-auth.com/)
-- **Architecture Library**: [Effect](https://effect.dev/)
+</details>
 
-### Storage
+---
 
-- **Database**: [PostgreSQL](https://www.postgresql.org/)
+## Quick Start
 
-### Infrastructure
-
-- **Frontend**: [Fly.io](https://fly.io/)
-- **Backend**: [Fly.io](https://fly.io/)
-- **Database**: [Neon](https://neon.tech/)
-- **Files**: [Bunny CDN](https://bunny.net/cdn/)
-
-<sub>_*Initial SSR page with client hydration into a full SPA experience._</sub>
-
-## Development
-
-### Prerequisites
-
-- [Bun](https://bun.sh/) (v1.2.0 or later)
-- [Docker](https://www.docker.com/)
-
-### Setup
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/RATIU5/flowline.git
-   cd flowline
-   ```
-
-2. Install dependencies:
-   ```bash
-   bun install
-   ```
-
-3. Start the database (PostgreSQL):
-   ```bash
-   docker compose up
-   ```
-
-4. Run the migrations:
-   ```bash
-   bun migrate up
-   ```
-
-### Development
-
-To start the development servers (frontend & backend), run:
 ```bash
+git clone https://github.com/RATIU5/flowline.git
+cd flowline
+bun install
 bun dev
 ```
 
-## Why
+> [!TIP]
+> Run `bun dev:be` or `bun dev:fe` for backend/frontend only.
 
-This is a personal project to learn more about the [Effect](https://effect.dev) ecosystem by building a complete real-world application, from the frontend to the hosting infrastructure.
+---
+
+## Project Structure
+
+```
+flowline/
+├── packages/
+│   ├── @flowline/          # Core libraries used throughout
+│   ├── flowline/           # Elysia + Effect backend
+├── app/                    # SvelteKit frontend
+└── docs/                   # Architecture decisions
+```
+
+---
+
+## Contributing
+
+> [!CAUTION]
+> Architecture may change significantly. Feedback welcome via [issues](https://github.com/RATIU5/flowline/issues).
+
+---
 
 ## License
 
