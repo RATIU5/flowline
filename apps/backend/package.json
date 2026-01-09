@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts",
+    "test": "vitest",
+    "coverage": "vitest --coverage"
+  },
+  "dependencies": {
+    "effect": "catalog:effect",
+    "@effect/platform": "catalog:effect",
+    "@effect/experimental": "catalog:effect",
+    "@effect/platform-bun": "catalog:effect",
+    "@effect/rpc": "catalog:effect",
+    "@flowline/rpc-schema": "workspace:*"
+  },
+  "devDependencies": {
+    "@effect/language-service": "catalog:effect",
+    "@effect/vitest": "catalog:effect",
+    "typescript": "catalog:",
+    "vitest": "catalog:testing"
+  },
+  "effect": {
+    "generateExports": {
+      "include": [
+        "**/*.ts"
+      ]
+    },
+    "generateIndex": {
+      "include": [
+        "**/*.ts"
+      ]
+    }
+  }
+}
