@@ -1,17 +1,31 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": {
-    "enabled": false,
+    "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true
+    "ignoreUnknown": false,
+    "includes": [
+      "**/*.svelte",
+      "**/*.ts",
+      "**/*.js",
+      "**/*.tsx",
+      "**/*.jsx",
+      "**/*.json"
+    ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "formatWithErrors": true
+  },
+  "html": {
+    "formatter": {
+      "enabled": true
+    },
+    "experimentalFullSupportEnabled": true
   },
   "css": {
     "parser": {
@@ -25,8 +39,7 @@
       "correctness": {
         "noUnusedVariables": "info"
       }
-    },
-    "includes": ["!**/*.svelte"]
+    }
   },
   "javascript": {
     "formatter": {

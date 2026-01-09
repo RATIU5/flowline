@@ -16,7 +16,7 @@ type DisplayMessage = {
 
 let messages = $state<DisplayMessage[]>([]);
 let messageInput = $state("");
-let userName = $state("Anonymous");
+const userName = $state("Anonymous");
 let connected = $state(false);
 let client: RpcClient.FromGroup<typeof MessageRpcs, RpcClientError> | null =
   null;
@@ -140,7 +140,7 @@ const sendMessage = async (e: Event) => {
       bind:value={userName}
       placeholder="Your name"
       class="bg-gray-600 px-3 py-1 rounded text-gray-100 placeholder-gray-400 focus:outline-none w-40"
-    />
+    >
     <span class="text-gray-400 text-sm">
       {connected ? "🟢 Connected" : "🔴 Disconnected"}
     </span>
@@ -201,7 +201,7 @@ const sendMessage = async (e: Event) => {
         bind:value={messageInput}
         placeholder="Message #general"
         class="flex-1 bg-transparent px-2 py-3 text-gray-100 placeholder-gray-400 focus:outline-none"
-      />
+      >
       <button
         type="submit"
         disabled={!connected || !messageInput.trim()}
