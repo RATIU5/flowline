@@ -45,7 +45,7 @@
     "format:write": "biome format --write",
     "lint:check": "biome lint",
     "lint:write": "biome lint --write",
-    "typecheck": "tsgo --noEmit --project tsconfig.base.json",
+    "typecheck": "tsc --noEmit --project tsconfig.base.json",
     "test": "bun run --workspaces test",
     "clean:all": "bun run clean:dist && bun run clean:packages",
     "clean:dist": "rimraf packages/**/dist",
