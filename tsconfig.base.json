@@ -1,8 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "include": ["packages", "app", "scratchpad"],
-    "exclude": ["node_modules", "dist"],
     "declaration": true,
     "emitDeclarationOnly": true,
     "strict": true,
@@ -17,8 +15,8 @@
     "noErrorTruncation": true,
     "plugins": [
       {
-        "name": "@effect/language-service",
-      },
-    ],
-  },
+        "name": "@effect/language-service"
+      }
+    ]
+  }
 }
