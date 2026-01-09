@@ -37,5 +37,5 @@
   "editor.wordBasedSuggestions": "matchingDocuments",
   "editor.parameterHints.enabled": true,
   "files.insertFinalNewline": true,
-  "cSpell.words": ["Elysia", "flowline"]
+  "cSpell.words": ["flowline"]
 }

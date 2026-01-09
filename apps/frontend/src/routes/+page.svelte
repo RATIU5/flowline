@@ -1,138 +1,136 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
-  import { ChatMessage, MessageRpcs } from "@flowline/rpc-schema";
-  import { Effect, Exit, Scope, Stream, Layer } from "effect";
-  import { RpcClient, RpcSerialization } from "@effect/rpc";
-  import type { RpcClientError } from "@effect/rpc/RpcClientError";
-  import { BrowserSocket } from "@effect/platform-browser";
+import { onMount, onDestroy } from "svelte";
+import { type ChatMessage, MessageRpcs } from "@flowline/rpc-schema";
+import { Effect, Exit, Scope, Stream, Layer } from "effect";
+import { RpcClient, RpcSerialization } from "@effect/rpc";
+import type { RpcClientError } from "@effect/rpc/RpcClientError";
+import { BrowserSocket } from "@effect/platform-browser";
 
-  type DisplayMessage = {
-    id: string;
-    author: string;
-    avatar: string;
-    timestamp: string;
-    content: string;
-  };
+type DisplayMessage = {
+  id: string;
+  author: string;
+  avatar: string;
+  timestamp: string;
+  content: string;
+};
 
-  let messages = $state<DisplayMessage[]>([]);
-  let messageInput = $state("");
-  let userName = $state("Anonymous");
-  let connected = $state(false);
-  let client: RpcClient.FromGroup<typeof MessageRpcs, RpcClientError> | null =
-    null;
+let messages = $state<DisplayMessage[]>([]);
+let messageInput = $state("");
+const userName = $state("Anonymous");
+let connected = $state(false);
+let client: RpcClient.FromGroup<typeof MessageRpcs, RpcClientError> | null =
+  null;
 
-  const avatarColors = [
-    "bg-indigo-500",
-    "bg-green-500",
-    "bg-red-500",
-    "bg-yellow-500",
-    "bg-purple-500",
-    "bg-pink-500",
-    "bg-blue-500",
-  ];
+const avatarColors = [
+  "bg-indigo-500",
+  "bg-green-500",
+  "bg-red-500",
+  "bg-yellow-500",
+  "bg-purple-500",
+  "bg-pink-500",
+  "bg-blue-500",
+];
 
-  const getAvatarColor = (name: string) => {
-    const hash = name
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return avatarColors[hash % avatarColors.length];
-  };
+const getAvatarColor = (name: string) => {
+  const hash = name
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return avatarColors[hash % avatarColors.length];
+};
 
-  const formatTimestamp = (date: Date) => {
-    const now = new Date();
-    const isToday = date.toDateString() === now.toDateString();
-    const time = date.toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit",
-    });
-    return isToday
-      ? `Today at ${time}`
-      : `${date.toLocaleDateString()} ${time}`;
-  };
-
-  const chatMessageToDisplay = (msg: ChatMessage): DisplayMessage => ({
-    id: msg.id,
-    author: msg.senderName,
-    avatar: getAvatarColor(msg.senderName),
-    timestamp: formatTimestamp(new Date(Number(msg.timestamp.epochMillis))),
-    content: msg.content,
+const formatTimestamp = (date: Date) => {
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  const time = date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
   });
+  return isToday ? `Today at ${time}` : `${date.toLocaleDateString()} ${time}`;
+};
 
-  // --- Effect RPC Client Setup ---
+const chatMessageToDisplay = (msg: ChatMessage): DisplayMessage => ({
+  id: msg.id,
+  author: msg.senderName,
+  avatar: getAvatarColor(msg.senderName),
+  timestamp: formatTimestamp(new Date(Number(msg.timestamp.epochMillis))),
+  content: msg.content,
+});
 
-  // Layer providing the WebSocket connection to the backend
-  const SocketLive = BrowserSocket.layerWebSocket("ws://localhost:3001/rpc");
+// --- Effect RPC Client Setup ---
 
-  // Layer providing the RPC protocol over the socket with NDJSON serialization
-  const ProtocolLive = RpcClient.layerProtocolSocket().pipe(
-    Layer.provide(RpcSerialization.layerNdjson),
-    Layer.provide(SocketLive),
-  );
+// Layer providing the WebSocket connection to the backend
+const SocketLive = BrowserSocket.layerWebSocket("ws://localhost:3001/rpc");
 
-  // Scope that lives for the component lifetime - keeps the WebSocket open
-  let rpcScope: Scope.CloseableScope | null = null;
+// Layer providing the RPC protocol over the socket with NDJSON serialization
+const ProtocolLive = RpcClient.layerProtocolSocket().pipe(
+  Layer.provide(RpcSerialization.layerNdjson),
+  Layer.provide(SocketLive),
+);
 
-  onMount(async () => {
-    try {
-      // Create a scope that persists until component unmounts
-      // This is crucial: without it, the WebSocket closes immediately
-      rpcScope = Effect.runSync(Scope.make());
+// Scope that lives for the component lifetime - keeps the WebSocket open
+let rpcScope: Scope.CloseableScope | null = null;
 
-      // Build a runtime from the protocol layer
-      // The runtime contains the context (socket, serialization) needed by RPC calls
-      const runtime = await Effect.runPromise(
-        Layer.toRuntime(ProtocolLive).pipe(Scope.extend(rpcScope)),
-      );
+onMount(async () => {
+  try {
+    // Create a scope that persists until component unmounts
+    // This is crucial: without it, the WebSocket closes immediately
+    rpcScope = Effect.runSync(Scope.make());
 
-      // Create the RPC client - this gives us typed methods for each RPC
-      const c = await Effect.runPromise(
-        RpcClient.make(MessageRpcs).pipe(
-          Effect.provide(runtime),
-          Scope.extend(rpcScope),
+    // Build a runtime from the protocol layer
+    // The runtime contains the context (socket, serialization) needed by RPC calls
+    const runtime = await Effect.runPromise(
+      Layer.toRuntime(ProtocolLive).pipe(Scope.extend(rpcScope)),
+    );
+
+    // Create the RPC client - this gives us typed methods for each RPC
+    const c = await Effect.runPromise(
+      RpcClient.make(MessageRpcs).pipe(
+        Effect.provide(runtime),
+        Scope.extend(rpcScope),
+      ),
+    );
+
+    client = c;
+    connected = true;
+
+    // Subscribe to the message stream
+    // This calls the Messages RPC which returns a Stream of ChatMessages
+    Effect.runFork(
+      c.Messages(undefined as void).pipe(
+        Stream.runForEach((msg: ChatMessage) =>
+          Effect.sync(() => {
+            messages = [...messages, chatMessageToDisplay(msg)];
+          }),
         ),
-      );
+        Effect.provide(runtime),
+      ),
+    );
+  } catch (e) {
+    console.error("Failed to connect:", e);
+    connected = false;
+  }
+});
 
-      client = c;
-      connected = true;
+onDestroy(() => {
+  // Close the scope to clean up the WebSocket connection
+  if (rpcScope) {
+    Effect.runFork(Scope.close(rpcScope, Exit.void));
+  }
+});
 
-      // Subscribe to the message stream
-      // This calls the Messages RPC which returns a Stream of ChatMessages
-      Effect.runFork(
-        c.Messages(undefined as void).pipe(
-          Stream.runForEach((msg: ChatMessage) =>
-            Effect.sync(() => {
-              messages = [...messages, chatMessageToDisplay(msg)];
-            }),
-          ),
-          Effect.provide(runtime),
-        ),
-      );
-    } catch (e) {
-      console.error("Failed to connect:", e);
-      connected = false;
-    }
-  });
+const sendMessage = async (e: Event) => {
+  e.preventDefault();
+  if (!client || !messageInput.trim()) return;
 
-  onDestroy(() => {
-    // Close the scope to clean up the WebSocket connection
-    if (rpcScope) {
-      Effect.runFork(Scope.close(rpcScope, Exit.void));
-    }
-  });
-
-  const sendMessage = async (e: Event) => {
-    e.preventDefault();
-    if (!client || !messageInput.trim()) return;
-
-    try {
-      await Effect.runPromise(
-        client.SendMessage({ content: messageInput, senderName: userName }),
-      );
-      messageInput = "";
-    } catch (e) {
-      console.error("Failed to send:", e);
-    }
-  };
+  try {
+    await Effect.runPromise(
+      client.SendMessage({ content: messageInput, senderName: userName }),
+    );
+    messageInput = "";
+  } catch (e) {
+    console.error("Failed to send:", e);
+  }
+};
 </script>
 
 <div class="flex flex-col h-screen bg-gray-700">
