@@ -16,7 +16,7 @@ type DisplayMessage = {
 
 let messages = $state<DisplayMessage[]>([]);
 let messageInput = $state("");
-const userName = $state("Anonymous");
+let userName = $state("Anonymous");
 let connected = $state(false);
 let client: RpcClient.FromGroup<typeof MessageRpcs, RpcClientError> | null =
   null;
