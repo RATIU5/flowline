@@ -1,5 +1,5 @@
 {
-  "name": "@flowline/rpc-schema",
+  "name": "@flowline/rpc",
   "version": "0.0.1",
   "type": "module",
   "exports": {

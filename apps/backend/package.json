@@ -14,7 +14,8 @@
     "@effect/experimental": "catalog:effect",
     "@effect/platform-bun": "catalog:effect",
     "@effect/rpc": "catalog:effect",
-    "@flowline/rpc-schema": "workspace:*"
+    "@flowline/rpc": "workspace:*",
+    "@flowline/database": "workspace:*"
   },
   "devDependencies": {
     "@effect/language-service": "catalog:effect",
