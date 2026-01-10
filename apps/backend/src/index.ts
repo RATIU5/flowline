@@ -6,8 +6,8 @@ import { ChatMessage, MessageError, MessageRpcs } from "@flowline/rpc";
 import { DateTime, Effect, Layer, Mailbox, PubSub, Stream } from "effect";
 
 // Map SqlError to MessageError for RPC
-const mapDbError = Effect.mapError((e: unknown) =>
-  new MessageError({ message: String(e) }),
+const mapDbError = Effect.mapError(
+  (e: unknown) => new MessageError({ message: String(e) }),
 );
 
 const MessageRpcsLive = MessageRpcs.toLayer(

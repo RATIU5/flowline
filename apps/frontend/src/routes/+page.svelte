@@ -16,7 +16,7 @@ type DisplayMessage = {
 
 let messages = $state<DisplayMessage[]>([]);
 let messageInput = $state("");
-let userName = $state("Anonymous");
+const userName = $state("Anonymous");
 let connected = $state(false);
 let client: RpcClient.FromGroup<typeof MessageRpcs, RpcClientError> | null =
   null;
@@ -96,7 +96,7 @@ onMount(async () => {
     // Subscribe to the message stream
     // This calls the Messages RPC which returns a Stream of ChatMessages
     Effect.runFork(
-      c.Messages(undefined as void).pipe(
+      c.Messages(undefined).pipe(
         Stream.runForEach((msg: ChatMessage) =>
           Effect.sync(() => {
             messages = [...messages, chatMessageToDisplay(msg)];
