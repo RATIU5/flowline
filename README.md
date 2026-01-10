@@ -45,9 +45,9 @@ flowchart TB
 
 |  #  | Project               | Status | Focus                                           |
 | :-: | --------------------- | :----: | ----------------------------------------------- |
-|  1  | Real-time chat        |   🚧   | Effect WebSocket services, message broadcasting |
-|  2  | Persistence           |   ⏳   | Postgres integration, message history           |
-|  3  | Hybrid Logical Clocks |   ⏳   | Causal ordering, out-of-order handling          |
+|  1  | Real-time chat        |   ✅   | Effect WebSocket services, message broadcasting |
+|  2  | Persistence           |   ✅   | Postgres integration, message history           |
+|  3  | Hybrid Logical Clocks |   🚧   | Causal ordering, out-of-order handling          |
 |  4  | Offline support       |   ⏳   | IndexedDB operation log, sync on reconnect      |
 |  5  | Conflict resolution   |   ⏳   | Per-field LWW for tasks, multi-user editing     |
 
