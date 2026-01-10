@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount, onDestroy } from "svelte";
-import { type ChatMessage, MessageRpcs } from "@flowline/rpc-schema";
+import { type ChatMessage, MessageRpcs } from "@flowline/rpc";
 import { Effect, Exit, Scope, Stream, Layer } from "effect";
 import { RpcClient, RpcSerialization } from "@effect/rpc";
 import type { RpcClientError } from "@effect/rpc/RpcClientError";
@@ -16,7 +16,7 @@ type DisplayMessage = {
 
 let messages = $state<DisplayMessage[]>([]);
 let messageInput = $state("");
-const userName = $state("Anonymous");
+let userName = $state("Anonymous");
 let connected = $state(false);
 let client: RpcClient.FromGroup<typeof MessageRpcs, RpcClientError> | null =
   null;
@@ -152,7 +152,7 @@ const sendMessage = async (e: Event) => {
         class="flex items-start gap-3 py-2 hover:bg-gray-750 rounded px-2 group"
       >
         <div
-          class="w-10 h-10 rounded-full {msg.avatar} flex-shrink-0 flex items-center justify-center text-white font-semibold"
+          class="w-10 h-10 rounded-full {msg.avatar} shrink-0 flex items-center justify-center text-white font-semibold"
         >
           {msg.author[0]}
         </div>

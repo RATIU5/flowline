@@ -15,7 +15,7 @@
     "@effect/platform": "catalog:effect",
     "@effect/platform-browser": "catalog:effect",
     "@effect/rpc": "catalog:effect",
-    "@flowline/rpc-schema": "workspace:*"
+    "@flowline/rpc": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.0",

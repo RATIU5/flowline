@@ -10,9 +10,13 @@ export class ChatMessage extends Schema.Class<ChatMessage>("ChatMessage")({
   timestamp: Schema.DateTimeUtc,
 }) {}
 
+// Error schema for database/server errors
+export class MessageError extends Schema.TaggedError<MessageError>()(
+  "MessageError",
+  { message: Schema.String },
+) {}
+
 // RPC group defining available remote procedures
-// - SendMessage: Send a message, returns the created ChatMessage
-// - Messages: Subscribe to a stream of incoming messages
 export class MessageRpcs extends RpcGroup.make(
   Rpc.make("SendMessage", {
     payload: {
@@ -20,11 +24,12 @@ export class MessageRpcs extends RpcGroup.make(
       senderName: Schema.String,
     },
     success: ChatMessage,
+    error: MessageError,
   }),
   Rpc.make("Messages", {
     success: RpcSchema.Stream({
       success: ChatMessage,
-      failure: Schema.Never,
+      failure: MessageError,
     }),
   }),
 ) {}
