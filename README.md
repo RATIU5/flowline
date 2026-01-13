@@ -1,120 +1,123 @@
-# Flowline
+# Flowline - A Distributed Systems Learning Project
 
-[![Status](https://img.shields.io/badge/Status-Early%20Development-yellow)](https://github.com/RATIU5/flowline)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Effect-TS](https://img.shields.io/badge/Effect--TS-3.0-black)](https://effect.website/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+> Building a real-time chat application from scratch to deeply understand distributed systems architecture, using Effect-ts
 
-Real-time collaborative task management and chat. Tasks emerge from conversations. Built with **operation-based sync** and **Effect-ts**.
+## Project Goals
 
-> [!NOTE]
-> Personal learning project for Effect-ts and distributed systems. Early development.
+Learn distributed systems by building a Discord-like chat app that scales from 1 to 10,000+ concurrent users.
 
----
+**Learning focus:**
 
-## Architecture
+- Distributed systems patterns (consensus, sharding, pub/sub)
+- Effect-ts in a complex real-world domain
+- Documenting architectural decisions
 
-```mermaid
-flowchart TB
-    subgraph Client["Client"]
-        UI[UI Components]
-        MS[(Materialized State)]
-        EL[(Event Log)]
-    end
+**Not focused on:**
 
-    subgraph Server["Server"]
-        WS[WebSocket]
-        DB[(PostgreSQL)]
-    end
+- Production readiness or feature completeness
+- Perfect code from day one (we learn by making mistakes)
 
-    UI -->|Query| MS
-    UI -->|Commit| EL
-    EL -->|Materialize| MS
-    EL <-->|Sync| WS
-    WS <-->|Persist| DB
-```
+## Architecture Approach
 
-**Principles**: Vertical slices · Effect-first · Offline-first · Operation-based sync · Per-field LWW with Hybrid Logical Clocks
+**Start Simple. Add Complexity When Needed.**
 
----
+- **Phases 1-11:** Single server, core features
+- **Phase 12:** Load testing to find bottlenecks
+- **Phases 13+:** Add distributed patterns as needed
 
-## Roadmap
-
-> [!IMPORTANT]
-> **Current Phase**: Project 1 — Basic Real-Time Chat
-
-|  #  | Project               | Status | Focus                                           |
-| :-: | --------------------- | :----: | ----------------------------------------------- |
-|  1  | Real-time chat        |   ✅   | Effect WebSocket services, message broadcasting |
-|  2  | Persistence           |   ✅   | Postgres integration, message history           |
-|  3  | Hybrid Logical Clocks |   🚧   | Causal ordering, out-of-order handling          |
-|  4  | Offline support       |   ⏳   | IndexedDB operation log, sync on reconnect      |
-|  5  | Conflict resolution   |   ⏳   | Per-field LWW for tasks, multi-user editing     |
-
----
-
-## Learning Goals
-
-- **Effect-ts** — Service layers, WebSocket handling, Streams, error channels
-- **Distributed Systems** — Operation-based sync, HLCs, causal ordering, eventual consistency
-- **Conflict Resolution** — Per-field LWW, operation-based CRDTs, offline-first architecture
-- **Real-Time Systems** — WebSocket pub/sub, optimistic UI, state reconciliation
-
----
+We're avoiding premature optimization to learn _why_ distributed patterns exist, not just _how_ to use them.
 
 ## Tech Stack
 
-<details>
-<summary>View full stack</summary>
+**Current:**
 
-**Core**: Effect-ts · TypeScript · Bun
+- Bun + Effect-ts
+- PostgreSQL
+- Effect Socket library
 
-**Frontend**: SvelteKit · Tailwind CSS · IndexedDB
+**Future:** Redis, message queue, load balancer, Locust
 
-**Backend**: Effect Platform · Better Auth · PostgreSQL
-
-**Infrastructure**: Fly.io · Neon · Bunny CDN
-
-**Dev**: Biome · Vitest · OpenTelemetry
-
-</details>
-
----
+[See tech decision docs →](docs/decisions/)
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/RATIU5/flowline.git
+git clone https://github.com/RATIU5/flowline
 cd flowline
-bun install
-bun dev
+pnpm install
+pnpm dev
 ```
 
-> [!TIP]
-> Run `bun dev:be` or `bun dev:fe` for backend/frontend only.
+**Prerequisites:** Bun v1.3.5+, PostgreSQL 17+
+
+## Roadmap
+
+### MVP (Phases 1-11)
+
+1. [] WebSocket connection _(in progress)_
+2. [] User authentication
+3. [] Database persistence
+4. [] Direct messages
+5. [] Channels & spaces
+6. [] User presence
+7. [] Typing indicators
+8. [] Message types
+9. [] Reactions
+10. [] Threads
+11. [] File uploads
+
+### Scale (Phases 12+)
+
+12. [] Load testing (10k users)
+13. [] Multiple app servers
+14. [] Redis pub/sub
+15. [] Message queue
+
+[View detailed roadmap →](docs/PROGRESS.md)
+
+## Documentation
+
+**For contributors:**
+
+- [Documentation Process](docs/PROCESS.md) - How to document decisions
+- [Decision Log](docs/decisions/) - Architecture choices & trade-offs
+- [Phase Retrospectives](docs/phases/) - Lessons learned
+
+**For interviews:**
+Every significant decision (>30min research) is documented with:
+
+- Problem context
+- Options considered
+- Reasoning & trade-offs
+- When to revisit
+
+## Key Learnings
+
+_Updated after each phase_
+
+- Phase 1: _In progress_
+
+[See all retrospectives →](docs/phases/)
+
+## Open Questions
+
+- When to introduce multiple app servers?
+- How to handle message ordering across distributed servers?
+- Right balance between consistency and availability?
+
+## Connect
+
+**GitHub:** [@RATIU5](https://github.com/RATIU5)  
+**X:** [@RATIU51](https://x.com/RATIU51)
 
 ---
 
-## Project Structure
+**Why build this publicly?**
 
-```
-flowline/
-├── packages/
-│   ├── @flowline/          # Core libraries used throughout
-│   ├── flowline/           # Elysia + Effect backend
-├── app/                    # SvelteKit frontend
-└── docs/                   # Architecture decisions
-```
+Learning distributed systems for career growth. Documenting decisions shows growth over time and provides interview material.
 
 ---
 
-## Contributing
+_"The best way to learn distributed systems is to build one, break it, and fix it."_
 
-> [!CAUTION]
-> Architecture may change significantly. Feedback welcome via [issues](https://github.com/RATIU5/flowline/issues).
-
----
-
-## License
-
-[MIT](LICENSE)
+**Last Updated:** January 13, 2026
