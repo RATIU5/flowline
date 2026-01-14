@@ -214,8 +214,7 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 **When in doubt:**
 
 - Ask: "Would I want to read this in 3 months?"
-- Ask: "Could I explain this decision this doc?"
-- If yes to both → good doc
+- If yes, document it
 
 ---
 
