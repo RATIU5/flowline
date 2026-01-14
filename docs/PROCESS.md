@@ -8,7 +8,7 @@ This document explains the daily workflow for documenting decisions and tracking
 
 **Document to learn, not to impress.**
 
-Every decision you spend >30 minutes researching deserves documentation. Future you (and contributors) will thank you.
+Every decision I spend >30 minutes researching deserves documentation. Future me (and others) will thank me.
 
 ---
 
@@ -77,14 +77,14 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 
 ### 3. After Feature Complete
 
-**Ask yourself:** Did I make a significant decision?
+**Ask myself:** Did I make a significant decision?
 
 **Create a decision doc if:**
 
-- ✅ You spent >30 minutes researching options
+- ✅ I spent >30 minutes researching options
 - ✅ Choice impacts multiple phases or future architecture
-- ✅ You compared 2+ alternatives
-- ✅ Future you will ask "why did I do this?"
+- ✅ I compared 2+ alternatives
+- ✅ Future me will ask "why did I do this?"
 
 **Skip decision doc if:**
 
@@ -94,7 +94,7 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 
 **Then:**
 
-1. Create decision doc (if needed) - use [TEMPLATE-decision.md](TEMPLATE-decision.md)
+1. Create decision doc (if needed) - use [DECISION_TEMPLATE.md](DECISION_TEMPLATE.md)
 2. Update [PROGRESS.md](PROGRESS.md)
 3. Merge PR
 
@@ -104,11 +104,11 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 
 ### Decision Documents
 
-**When:** You researched multiple options and chose one
+**When:** I researched multiple options and chose one
 
 **Where:** `/docs/decisions/YYYYMMDD-short-title.md`
 
-**Template:** [TEMPLATE-decision.md](TEMPLATE-decision.md)
+**Template:** [DECISION_TEMPLATE.md](DECISION_TEMPLATE.md)
 
 **Examples:**
 
@@ -132,11 +132,11 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 
 ### Phase Retrospectives
 
-**When:** After completing each phase (Phases 1-11, then each distributed phase)
+**When:** After completing each phase (Phases 1-n)
 
 **Where:** `/docs/phases/phase-N-retrospective.md`
 
-**Template:** [TEMPLATE-retrospective.md](TEMPLATE-retrospective.md)
+**Template:** [RESTROSPECTIVE_TEMPLATE.md](RESTROSPECTIVE_TEMPLATE.md)
 
 **Write this when:** Phase goals all checked off in PROGRESS.md
 
@@ -149,19 +149,19 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 ### Before Merging Each PR
 
 - [ ] Commit messages have "Why" context (not just "what")
-- [ ] If you researched >30min, created decision doc
+- [ ] If I researched >30min, created decision doc
 - [ ] Updated `/docs/PROGRESS.md` with PR status
-- [ ] Can explain this choice in 30 seconds (interview prep)
+- [ ] Can explain this choice in 30 seconds
 
 ### After Completing Each Phase
 
-- [ ] Write phase retrospective using [TEMPLATE-retrospective.md](TEMPLATE-retrospective.md)
+- [ ] Write phase retrospective using [RESTROSPECTIVE_TEMPLATE.md](RESTROSPECTIVE_TEMPLATE.md)
 - [ ] Update README.md stats (phases complete, learnings)
 - [ ] Plan next phase in PROGRESS.md
 
-### Weekly Review (Every Sunday)
+### Weekly Review
 
-- [ ] Review what you learned this week
+- [ ] Review what I learned this week
 - [ ] Update any "Revisit" dates in decision docs
 - [ ] Check if any decisions need status updates
 - [ ] Update README if major progress made
@@ -197,60 +197,24 @@ Trade-off: Will need to revisit if scaling beyond 100k users"
 
 ---
 
-## Examples
-
-### Good Commit Message
-
-```
-feat: add reconnection logic for WebSocket clients
-
-Options considered: Auto-reconnect vs manual, exponential backoff vs fixed delay
-Chose: Auto-reconnect with exponential backoff
-Because: Better UX, standard pattern for production systems
-Trade-off: Slightly more complex client code, but worth reliability gain
-```
-
-### Bad Commit Message
-
-```
-fix websocket stuff
-```
-
-_(No context on what was broken or why this fixes it)_
-
-### Good Decision Doc Title
-
-`20260114-websocket-library-comparison.md`
-
-_(Date + descriptive + specific)_
-
-### Bad Decision Doc Title
-
-`stuff.md` or `decision.md`
-
-_(Not searchable, not dated, not descriptive)_
-
----
-
 ## Tips for Sustainability
 
 **Keep it manageable:**
 
-- Decision docs: 15-30 minutes to write
-- Daily updates to PROGRESS.md: 2-5 minutes
-- Phase retrospectives: 30-60 minutes
-- If it feels like busywork, you're overthinking it
+- Decision docs: ~15 minutes to write
+- Daily updates to PROGRESS.md: ~5 minutes
+- Phase retrospectives: ~30 minutes
+- If it feels like busywork, I'm overthinking it
 
 **Remember:**
 
 - Document for **understanding**, not **completeness**
 - Short and specific > long and vague
-- Interviewer can read a 1-page decision doc; not a 10-page essay
 
 **When in doubt:**
 
 - Ask: "Would I want to read this in 3 months?"
-- Ask: "Could I explain this decision in an interview using this doc?"
+- Ask: "Could I explain this decision this doc?"
 - If yes to both → good doc
 
 ---
@@ -259,7 +223,7 @@ _(Not searchable, not dated, not descriptive)_
 
 **Stuck on what to document?**
 
-Ask yourself:
+Ask myself:
 
 1. Did I choose between multiple options? → Decision doc
 2. Did I learn something non-obvious? → Add to phase retrospective (at end of phase)
@@ -291,4 +255,4 @@ flowline/
 
 ---
 
-**Last Updated:** January 13, 2026
+**Last Updated:** January 14, 2026

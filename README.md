@@ -15,7 +15,7 @@ Learn distributed systems by building a Discord-like chat app that scales from 1
 **Not focused on:**
 
 - Production readiness or feature completeness
-- Perfect code from day one (we learn by making mistakes)
+- Perfect code from day one (learning by making mistakes)
 
 ## Architecture Approach
 
@@ -25,7 +25,7 @@ Learn distributed systems by building a Discord-like chat app that scales from 1
 - **Phase 12:** Load testing to find bottlenecks
 - **Phases 13+:** Add distributed patterns as needed
 
-We're avoiding premature optimization to learn _why_ distributed patterns exist, not just _how_ to use them.
+Avoid premature optimization to learn _why_ distributed patterns exist, not just _how_ to use them.
 
 ## Tech Stack
 
@@ -54,24 +54,24 @@ pnpm dev
 
 ### MVP (Phases 1-11)
 
-1. [] WebSocket connection _(in progress)_
-2. [] User authentication
-3. [] Database persistence
-4. [] Direct messages
-5. [] Channels & spaces
-6. [] User presence
-7. [] Typing indicators
-8. [] Message types
-9. [] Reactions
-10. [] Threads
-11. [] File uploads
+1. [ ] WebSocket connection _(in progress)_
+2. [ ] User authentication
+3. [ ] Database persistence
+4. [ ] Direct messages
+5. [ ] Channels & spaces
+6. [ ] User presence
+7. [ ] Typing indicators
+8. [ ] Message types
+9. [ ] Reactions
+10. [ ] Threads
+11. [ ] File uploads
 
 ### Scale (Phases 12+)
 
-12. [] Load testing (10k users)
-13. [] Multiple app servers
-14. [] Redis pub/sub
-15. [] Message queue
+12. [ ] Load testing (10k users)
+13. [ ] Multiple app servers
+14. [ ] Redis pub/sub
+15. [ ] Message queue
 
 [View detailed roadmap →](docs/PROGRESS.md)
 
@@ -120,4 +120,4 @@ Learning distributed systems for career growth. Documenting decisions shows grow
 
 _"The best way to learn distributed systems is to build one, break it, and fix it."_
 
-**Last Updated:** January 13, 2026
+**Last Updated:** January 14, 2026
