@@ -33,9 +33,6 @@ Avoid premature optimization to learn _why_ distributed patterns exist, not just
 
 - Bun + Effect-ts
 - PostgreSQL
-- Effect Socket library
-
-**Future:** Redis, message queue, load balancer, Locust
 
 [See tech decision docs →](docs/decisions/)
 
@@ -82,14 +79,6 @@ pnpm dev
 - [Documentation Process](docs/PROCESS.md) - How to document decisions
 - [Decision Log](docs/decisions/) - Architecture choices & trade-offs
 - [Phase Retrospectives](docs/phases/) - Lessons learned
-
-**For interviews:**
-Every significant decision (>30min research) is documented with:
-
-- Problem context
-- Options considered
-- Reasoning & trade-offs
-- When to revisit
 
 ## Key Learnings
 
