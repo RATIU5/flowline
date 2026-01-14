@@ -7,9 +7,10 @@ _This document is updated after each PR_
 **Status:** In Progress
 **Started:** Jan 14, 2026
 
-### Completed:
+### Goals:
 
-- [ ] Basic WebSocket server setup (PR #1)
-- [ ] Client connection handling (PR #2)
+- [ ] Basic WebSocket server setup
+- [ ] Client connection handling
+- [ ] Client can send messages to global chat
 
 ### Decisions Made:
