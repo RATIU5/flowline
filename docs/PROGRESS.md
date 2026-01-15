@@ -9,7 +9,9 @@ _This document is updated after each PR_
 
 ### Goals:
 
-- [ ] Basic WebSocket server setup
+- [x] Use Effect throughout WebSocket and server
+- [x] Create a web server with Effect
+- [ ] Setup server to accept websocket connection
 - [ ] Client connection handling
 - [ ] Client can send messages to global chat
 
