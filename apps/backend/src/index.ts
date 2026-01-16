@@ -1,27 +1,14 @@
 import { HttpLayerRouter, HttpServerResponse } from "@effect/platform";
 import { BunHttpServer, BunRuntime } from "@effect/platform-bun";
-import { Rpc, RpcGroup, RpcSerialization, RpcServer } from "@effect/rpc";
-import { Effect, Layer, Schema } from "effect";
-
-export class Message extends Schema.Class<Message>("Message")({
-  message: Schema.String,
-}) {}
-
-class MessageRpcs extends RpcGroup.make(
-  Rpc.make("HelloRpc", {
-    success: Message,
-    error: Schema.String,
-    payload: {
-      foo: Schema.String,
-    },
-  }),
-) {}
+import { RpcSerialization, RpcServer } from "@effect/rpc";
+import { Effect, Layer } from "effect";
+import { Message, MessageRpcs } from "@flowline/rpc"
 
 const MessageHandlers = MessageRpcs.toLayer({
-  HelloRpc: ({ foo }) =>
+  SendMessage: ({ message }) =>
     Effect.succeed(
       new Message({
-        message: `Hello, ${foo}!`,
+        message,
       }),
     ),
 });
