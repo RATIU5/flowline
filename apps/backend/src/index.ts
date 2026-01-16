@@ -1,16 +1,51 @@
 import { HttpLayerRouter, HttpServerResponse } from "@effect/platform";
 import { BunHttpServer, BunRuntime } from "@effect/platform-bun";
-import { Layer } from "effect";
+import { Rpc, RpcGroup, RpcSerialization, RpcServer } from "@effect/rpc";
+import { Effect, Layer, Schema } from "effect";
 
-const router = HttpLayerRouter.add(
+export class Message extends Schema.Class<Message>("Message")({
+  message: Schema.String,
+}) {}
+
+class MessageRpcs extends RpcGroup.make(
+  Rpc.make("HelloRpc", {
+    success: Message,
+    error: Schema.String,
+    payload: {
+      foo: Schema.String,
+    },
+  }),
+) {}
+
+const MessageHandlers = MessageRpcs.toLayer({
+  HelloRpc: ({ foo }) =>
+    Effect.succeed(
+      new Message({
+        message: `Hello, ${foo}!`,
+      }),
+    ),
+});
+
+const RootRoute = HttpLayerRouter.add(
   "*",
   "/",
   HttpServerResponse.text("Hello, world!"),
 );
 
-const ServerLive = BunHttpServer.layer({ port: 3000 });
+const RpcRoute = RpcServer.layerHttpRouter({
+  group: MessageRpcs,
+  protocol: "websocket",
+  path: "/rpc",
+}).pipe(
+  Layer.provide(MessageHandlers),
+  Layer.provide(RpcSerialization.layerJson),
+  Layer.provide(HttpLayerRouter.cors()),
+);
 
-HttpLayerRouter.serve(router).pipe(
+const Routes = Layer.mergeAll(RpcRoute, RootRoute);
+
+const ServerLive = BunHttpServer.layer({ port: 3000 });
+HttpLayerRouter.serve(Routes).pipe(
   Layer.provide(ServerLive),
   Layer.launch,
   BunRuntime.runMain,

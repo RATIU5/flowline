@@ -13,7 +13,8 @@
   "dependencies": {
     "effect": "catalog:effect",
     "@effect/platform": "catalog:effect",
-    "@effect/platform-browser": "catalog:effect"
+    "@effect/platform-browser": "catalog:effect",
+    "@effect/rpc": "catalog:effect"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.0",

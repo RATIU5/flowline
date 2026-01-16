@@ -11,7 +11,8 @@
   "dependencies": {
     "effect": "catalog:effect",
     "@effect/platform": "catalog:effect",
-    "@effect/platform-bun": "catalog:effect"
+    "@effect/platform-bun": "catalog:effect",
+    "@effect/rpc": "catalog:effect"
   },
   "devDependencies": {
     "@effect/language-service": "catalog:effect",
