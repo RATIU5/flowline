@@ -19,6 +19,7 @@
       "dependencies": {
         "@effect/platform": "catalog:effect",
         "@effect/platform-bun": "catalog:effect",
+        "@effect/rpc": "catalog:effect",
         "effect": "catalog:effect",
       },
       "devDependencies": {
@@ -33,6 +34,7 @@
       "dependencies": {
         "@effect/platform": "catalog:effect",
         "@effect/platform-browser": "catalog:effect",
+        "@effect/rpc": "catalog:effect",
         "effect": "catalog:effect",
       },
       "devDependencies": {
