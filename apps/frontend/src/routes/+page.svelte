@@ -1,8 +1,10 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
 import { Rpc, RpcClient, RpcGroup, RpcSerialization } from "@effect/rpc";
-import { Layer, Effect, Schema } from "effect";
-import { MessageRpcs } from "@flowline/rpc"
+import { Layer, Effect, Schema, Stream, Chunk } from "effect";
+import { MessageRpcs } from "@flowline/rpc";
+import { onModify } from "effect/MetricHook";
+import { onMount } from "svelte";
 
 let userMessage = $state("");
 let sendingMessages = $state<string[]>([]);
@@ -17,26 +19,37 @@ const ProtocolLive = RpcClient.layerProtocolSocket({
 
 const messageSubmitProgram = Effect.gen(function* () {
   const client = yield* RpcClient.make(MessageRpcs);
-  const socketMessage = yield* client.SendMessage({ message: userMessage });
-  sendingMessages.push(socketMessage.message);
-  messageHistory.push(socketMessage.message);
-  return null;
+  yield* client.PublishMessage({ message: userMessage });
 }).pipe(
   Effect.catchTag("RpcClientError", (error) => {
-    return Effect.dieMessage(error.message)
+    return Effect.dieMessage(error.message);
   }),
   Effect.catchAll((error) => {
     console.log(error);
-    return Effect.succeed(null)
+    return Effect.succeed(null);
   }),
   Effect.provide(ProtocolLive),
   Effect.scoped,
-)
+);
+
+const subscribeMessagesProgram = Effect.gen(function* () {
+  const client = yield* RpcClient.make(MessageRpcs);
+  yield* client.SubscribeMessages().pipe(
+    Stream.runForEach((m) => {
+      messageHistory.push(m.message);
+      return Effect.void;
+    }),
+  );
+}).pipe(Effect.provide(ProtocolLive), Effect.scoped);
 
 const handleSubmit = (e: SubmitEvent) => {
   e.preventDefault();
   messageSubmitProgram.pipe(Effect.runPromise);
 };
+
+onMount(() => {
+  subscribeMessagesProgram.pipe(Effect.runPromise);
+});
 </script>
 
 <div class="min-h-screen h-full bg-neutral-100 w-full">

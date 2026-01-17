@@ -6,11 +6,16 @@ export class Message extends Schema.Class<Message>("Message")({
 }) {}
 
 export class MessageRpcs extends RpcGroup.make(
-  Rpc.make("SendMessage", {
+  Rpc.make("PublishMessage", {
     success: Message,
     error: Schema.String,
     payload: {
       message: Schema.String,
     },
+  }),
+  Rpc.make("SubscribeMessages", {
+    success: Message,
+    stream: true,
+    error: Schema.String,
   }),
 ) {}

@@ -1,14 +1,29 @@
 import { HttpLayerRouter, HttpServerResponse } from "@effect/platform";
 import { BunHttpServer, BunRuntime } from "@effect/platform-bun";
 import { RpcSerialization, RpcServer } from "@effect/rpc";
-import { Effect, Layer } from "effect";
-import { Message, MessageRpcs } from "@flowline/rpc"
+import { type Message, MessageRpcs } from "@flowline/rpc";
+import { Effect, Layer, PubSub, Stream } from "effect";
+
+class ChatPubSub extends Effect.Service<ChatPubSub>()("flowline/ChatPubSub", {
+  effect: Effect.gen(function* () {
+    const pubSub = yield* PubSub.bounded<Message>(2);
+    return pubSub;
+  }),
+}) {}
 
 const MessageHandlers = MessageRpcs.toLayer({
-  SendMessage: ({ message }) =>
-    Effect.succeed(
-      new Message({
-        message,
+  PublishMessage: (message) =>
+    Effect.gen(function* () {
+      const pubSub = yield* ChatPubSub;
+      yield* pubSub.publish(message);
+      return message;
+    }),
+  SubscribeMessages: () =>
+    Stream.unwrap(
+      Effect.gen(function* () {
+        const pubSub = yield* ChatPubSub;
+        const dequeue = yield* pubSub.subscribe;
+        return Stream.fromQueue(dequeue);
       }),
     ),
 });
@@ -25,6 +40,7 @@ const RpcRoute = RpcServer.layerHttpRouter({
   path: "/rpc",
 }).pipe(
   Layer.provide(MessageHandlers),
+  Layer.provide(ChatPubSub.Default),
   Layer.provide(RpcSerialization.layerJson),
   Layer.provide(HttpLayerRouter.cors()),
 );
