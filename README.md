@@ -51,8 +51,8 @@ pnpm dev
 
 ### MVP (Phases 1-11)
 
-1. [ ] WebSocket connection _(in progress)_
-2. [ ] User authentication
+1. [x] WebSocket connection
+2. [ ] User authentication (with DB) _(in progress)_
 3. [ ] Database persistence
 4. [ ] Direct messages
 5. [ ] Channels & spaces
@@ -109,4 +109,4 @@ Learning distributed systems for career growth. Documenting decisions shows grow
 
 _"The best way to learn distributed systems is to build one, break it, and fix it."_
 
-**Last Updated:** January 14, 2026
+**Last Updated:** January 17, 2026
