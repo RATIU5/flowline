@@ -40,7 +40,17 @@ const subscribeMessagesProgram = Effect.gen(function* () {
       return Effect.void;
     }),
   );
-}).pipe(Effect.provide(ProtocolLive), Effect.scoped);
+}).pipe(
+  Effect.catchTag("RpcClientError", (error) => {
+    return Effect.dieMessage(error.message);
+  }),
+  Effect.catchAll((error) => {
+    console.log(error);
+    return Effect.succeed(null);
+  }),
+  Effect.provide(ProtocolLive),
+  Effect.scoped,
+);
 
 const handleSubmit = (e: SubmitEvent) => {
   e.preventDefault();
