@@ -9,14 +9,14 @@
 
 A real-time chat using Effect RPC over WebSocket with PubSub-backed message broadcasting. Clients publish messages via request-reponse RPC; subscribers recieve a continuous stream from a shared PubSub service.
 
-[PR #12](https://github.com/RATIU5/flowline/pull/12)
+- [PR #12](https://github.com/RATIU5/flowline/pull/12)
 
 ---
 
 ## Key Decisions
 
-[Use Effect](../decisions/20260114-use-effect.md)
-[Use Effect](../decisions/20260115-httprouterlayer.md)
+- [Use Effect](../decisions/20260114-use-effect.md)
+- [HttpRouterLayer](../decisions/20260115-httprouterlayer.md)
 
 ---
 
@@ -39,8 +39,6 @@ I lacked some fundamental knowledge of RPC over WebSockets. I had to try/fail bu
 Bidirectional data transfer -> WebSocket protocol
 RPC -> Execute named operations on a server
 You need two RPC procedues: one to publish messages, the other to subscribe to them. A client will also need the two.
-
-### Non-technical:
 
 ---
 
