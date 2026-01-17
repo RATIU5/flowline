@@ -1,19 +1,18 @@
 {
-  "name": "backend",
+  "name": "@flowline/rpc",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "start": "bun run src/index.ts",
     "test": "vitest",
     "coverage": "vitest --coverage"
   },
   "dependencies": {
     "effect": "catalog:effect",
-    "@effect/platform": "catalog:effect",
-    "@effect/platform-bun": "catalog:effect",
-    "@effect/rpc": "catalog:effect",
-    "@flowline/rpc": "workspace:*"
+    "@effect/rpc": "catalog:effect"
+  },
+  "exports": {
+    ".": "./src/index.ts"
   },
   "devDependencies": {
     "@effect/language-service": "catalog:effect",

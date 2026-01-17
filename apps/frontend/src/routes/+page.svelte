@@ -1,85 +1,107 @@
 <script lang="ts">
-let messages = $state([]);
+import { BrowserSocket } from "@effect/platform-browser";
+import { Rpc, RpcClient, RpcGroup, RpcSerialization } from "@effect/rpc";
+import { Layer, Effect, Schema, Stream, Chunk } from "effect";
+import { MessageRpcs } from "@flowline/rpc";
+import { onModify } from "effect/MetricHook";
+import { onMount } from "svelte";
+
+const userMessage = $state("");
+const sendingMessages = $state<string[]>([]);
+const messageHistory = $state<string[]>([]);
+
+const ProtocolLive = RpcClient.layerProtocolSocket({
+  retryTransientErrors: true,
+}).pipe(
+  Layer.provide(BrowserSocket.layerWebSocket("ws://localhost:3000/rpc")),
+  Layer.provide(RpcSerialization.layerJson),
+);
+
+const messageSubmitProgram = Effect.gen(function* () {
+  const client = yield* RpcClient.make(MessageRpcs);
+  yield* client.PublishMessage({ message: userMessage });
+}).pipe(
+  Effect.catchTag("RpcClientError", (error) => {
+    return Effect.dieMessage(error.message);
+  }),
+  Effect.catchAll((error) => {
+    console.log(error);
+    return Effect.succeed(null);
+  }),
+  Effect.provide(ProtocolLive),
+  Effect.scoped,
+);
+
+const subscribeMessagesProgram = Effect.gen(function* () {
+  const client = yield* RpcClient.make(MessageRpcs);
+  yield* client.SubscribeMessages().pipe(
+    Stream.runForEach((m) => {
+      messageHistory.push(m.message);
+      return Effect.void;
+    }),
+  );
+}).pipe(
+  Effect.catchTag("RpcClientError", (error) => {
+    return Effect.dieMessage(error.message);
+  }),
+  Effect.catchAll((error) => {
+    console.log(error);
+    return Effect.succeed(null);
+  }),
+  Effect.provide(ProtocolLive),
+  Effect.scoped,
+);
+
+const handleSubmit = (e: SubmitEvent) => {
+  e.preventDefault();
+  messageSubmitProgram.pipe(Effect.runPromise);
+};
+
+onMount(() => {
+  subscribeMessagesProgram.pipe(Effect.runPromise);
+});
 </script>
 
-<div class="flex flex-col h-screen bg-gray-700">
-  <div class="px-4 py-2 bg-gray-800 flex items-center gap-4">
-    <input
-      type="text"
-      placeholder="Your name"
-      class="bg-gray-600 px-3 py-1 rounded text-gray-100 placeholder-gray-400 focus:outline-none w-40"
+<div class="min-h-screen h-full bg-neutral-100 w-full">
+  <div class="w-full h-full">
+    <div class="prose w-full flex flex-col">
+      {#each messageHistory as msg}
+        <div class="w-full">
+          <p>{msg}</p>
+        </div>
+      {/each}
+    </div>
+  </div>
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-xl">
+    <form
+      class="flex flex-row items-center justify-between has-focus-within:border-blue-400 bg-white w-full h-12 border border-solid border-neutral-300 rounded-4xl focus:outline-none focus:border-blue-400 overflow-hidden pr-0.75"
+      onsubmit={handleSubmit}
     >
-    <span class="text-gray-400 text-sm"> {"🔴 Disconnected"} </span>
-  </div>
-
-  <div class="flex-1 overflow-y-auto px-4 py-2">
-    {#each messages as msg (msg.id)}
-      <div
-        class="flex items-start gap-3 py-2 hover:bg-gray-750 rounded px-2 group"
-      >
-        <div
-          class="w-10 h-10 rounded-full {msg.avatar} shrink-0 flex items-center justify-center text-white font-semibold"
-        >
-          {msg.author[0]}
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-baseline gap-2">
-            <span class="font-medium text-white">{msg.author}</span>
-            <span class="text-xs text-gray-400">{msg.timestamp}</span>
-          </div>
-          <p class="text-gray-100">{msg.content}</p>
-        </div>
-      </div>
-    {/each}
-    {#if messages.length === 0}
-      <div class="text-gray-400 text-center py-8">
-        No messages yet. Start the conversation!
-      </div>
-    {/if}
-  </div>
-
-  <div class="px-4 pb-6 pt-2">
-    <form class="flex items-center bg-gray-600 rounded-lg">
-      <button
-        type="button"
-        class="p-3 text-gray-400 hover:text-gray-200"
-        aria-label="Add attachment"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-      </button>
       <input
+        bind:value={userMessage}
         type="text"
-        placeholder="Message #general"
-        class="flex-1 bg-transparent px-2 py-3 text-gray-100 placeholder-gray-400 focus:outline-none"
+        id="user-message"
+        class="w-full px-4 py-3 focus:outline-none"
+        placeholder="Message"
       >
       <button
         type="submit"
-        class="p-3 text-gray-400 hover:text-gray-200 disabled:opacity-50"
-        aria-label="Send message"
+        aria-label="Send"
+        class="h-full max-h-10 w-full max-w-10 flex items-center justify-center rounded-3xl bg-neutral-100 text-neutral-600 hover:bg-blue-100 hover:text-blue-700"
       >
         <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
           viewBox="0 0 24 24"
         >
           <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+            d="M12 18V6M6 12l6-6l6 6"
           />
         </svg>
       </button>
