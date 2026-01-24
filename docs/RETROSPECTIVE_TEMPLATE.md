@@ -1,69 +1,49 @@
-# Phase N: <Phase Name> - Retrospective
+# Phase N: <Phase Name>
 
-**Completed:** YYYY-MM-DD  
-**Duration:** X days/weeks
+**Completed:** YYYY-MM-DD
 
----
+## What I Built
 
-## What You Built
+1-2 sentences + PR link
 
-**Brief description + links to PRs**
+## The Struggle
 
----
+_This is the most important section for interviews_
+
+**What I expected:** What did you think would happen?
+
+**What actually happened:** What broke, surprised you, or took longer?
+
+**What I learned:** The insight you gained from the gap above
 
 ## Key Decisions
 
-**Link to decision docs made during this phase:**
+Link decision docs + one-line summary of each:
 
----
+- [Decision name](link) - chose X because Y
 
-## What Worked Well
+## Distributed Systems Learnings
 
-**What went smoothly? What would you do again?**
+_What did this phase teach you about building systems that scale/fail/recover?_
 
----
+Skip if nothing applies. Examples:
 
-## What Was Challenging
-
-**What took longer than expected? What was confusing?**
-
----
-
-## What I Learned
-
-### Technical:
-
-### Non-technical:
-
----
-
-## What I'd Do Differently
-
-**If you could redo this phase, what would you change?**
-
----
-
-## Metrics
-
-_If applicable:_
-
-- Lines of code: ~500
-- Commits: 12
-- Time spent: 5 days
-- Decision docs created: 2
-
----
-
-## Next Phase Preview
-
-**What are you tackling next and why?**
-
----
+- "Learned why message ordering matters when..."
+- "Realized single point of failure at..."
+- "Tradeoff between consistency and latency when..."
 
 ## Open Questions
 
-**What are you still unsure about?**
+What are you still unsure about? What would you ask a senior engineer?
+
+## Interview Talking Points
+
+_2-3 bullet points you could discuss in an interview about this phase_
+
+- "I chose X over Y because..."
+- "I learned that Z when..."
+- "If I had to scale this, I would..."
 
 ---
 
-**Phase Status:**
+_~25 min at end of phase_

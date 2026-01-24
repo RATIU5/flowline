@@ -1,40 +1,30 @@
 # <Decision Title>
 
-**Date:** YYYY-MM-DD
-**Status:** Decided | Revisit at Phase X
-**Related:** Phase 1, PR #5
+**Date:** YYYY-MM-DD | **Phase:** N
 
-## Problem
+## Context
 
-What problem are you solving? (2-3 sentences)
+What problem? What constraints? (2-3 sentences)
 
-## Options Considered
+## Options
 
-### Option A: <Name>
+| Option | Why Consider | Why Not |
+| ------ | ------------ | ------- |
+| A      |              |         |
+| B      |              |         |
 
-- Pro:
-- Pro:
-- Con:
-- Con:
+## Chose: [Option]
 
-### Option B: <Name>
+**Why:** 1-2 sentences on deciding factor
 
-- Pro:
-- Con:
+**Tradeoff accepted:** What did you give up? What breaks if assumptions are wrong?
 
-## Decision
+## Distributed Systems Angle
 
-Chose Option B
+_Skip if not applicable_
 
-## Reasoning
+How does this choice affect: consistency, availability, failure handling, or scalability?
 
-Why this option? (3-5 sentences)
+---
 
-## Trade-offs
-
-What did you give up? When might you revisit this?
-
-## Resources
-
-- [Article that helped](url)
-- [Documentation](url)
+_~5 min to fill out during development_
