@@ -19,6 +19,7 @@ _This is the most important section for interviews_
 ## Key Decisions
 
 Link decision docs + one-line summary of each:
+
 - [Decision name](link) - chose X because Y
 
 ## Distributed Systems Learnings
@@ -26,6 +27,7 @@ Link decision docs + one-line summary of each:
 _What did this phase teach you about building systems that scale/fail/recover?_
 
 Skip if nothing applies. Examples:
+
 - "Learned why message ordering matters when..."
 - "Realized single point of failure at..."
 - "Tradeoff between consistency and latency when..."
