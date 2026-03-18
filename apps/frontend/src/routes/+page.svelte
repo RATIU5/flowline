@@ -6,9 +6,9 @@ import { MessageRpcs } from "@flowline/rpc";
 import { onModify } from "effect/MetricHook";
 import { onMount } from "svelte";
 
-const userMessage = $state("");
-const sendingMessages = $state<string[]>([]);
-const messageHistory = $state<string[]>([]);
+let userMessage = $state("");
+let sendingMessages = $state<string[]>([]);
+let messageHistory = $state<string[]>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,

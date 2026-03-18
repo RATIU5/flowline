@@ -6,13 +6,12 @@
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
     "test": "vitest",
-    "coverage": "vitest --coverage"
+    "coverage": "vitest --coverage",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
     "effect": "catalog:effect",
-    "@effect/platform": "catalog:effect",
     "@effect/platform-bun": "catalog:effect",
-    "@effect/rpc": "catalog:effect",
     "@flowline/rpc": "workspace:*"
   },
   "devDependencies": {
