@@ -37,5 +37,6 @@
   "editor.wordBasedSuggestions": "matchingDocuments",
   "editor.parameterHints.enabled": true,
   "files.insertFinalNewline": true,
-  "cSpell.words": ["flowline"]
+  "cSpell.words": ["flowline"],
+  "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview"
 }

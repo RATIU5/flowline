@@ -21,3 +21,4 @@ package-lock.json
 **/*.bun
 TODO.md
 .svelte-kit/
+.reference

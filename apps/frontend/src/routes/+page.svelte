@@ -1,9 +1,8 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
-import { Rpc, RpcClient, RpcGroup, RpcSerialization } from "@effect/rpc";
-import { Layer, Effect, Schema, Stream, Chunk } from "effect";
 import { MessageRpcs } from "@flowline/rpc";
-import { onModify } from "effect/MetricHook";
+import { Effect, Layer, ManagedRuntime, Stream } from "effect";
+import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 import { onMount } from "svelte";
 
 let userMessage = $state("");
@@ -22,13 +21,12 @@ const messageSubmitProgram = Effect.gen(function* () {
   yield* client.PublishMessage({ message: userMessage });
 }).pipe(
   Effect.catchTag("RpcClientError", (error) => {
-    return Effect.dieMessage(error.message);
+    return Effect.die(error.message);
   }),
-  Effect.catchAll((error) => {
+  Effect.catch((error) => {
     console.log(error);
     return Effect.succeed(null);
   }),
-  Effect.provide(ProtocolLive),
   Effect.scoped,
 );
 
@@ -42,23 +40,24 @@ const subscribeMessagesProgram = Effect.gen(function* () {
   );
 }).pipe(
   Effect.catchTag("RpcClientError", (error) => {
-    return Effect.dieMessage(error.message);
+    return Effect.die(error.message);
   }),
-  Effect.catchAll((error) => {
+  Effect.catch((error) => {
     console.log(error);
     return Effect.succeed(null);
   }),
-  Effect.provide(ProtocolLive),
   Effect.scoped,
 );
 
+const runtime = ManagedRuntime.make(ProtocolLive);
+
 const handleSubmit = (e: SubmitEvent) => {
   e.preventDefault();
-  messageSubmitProgram.pipe(Effect.runPromise);
+  messageSubmitProgram.pipe(runtime.runPromise);
 };
 
 onMount(() => {
-  subscribeMessagesProgram.pipe(Effect.runPromise);
+  subscribeMessagesProgram.pipe(runtime.runPromise);
 });
 </script>
 
@@ -95,6 +94,7 @@ onMount(() => {
           height="32"
           viewBox="0 0 24 24"
         >
+          <title>Send message arrow</title>
           <path
             fill="none"
             stroke="currentColor"

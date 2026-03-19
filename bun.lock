@@ -7,9 +7,10 @@
       "devDependencies": {
         "@biomejs/biome": "^2.4.7",
         "@effect/language-service": "catalog:effect",
+        "@effect/tsgo": "0.0.15",
         "@types/bun": "latest",
+        "@typescript/native-preview": "^7.0.0-dev.20260318.1",
         "rimraf": "^6.1.3",
-        "typescript": "catalog:",
         "vitest": "catalog:testing",
       },
     },
@@ -118,6 +119,22 @@
     "@effect/platform-bun": ["@effect/platform-bun@4.0.0-beta.34", "", { "dependencies": { "@effect/platform-node-shared": "^4.0.0-beta.34" }, "peerDependencies": { "effect": "^4.0.0-beta.34" } }, "sha512-5tkieXTPz5DZMjsv2tLJn5sE+xUHk60W4Okebr7ygpmv4VXp637von4ERqtJZRJIJZMETp8v/uezOKf12HzBuQ=="],
 
     "@effect/platform-node-shared": ["@effect/platform-node-shared@4.0.0-beta.34", "", { "dependencies": { "@types/ws": "^8.18.1", "ws": "^8.19.0" }, "peerDependencies": { "effect": "^4.0.0-beta.34" } }, "sha512-vq+36C2vWFS2iuYn2+9A93Kqrv6ehBy1FErFiBEotzeKSg4dByX8UUIG8kSwP3uBF/a+/Z4hHaSJD2zgCQFlsQ=="],
+
+    "@effect/tsgo": ["@effect/tsgo@0.0.15", "", { "optionalDependencies": { "@effect/tsgo-darwin-arm64": "0.0.15", "@effect/tsgo-darwin-x64": "0.0.15", "@effect/tsgo-linux-arm": "0.0.15", "@effect/tsgo-linux-arm64": "0.0.15", "@effect/tsgo-linux-x64": "0.0.15", "@effect/tsgo-win32-arm64": "0.0.15", "@effect/tsgo-win32-x64": "0.0.15" }, "bin": { "effect-tsgo": "bin/effect-tsgo.js" } }, "sha512-BEymf3qvCq0H9FnxU5FwVp3rhPrxfiRrUk/J9eIDTGkXdR890dK9Pp1ufu4g7NFMTZepRqRaqfUbFXW5npe6jA=="],
+
+    "@effect/tsgo-darwin-arm64": ["@effect/tsgo-darwin-arm64@0.0.15", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6fblE07/wVfzVbP17ul408xn5TR2nlqtKe6OBv14EApO+ZhlZLbdB/Tn1adrGKQCBdAsP7f5/vSGpHyDx1iKEg=="],
+
+    "@effect/tsgo-darwin-x64": ["@effect/tsgo-darwin-x64@0.0.15", "", { "os": "darwin", "cpu": "x64" }, "sha512-4TS94JDkegkA8neaz6dz8BrkEPmPivnRuKVnvtH5VMoRGxuwxjXbuWHCb14A1spNebhsjSJTeKtEWlOqRr17dQ=="],
+
+    "@effect/tsgo-linux-arm": ["@effect/tsgo-linux-arm@0.0.15", "", { "os": "linux", "cpu": "arm" }, "sha512-punz4SABdszPD2xxPw2u+W1jJX6z8ohpnGMYDMo70LpQouafVOCLqE8CBgpdDfh0POEaalUZLF35c8td4gUWGA=="],
+
+    "@effect/tsgo-linux-arm64": ["@effect/tsgo-linux-arm64@0.0.15", "", { "os": "linux", "cpu": "arm64" }, "sha512-3eSHKNPcBhH8UaKA+6gQOVWIr86RcPt8pHE6hXmTVSRMB1oisfG+uT3sw4B8oK5RxR+4Ry2oyXlRZ4LI/buVaA=="],
+
+    "@effect/tsgo-linux-x64": ["@effect/tsgo-linux-x64@0.0.15", "", { "os": "linux", "cpu": "x64" }, "sha512-q9RMzSchiGtSEf5B7t2ddaulxwCZrIAQ/ufNaOulDis+HL+CDTSIPpG8LKbdI/iIANLjd73EMVmlnuCP1RotbQ=="],
+
+    "@effect/tsgo-win32-arm64": ["@effect/tsgo-win32-arm64@0.0.15", "", { "os": "win32", "cpu": "arm64" }, "sha512-mCzTrSuozXrCjAVPKDzLf6Vu27kLO/w/P0I0z/YWGcRDtqKpcG6VZwuCXph7aWre7dEnJQzM45VYOn4OffjbVQ=="],
+
+    "@effect/tsgo-win32-x64": ["@effect/tsgo-win32-x64@0.0.15", "", { "os": "win32", "cpu": "x64" }, "sha512-pYYptkoJqWUfxjwohIvPLAPRFtbDTu8XD1NwHQPkvvoRGLfO1YGPDMcNfUzI9rBjxvnQ8ckFYMCNAMgpNBlxkQ=="],
 
     "@effect/vitest": ["@effect/vitest@4.0.0-beta.34", "", { "peerDependencies": { "effect": "^4.0.0-beta.34", "vitest": "^3.0.0 || ^4.0.0" } }, "sha512-HFQZDQLKAvzrT850/Hk2rXBp7OeIB4m10fd289Cd0kZ5xV0Szbr2rufw06Z29dRB3Cq3PWOHcC8Y6toWTi2oRw=="],
 
@@ -252,6 +269,22 @@
     "@types/ws": ["@types/ws@8.18.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg=="],
 
     "@typescript-eslint/types": ["@typescript-eslint/types@8.57.1", "", {}, "sha512-S29BOBPJSFUiblEl6RzPPjJt6w25A6XsBqRVDt53tA/tlL8q7ceQNZHTjPeONt/3S7KRI4quk+yP9jK2WjBiPQ=="],
+
+    "@typescript/native-preview": ["@typescript/native-preview@7.0.0-dev.20260318.1", "", { "optionalDependencies": { "@typescript/native-preview-darwin-arm64": "7.0.0-dev.20260318.1", "@typescript/native-preview-darwin-x64": "7.0.0-dev.20260318.1", "@typescript/native-preview-linux-arm": "7.0.0-dev.20260318.1", "@typescript/native-preview-linux-arm64": "7.0.0-dev.20260318.1", "@typescript/native-preview-linux-x64": "7.0.0-dev.20260318.1", "@typescript/native-preview-win32-arm64": "7.0.0-dev.20260318.1", "@typescript/native-preview-win32-x64": "7.0.0-dev.20260318.1" }, "bin": { "tsgo": "bin/tsgo.js" } }, "sha512-/7LF/2x29K++k147445omxNixPANTmwJl9p/IIzK8NbOeqVOFv1Gj1GQyOQqRdT4j/X6YDwO/p400/JKE+cBOw=="],
+
+    "@typescript/native-preview-darwin-arm64": ["@typescript/native-preview-darwin-arm64@7.0.0-dev.20260318.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-hsXZC0M5N2F/KdX/wjRywZPovdGBgWw9ARy0GWCw1dAynqdfDcuceKbUw+QwMSdvvsFbUjSomTlyFdT09p1mcA=="],
+
+    "@typescript/native-preview-darwin-x64": ["@typescript/native-preview-darwin-x64@7.0.0-dev.20260318.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-lQl7DQkROqPZrx4C1MpFP0WNxdqv+9r4lErhd+57M2Kmxx1BmX3K5VMLJT9FZQFRtgntnYbwQAQ774Z17fv8rA=="],
+
+    "@typescript/native-preview-linux-arm": ["@typescript/native-preview-linux-arm@7.0.0-dev.20260318.1", "", { "os": "linux", "cpu": "arm" }, "sha512-tE7uN00Po/oBg5VYaYM0C/QXroo6gdIRmFVZl543o46ihl0YKEZBMnyStRKKgPCI9oeYXyCNT6WR4MxSMz6ndA=="],
+
+    "@typescript/native-preview-linux-arm64": ["@typescript/native-preview-linux-arm64@7.0.0-dev.20260318.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-1wv0qpJW4okKadShemVi4s7zGuiIRI7zTInRYDV/FfyQVyKrkTOzMtZXB6CF3Reus1HmRpGp5ADyc4MI7CCeJg=="],
+
+    "@typescript/native-preview-linux-x64": ["@typescript/native-preview-linux-x64@7.0.0-dev.20260318.1", "", { "os": "linux", "cpu": "x64" }, "sha512-aSE7xAKYTOrxsFrIgmcaHjgXSSOnWrZ6ozNBeNxpGzd/gl2Ho3FCIwQb0NCXrDwF9AhpFRtHMWPpAPaJk24+rg=="],
+
+    "@typescript/native-preview-win32-arm64": ["@typescript/native-preview-win32-arm64@7.0.0-dev.20260318.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-TV/Tn8cgWamb+6mvY45X2wF0vrTkQmRFCiN1pRRehEwxslDkqLVlpGAFpZndLaPlMb/wzwVpz1e/926xdAoO1w=="],
+
+    "@typescript/native-preview-win32-x64": ["@typescript/native-preview-win32-x64@7.0.0-dev.20260318.1", "", { "os": "win32", "cpu": "x64" }, "sha512-AgOZODSYeTlQWVTioRG3AxHzIBSLbZZhyK19WPzjHW0LtxCcFi59G/Gn1uIshVL3sp1ESRg9SZ5mSiFdgvfK4g=="],
 
     "@vitest/expect": ["@vitest/expect@4.1.0", "", { "dependencies": { "@standard-schema/spec": "^1.1.0", "@types/chai": "^5.2.2", "@vitest/spy": "4.1.0", "@vitest/utils": "4.1.0", "chai": "^6.2.2", "tinyrainbow": "^3.0.3" } }, "sha512-EIxG7k4wlWweuCLG9Y5InKFwpMEOyrMb6ZJ1ihYu02LVj/bzUwn2VMU+13PinsjRW75XnITeFrQBMH5+dLvCDA=="],
 
