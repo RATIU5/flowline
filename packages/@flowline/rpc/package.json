@@ -2,22 +2,22 @@
   "name": "@flowline/rpc",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "test": "vitest",
-    "coverage": "vitest --coverage"
+    "coverage": "vitest --coverage",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
   },
   "dependencies": {
-    "effect": "catalog:effect",
-    "@effect/rpc": "catalog:effect"
-  },
-  "exports": {
-    ".": "./src/index.ts"
+    "effect": "catalog:effect"
   },
   "devDependencies": {
     "@effect/language-service": "catalog:effect",
     "@effect/vitest": "catalog:effect",
-    "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:typescript",
     "vitest": "catalog:testing"
   },
   "effect": {

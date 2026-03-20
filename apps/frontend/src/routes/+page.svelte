@@ -1,14 +1,16 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
-import { Rpc, RpcClient, RpcGroup, RpcSerialization } from "@effect/rpc";
-import { Layer, Effect, Schema, Stream, Chunk } from "effect";
 import { MessageRpcs } from "@flowline/rpc";
-import { onModify } from "effect/MetricHook";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+import * as ManagedRuntime from "effect/ManagedRuntime";
+import * as Stream from "effect/Stream";
+import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 import { onMount } from "svelte";
 
-const userMessage = $state("");
-const sendingMessages = $state<string[]>([]);
-const messageHistory = $state<string[]>([]);
+let userMessage = $state("");
+let sendingMessages = $state<string[]>([]);
+let messageHistory = $state<string[]>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,
@@ -17,48 +19,46 @@ const ProtocolLive = RpcClient.layerProtocolSocket({
   Layer.provide(RpcSerialization.layerJson),
 );
 
-const messageSubmitProgram = Effect.gen(function* () {
+const messageSubmitProgram = Effect.gen(function* messageSubmitProgram() {
   const client = yield* RpcClient.make(MessageRpcs);
   yield* client.PublishMessage({ message: userMessage });
 }).pipe(
-  Effect.catchTag("RpcClientError", (error) => {
-    return Effect.dieMessage(error.message);
+  Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
+  Effect.catch((error) => {
+    console.error(error);
+    return Effect.succeed(undefined);
   }),
-  Effect.catchAll((error) => {
-    console.log(error);
-    return Effect.succeed(null);
-  }),
-  Effect.provide(ProtocolLive),
   Effect.scoped,
 );
 
-const subscribeMessagesProgram = Effect.gen(function* () {
-  const client = yield* RpcClient.make(MessageRpcs);
-  yield* client.SubscribeMessages().pipe(
-    Stream.runForEach((m) => {
-      messageHistory.push(m.message);
-      return Effect.void;
-    }),
-  );
-}).pipe(
-  Effect.catchTag("RpcClientError", (error) => {
-    return Effect.dieMessage(error.message);
-  }),
-  Effect.catchAll((error) => {
+const subscribeMessagesProgram = Effect.gen(
+  function* subscribeMessagesProgram() {
+    const client = yield* RpcClient.make(MessageRpcs);
+    yield* client.SubscribeMessages().pipe(
+      Stream.runForEach((m) => {
+        messageHistory.push(m.message);
+        return Effect.void;
+      }),
+    );
+  },
+).pipe(
+  Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
+  Effect.catch((error) => {
     console.log(error);
-    return Effect.succeed(null);
+    return Effect.succeed(undefined);
   }),
-  Effect.provide(ProtocolLive),
   Effect.scoped,
 );
+
+const runtime = ManagedRuntime.make(ProtocolLive);
 
 const handleSubmit = (e: SubmitEvent) => {
   e.preventDefault();
-  messageSubmitProgram.pipe(Effect.runPromise);
+  messageSubmitProgram.pipe(runtime.runPromise);
 };
 
 onMount(() => {
-  subscribeMessagesProgram.pipe(Effect.runPromise);
+  subscribeMessagesProgram.pipe(runtime.runPromise);
 });
 </script>
 
@@ -95,6 +95,7 @@ onMount(() => {
           height="32"
           viewBox="0 0 24 24"
         >
+          <title>Send message arrow</title>
           <path
             fill="none"
             stroke="currentColor"

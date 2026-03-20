@@ -1,12 +1,12 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
-// for information about these interfaces
+// For information about these interfaces
 declare global {
   namespace App {
-    // interface Error {}
-    // interface Locals {}
-    // interface PageData {}
-    // interface PageState {}
-    // interface Platform {}
+    // Interface Error {}
+    // Interface Locals {}
+    // Interface PageData {}
+    // Interface PageState {}
+    // Interface Platform {}
   }
 }
 
@@ -14,5 +14,3 @@ declare module "*.svg" {
   const content: string;
   export default content;
 }
-
-export {};

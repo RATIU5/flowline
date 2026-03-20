@@ -1,5 +1,5 @@
-import { Rpc, RpcGroup } from "@effect/rpc";
-import { Schema } from "effect";
+import * as Schema from "effect/Schema";
+import { Rpc, RpcGroup } from "effect/unstable/rpc";
 
 export class Message extends Schema.Class<Message>("Message")({
   message: Schema.String,
@@ -7,15 +7,13 @@ export class Message extends Schema.Class<Message>("Message")({
 
 export class MessageRpcs extends RpcGroup.make(
   Rpc.make("PublishMessage", {
-    success: Message,
     error: Schema.String,
-    payload: {
-      message: Schema.String,
-    },
+    payload: Message,
+    success: Message,
   }),
   Rpc.make("SubscribeMessages", {
-    success: Message,
-    stream: true,
     error: Schema.String,
+    stream: true,
+    success: Message,
   }),
 ) {}

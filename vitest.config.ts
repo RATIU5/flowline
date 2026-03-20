@@ -5,7 +5,7 @@ const alias = (name: string) => {
   const target = process.env.TEST_DIST !== undefined ? "dist/dist/esm" : "src";
   return {
     [`${name}/test`]: path.join(__dirname, "packages", name, "test"),
-    [`${name}`]: path.join(__dirname, "packages", name, target),
+    [name]: path.join(__dirname, "packages", name, target),
   };
 };
 
@@ -17,17 +17,13 @@ export default defineConfig({
     exclude: ["bun:sqlite"],
   },
   test: {
-    setupFiles: [path.join(__dirname, "setupTests.ts")],
-    fakeTimers: {
-      toFake: undefined,
-    },
-    sequence: {
-      concurrent: true,
-    },
     alias: {
       ...alias("cli"),
       ...alias("domain"),
       ...alias("server"),
+    },
+    fakeTimers: {
+      toFake: undefined,
     },
     projects: [
       "./packages/*",
@@ -37,5 +33,9 @@ export default defineConfig({
         },
       },
     ],
+    sequence: {
+      concurrent: true,
+    },
+    setupFiles: [path.join(__dirname, "setup-tests.ts")],
   },
 });
