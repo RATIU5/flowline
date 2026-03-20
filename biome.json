@@ -6,15 +6,8 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": [
-      "**/*.svelte",
-      "**/*.ts",
-      "**/*.js",
-      "**/*.tsx",
-      "**/*.jsx",
-      "**/*.json"
-    ]
+    "ignoreUnknown": true,
+    "includes": ["**/*.svelte"]
   },
   "formatter": {
     "enabled": true,
@@ -33,16 +26,7 @@
     }
   },
   "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "suspicious": {
-        "noExplicitAny": "info"
-      },
-      "correctness": {
-        "noUnusedVariables": "info"
-      }
-    }
+    "enabled": false
   },
   "javascript": {
     "formatter": {

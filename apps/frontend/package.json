@@ -23,10 +23,10 @@
     "@sveltejs/vite-plugin-svelte": "catalog:svelte",
     "@tailwindcss/typography": "catalog:tailwindcss",
     "@tailwindcss/vite": "catalog:tailwindcss",
+    "@typescript/native-preview": "catalog:typescript",
     "svelte": "catalog:svelte",
     "svelte-check": "catalog:svelte",
     "tailwindcss": "catalog:tailwindcss",
-    "typescript": "catalog:",
     "vite": "catalog:"
   }
 }

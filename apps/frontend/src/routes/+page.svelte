@@ -1,7 +1,10 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
 import { MessageRpcs } from "@flowline/rpc";
-import { Effect, Layer, ManagedRuntime, Stream } from "effect";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+import * as ManagedRuntime from "effect/ManagedRuntime";
+import * as Stream from "effect/Stream";
 import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 import { onMount } from "svelte";
 
@@ -16,35 +19,33 @@ const ProtocolLive = RpcClient.layerProtocolSocket({
   Layer.provide(RpcSerialization.layerJson),
 );
 
-const messageSubmitProgram = Effect.gen(function* () {
+const messageSubmitProgram = Effect.gen(function* messageSubmitProgram() {
   const client = yield* RpcClient.make(MessageRpcs);
   yield* client.PublishMessage({ message: userMessage });
 }).pipe(
-  Effect.catchTag("RpcClientError", (error) => {
-    return Effect.die(error.message);
-  }),
+  Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
   Effect.catch((error) => {
-    console.log(error);
-    return Effect.succeed(null);
+    console.error(error);
+    return Effect.succeed(undefined);
   }),
   Effect.scoped,
 );
 
-const subscribeMessagesProgram = Effect.gen(function* () {
-  const client = yield* RpcClient.make(MessageRpcs);
-  yield* client.SubscribeMessages().pipe(
-    Stream.runForEach((m) => {
-      messageHistory.push(m.message);
-      return Effect.void;
-    }),
-  );
-}).pipe(
-  Effect.catchTag("RpcClientError", (error) => {
-    return Effect.die(error.message);
-  }),
+const subscribeMessagesProgram = Effect.gen(
+  function* subscribeMessagesProgram() {
+    const client = yield* RpcClient.make(MessageRpcs);
+    yield* client.SubscribeMessages().pipe(
+      Stream.runForEach((m) => {
+        messageHistory.push(m.message);
+        return Effect.void;
+      }),
+    );
+  },
+).pipe(
+  Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
   Effect.catch((error) => {
     console.log(error);
-    return Effect.succeed(null);
+    return Effect.succeed(undefined);
   }),
   Effect.scoped,
 );

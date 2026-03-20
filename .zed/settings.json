@@ -1,11 +1,72 @@
-// Folder-specific settings
-//
-// For a full list of overridable settings, and general information on folder-specific settings,
-// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
+  "format_on_save": "on",
+  "language_servers": ["!eslint"],
+  "lsp": {
+    "oxlint": {
+      "initialization_options": {
+        "settings": {
+          "configPath": ".oxlintrc.json"
+        }
+      }
+    },
+    "oxfmt": {
+      "initialization_options": {
+        "settings": {
+          "configPath": ".oxfmtrc.json"
+        }
+      }
+    }
+  },
   "languages": {
     "TypeScript": {
-      "language_servers": ["effect-tsgo"]
+      "language_servers": [
+        "oxfmt",
+        "oxlint",
+        "effect-tsgo",
+        "!typescript-language-server"
+      ],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "TSX": {
+      "language_servers": [
+        "oxfmt",
+        "oxlint",
+        "effect-tsgo",
+        "!typescript-language-server"
+      ],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "JavaScript": {
+      "language_servers": ["oxfmt", "oxlint", "!typescript-language-server"],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "Svelte": {
+      "language_servers": ["svelte-language-server", "oxlint", "biome"],
+      "formatter": [
+        { "language_server": { "name": "biome" } },
+        { "code_action": "source.organizeImports.biome" },
+        { "code_action": "source.fixAll.biome" }
+      ]
+    },
+    "JSON": {
+      "language_servers": ["oxfmt", "json-language-server"],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "JSONC": {
+      "language_servers": ["oxfmt", "json-language-server"],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "YAML": {
+      "language_servers": ["oxfmt", "yaml-language-server"],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "CSS": {
+      "language_servers": ["oxfmt", "css-language-server"],
+      "formatter": { "language_server": { "name": "oxfmt" } }
+    },
+    "Markdown": {
+      "language_servers": ["oxfmt"],
+      "formatter": { "language_server": { "name": "oxfmt" } }
     }
   }
 }

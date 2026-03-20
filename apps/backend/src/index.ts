@@ -1,14 +1,18 @@
 import { BunHttpServer, BunRuntime } from "@effect/platform-bun";
-import { Message, MessageRpcs } from "@flowline/rpc";
-import { Effect, Layer, PubSub, ServiceMap, Stream } from "effect";
-import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import { type Message, MessageRpcs } from "@flowline/rpc";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
+import * as PubSub from "effect/PubSub";
+import * as ServiceMap from "effect/ServiceMap";
+import * as Stream from "effect/Stream";
 import { HttpServerResponse } from "effect/unstable/http";
+import * as HttpRouter from "effect/unstable/http/HttpRouter";
+import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
 
 class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
   "flowline/ChatPubSub",
   {
-    make: Effect.gen(function* () {
+    make: Effect.gen(function* make() {
       const pubSub = yield* PubSub.bounded<Message>(2);
       return pubSub;
     }),
@@ -19,7 +23,7 @@ class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
 
 const MessageHandlers = MessageRpcs.toLayer({
   PublishMessage: Effect.fn("flowline/MessageHandlers/PublishMessage")(
-    function* (message) {
+    function* PublishMessage(message) {
       const chatService = yield* ChatPubSub;
       yield* PubSub.publish(chatService, message);
       return message;
@@ -27,7 +31,7 @@ const MessageHandlers = MessageRpcs.toLayer({
   ),
   SubscribeMessages: () =>
     Stream.unwrap(
-      Effect.gen(function* () {
+      Effect.gen(function* SubscribeMessages() {
         const chatService = yield* ChatPubSub;
         const subscription = yield* PubSub.subscribe(chatService);
         return Stream.fromSubscription(subscription);
@@ -43,8 +47,8 @@ const RootRoute = HttpRouter.add(
 
 const RpcRoute = RpcServer.layerHttp({
   group: MessageRpcs,
-  protocol: "websocket",
   path: "/rpc",
+  protocol: "websocket",
 }).pipe(
   Layer.provide(MessageHandlers),
   Layer.provide(ChatPubSub.layer),

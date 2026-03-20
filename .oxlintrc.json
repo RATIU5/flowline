@@ -1,0 +1,120 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import", "promise", "node"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "warn",
+    "pedantic": "warn",
+    "style": "warn"
+  },
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "sort-imports": "off",
+    "new-cap": "off",
+    "no-ternary": "off",
+    "no-negated-condition": "off",
+    "max-classes-per-file": "off",
+    "import/no-named-export": "off",
+    "import/group-exports": "off",
+    "import/no-namespace": "off",
+    "import/no-unassigned-import": "off",
+    "promise/prefer-await-to-callbacks": "off",
+    "promise/prefer-await-to-then": "off",
+    "unicorn/prefer-top-level-await": "off",
+    "unicorn/no-useless-undefined": "off",
+    "no-magic-numbers": "off",
+    "id-length": [
+      "warn",
+      { "min": 1, "exceptions": ["e", "m", "i", "j", "k", "_"] }
+    ],
+    "unicorn/no-null": "warn",
+    "no-console": "warn",
+    "eqeqeq": "error",
+    "no-var": "error",
+    "import/no-cycle": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "fixStyle": "inline-type-imports",
+        "disallowTypeAnnotations": false
+      }
+    ],
+    "import/consistent-type-specifier-style": ["error", "prefer-inline"],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "effect",
+            "allowImportNames": [
+              // Utilities with no deep-path equivalent
+              "pipe",
+              "flow",
+              "identity",
+              "absurd",
+              "hole",
+              "satisfies",
+              "tuple",
+              "constTrue",
+              "constFalse",
+              "constNull",
+              "constUndefined",
+              "constVoid"
+            ],
+            "message": "Use deep namespace import instead, e.g. `import * as Effect from 'effect/Effect'`"
+          }
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**", ".svelte-kit/**"],
+  "overrides": [
+    {
+      "files": ["**/src/lib/index.ts"],
+      "rules": {
+        "unicorn/no-empty-file": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.config.ts",
+        "**/*.config.js",
+        "**/setupTests.ts",
+        "**/setup-tests.ts"
+      ],
+      "rules": {
+        "import/no-nodejs-modules": "off",
+        "import/no-namespace": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-member-access": "off"
+      }
+    },
+    {
+      "files": ["**/*.svelte"],
+      "rules": {
+        "prefer-const": "off",
+        "no-unused-vars": "off",
+        "no-undef": "off"
+      }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.spec.ts", "**/test/**/*.ts"],
+      "rules": {
+        "typescript/no-explicit-any": "off",
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["**/*.config.ts", "**/*.config.js"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
+}
