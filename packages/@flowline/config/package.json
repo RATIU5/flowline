@@ -1,5 +1,5 @@
 {
-  "name": "@flowline/rpc",
+  "name": "@flowline/config",
   "private": true,
   "type": "module",
   "exports": {
@@ -17,6 +17,7 @@
   "devDependencies": {
     "@effect/language-service": "catalog:effect",
     "@effect/vitest": "catalog:effect",
+    "@types/node": "^25.5.0",
     "@typescript/native-preview": "catalog:typescript",
     "vitest": "catalog:testing"
   },

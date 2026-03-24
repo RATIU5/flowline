@@ -15,6 +15,11 @@
         "@effect/tsgo": "0.0.15",
         "@typescript/native-preview": "7.0.0-dev.20260318.1"
       },
+      "db": {
+        "kysely": "0.28.14",
+        "kysely-codegen": "0.20.0",
+        "kysely-ctl": "0.20.0"
+      },
       "testing": {
         "vitest": "^4.1.0"
       },
@@ -46,7 +51,10 @@
   "scripts": {
     "prepare": "effect-tsgo patch",
     "dev:fe": "bun run --elide-lines 0 --filter frontend dev",
-    "dev:be": "bun run --elide-lines 0 --filter backend dev",
+    "dev:be": "bun --cwd apps/backend run --elide-lines 0 --filter backend dev",
+    "db:up": "set -a && source apps/backend/.env && set +a && podman run -d --name postgres -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -e POSTGRES_DB=${DB_NAME} -p 5432:5432 -v pgdata:/var/lib/postgresql/data postgres:16-alpine",
+    "db:down": "podman stop postgres && podman rm postgres",
+    "db:logs": "podman logs -f postgres",
     "fmt:check": "oxfmt --check && biome format --verbose",
     "fmt": "oxfmt --write && biome format --write",
     "lint:check": "oxlint",
