@@ -5,8 +5,8 @@
     "module": "ESNext",
     "paths": {
       "@modules/*": ["./src/modules/*"],
-      "@lib/*": ["./src/lib/*"],
-    },
+      "@lib/*": ["./src/lib/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src"]
 }

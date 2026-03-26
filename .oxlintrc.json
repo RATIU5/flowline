@@ -92,6 +92,12 @@
       }
     },
     {
+      "files": ["**/migrations/*.ts"],
+      "rules": {
+        "unicorn/filename-case": "off"
+      }
+    },
+    {
       "files": [
         "**/*.config.ts",
         "**/*.config.js",
