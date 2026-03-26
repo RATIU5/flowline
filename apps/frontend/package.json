@@ -9,7 +9,7 @@
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "typecheck": "tsgo --noEmit --project tsconfig.json",
     "test": "echo 'no tests'"
   },
   "dependencies": {

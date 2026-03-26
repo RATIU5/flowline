@@ -15,17 +15,22 @@
     "sort-imports": "off",
     "new-cap": "off",
     "no-ternary": "off",
+    "func-names": ["warn", "always", { "generators": "never" }],
+    "oxc/no-map-spread": "off",
+    "oxc/no-accumulating-spread": "off",
     "no-negated-condition": "off",
     "max-classes-per-file": "off",
     "import/no-named-export": "off",
     "import/group-exports": "off",
     "import/no-namespace": "off",
     "import/no-unassigned-import": "off",
+    "import/prefer-default-export": "off",
     "promise/prefer-await-to-callbacks": "off",
     "promise/prefer-await-to-then": "off",
     "unicorn/prefer-top-level-await": "off",
     "unicorn/no-useless-undefined": "off",
     "no-magic-numbers": "off",
+    "sort-keys": "off",
     "id-length": [
       "warn",
       { "min": 1, "exceptions": ["e", "m", "i", "j", "k", "_"] }
@@ -73,12 +78,23 @@
       }
     ]
   },
-  "ignorePatterns": ["dist/**", "node_modules/**", ".svelte-kit/**"],
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    ".svelte-kit/**",
+    "**/types/db.ts"
+  ],
   "overrides": [
     {
       "files": ["**/src/lib/index.ts"],
       "rules": {
         "unicorn/no-empty-file": "off"
+      }
+    },
+    {
+      "files": ["**/migrations/*.ts"],
+      "rules": {
+        "unicorn/filename-case": "off"
       }
     },
     {

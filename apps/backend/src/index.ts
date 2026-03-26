@@ -12,7 +12,7 @@ import { RpcSerialization, RpcServer } from "effect/unstable/rpc";
 class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
   "flowline/ChatPubSub",
   {
-    make: Effect.gen(function* make() {
+    make: Effect.gen(function* () {
       const pubSub = yield* PubSub.bounded<Message>(2);
       return pubSub;
     }),
@@ -23,7 +23,7 @@ class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
 
 const MessageHandlers = MessageRpcs.toLayer({
   PublishMessage: Effect.fn("flowline/MessageHandlers/PublishMessage")(
-    function* PublishMessage(message) {
+    function* (message) {
       const chatService = yield* ChatPubSub;
       yield* PubSub.publish(chatService, message);
       return message;
@@ -31,7 +31,7 @@ const MessageHandlers = MessageRpcs.toLayer({
   ),
   SubscribeMessages: () =>
     Stream.unwrap(
-      Effect.gen(function* SubscribeMessages() {
+      Effect.gen(function* () {
         const chatService = yield* ChatPubSub;
         const subscription = yield* PubSub.subscribe(chatService);
         return Stream.fromSubscription(subscription);

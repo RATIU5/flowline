@@ -1,6 +1,7 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
 import { MessageRpcs } from "@flowline/rpc";
+import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
@@ -19,34 +20,30 @@ const ProtocolLive = RpcClient.layerProtocolSocket({
   Layer.provide(RpcSerialization.layerJson),
 );
 
-const messageSubmitProgram = Effect.gen(function* messageSubmitProgram() {
+const messageSubmitProgram = Effect.gen(function* () {
   const client = yield* RpcClient.make(MessageRpcs);
   yield* client.PublishMessage({ message: userMessage });
 }).pipe(
   Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
-  Effect.catch((error) => {
-    console.error(error);
-    return Effect.succeed(undefined);
-  }),
+  Effect.catch((error) =>
+    Console.error(error).pipe(Effect.andThen(Effect.succeed(undefined))),
+  ),
   Effect.scoped,
 );
 
-const subscribeMessagesProgram = Effect.gen(
-  function* subscribeMessagesProgram() {
-    const client = yield* RpcClient.make(MessageRpcs);
-    yield* client.SubscribeMessages().pipe(
-      Stream.runForEach((m) => {
-        messageHistory.push(m.message);
-        return Effect.void;
-      }),
-    );
-  },
-).pipe(
+const subscribeMessagesProgram = Effect.gen(function* () {
+  const client = yield* RpcClient.make(MessageRpcs);
+  yield* client.SubscribeMessages().pipe(
+    Stream.runForEach((m) => {
+      messageHistory.push(m.message);
+      return Effect.void;
+    }),
+  );
+}).pipe(
   Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
-  Effect.catch((error) => {
-    console.log(error);
-    return Effect.succeed(undefined);
-  }),
+  Effect.catch((error) =>
+    Console.error(error).pipe(Effect.andThen(Effect.succeed(undefined))),
+  ),
   Effect.scoped,
 );
 

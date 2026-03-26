@@ -9,7 +9,7 @@
     "dev": "bun run --watch src/index.ts",
     "test": "vitest",
     "coverage": "vitest --coverage",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "typecheck": "tsgo --noEmit --project tsconfig.json"
   },
   "dependencies": {
     "effect": "catalog:effect"
