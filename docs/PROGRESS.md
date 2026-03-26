@@ -4,7 +4,7 @@ _This document is updated after each PR_
 
 ## Phase 1: WebSocket Connection
 
-**Status:** In Progress
+**Status:** Completed
 **Started:** Jan 16, 2026
 
 ### Goals:
@@ -16,3 +16,25 @@ _This document is updated after each PR_
 - [x] Client can send messages to global chat
 
 ### Decisions Made:
+
+- [20260114-use-effect.md](decisions/20260114-use-effect.md)
+- [20260115-httprouterlayer.md](decisions/20260115-httprouterlayer.md)
+- [20260319-effect-4-oxc.md](decisions/20260319-effect-4-oxc.md)
+
+## Phase 2: User Authentication
+
+**Status:** In Progress
+**Started:** Mar 23, 2026
+
+### Goals:
+
+- [x] Pick a database (PostgreSQL)
+- [x] Setup Effect services for database access
+- [x] Setup Kysely for type-safe query-building
+- [ ] Setup routes for authentication and handlers
+- [ ] Separate messages to dedicated user accounts
+- [ ] Setup basic UI for logging in/out and messaging with profiles
+
+### Decisions Made:
+
+- [20260326-kysely-pg.md](decisions/20260326-kysely-pg.md)
