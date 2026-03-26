@@ -51,7 +51,7 @@
   "scripts": {
     "prepare": "effect-tsgo patch",
     "dev:fe": "bun run --elide-lines 0 --filter frontend dev",
-    "dev:be": "bun --cwd apps/backend run --elide-lines 0 --filter backend dev",
+    "dev:be": "bun run --elide-lines 0 --filter backend dev",
     "db:up": "set -a && source apps/backend/.env && set +a && podman run -d --name postgres -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -e POSTGRES_DB=${DB_NAME} -p 5432:5432 -v pgdata:/var/lib/postgresql/data postgres:16-alpine",
     "db:down": "podman stop postgres && podman rm postgres",
     "db:logs": "podman logs -f postgres",
