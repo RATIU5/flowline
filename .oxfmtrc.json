@@ -11,7 +11,7 @@
   "arrowParens": "always",
   "endOfLine": "lf",
   "insertFinalNewline": true,
-  "ignorePatterns": ["**/*.svelte"],
+  "ignorePatterns": ["**/*.svelte", "**/types/db.ts"],
   "sortImports": {
     "groups": [
       "type-import",

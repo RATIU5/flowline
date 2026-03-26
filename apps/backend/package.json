@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@effect/platform-bun": "catalog:effect",
+    "@flowline/config": "workspace:*",
+    "@flowline/db": "workspace:*",
     "@flowline/rpc": "workspace:*",
     "better-auth": "^1.5.6",
     "effect": "catalog:effect",

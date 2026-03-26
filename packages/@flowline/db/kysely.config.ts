@@ -1,15 +1,26 @@
 import { BunFileSystem } from "@effect/platform-bun";
 import { FlowlineConfig } from "@flowline/config";
-import { Cause, Effect, Layer, Redacted } from "effect";
+import { Cause, Effect, Layer } from "effect";
 import { defineConfig } from "kysely-ctl";
-import { Pool } from "pg";
 
-const Config = FlowlineConfig.layer.pipe(Layer.provide(BunFileSystem.layer));
+import { DatabaseConfig } from "./src/modules/config";
+import { DatabasePool } from "./src/modules/pool/service";
 
-const config = await Effect.gen(function* () {
-  return yield* FlowlineConfig;
+const FlowlineConfigLayer = FlowlineConfig.layer.pipe(
+  Layer.provide(BunFileSystem.layer),
+);
+const DatabaseConfigLayer = DatabaseConfig.layer.pipe(
+  Layer.provide(FlowlineConfigLayer),
+);
+const DatabasePoolLayer = Layer.provide(
+  DatabasePool.layer,
+  DatabaseConfigLayer,
+);
+
+const pool = await Effect.gen(function* () {
+  return yield* DatabasePool;
 }).pipe(
-  Effect.provide(Config),
+  Effect.provide(DatabasePoolLayer),
   Effect.catchTag("PlatformError", (e) =>
     Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
       Effect.andThen(Effect.succeed(undefined)),
@@ -20,29 +31,12 @@ const config = await Effect.gen(function* () {
       Effect.andThen(Effect.succeed(undefined)),
     ),
   ),
-  Effect.map((c) =>
-    c
-      ? {
-          ...c,
-          betterAuthSecret: Redacted.value(c.betterAuthSecret),
-          dbPswd: Redacted.value(c.dbPswd),
-        }
-      : undefined,
-  ),
   Effect.runPromise,
 );
 
 export default defineConfig({
   dialect: "pg",
-  dialectConfig: {
-    pool: new Pool({
-      database: config?.dbName,
-      host: config?.dbHost,
-      password: config?.dbPswd,
-      port: config?.dbPort,
-      user: config?.dbUser,
-    }),
-  },
+  dialectConfig: { pool },
   migrations: {
     migrationFolder: "migrations",
   },

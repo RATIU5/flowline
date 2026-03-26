@@ -30,6 +30,7 @@
     "unicorn/prefer-top-level-await": "off",
     "unicorn/no-useless-undefined": "off",
     "no-magic-numbers": "off",
+    "sort-keys": "off",
     "id-length": [
       "warn",
       { "min": 1, "exceptions": ["e", "m", "i", "j", "k", "_"] }
@@ -77,7 +78,12 @@
       }
     ]
   },
-  "ignorePatterns": ["dist/**", "node_modules/**", ".svelte-kit/**"],
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    ".svelte-kit/**",
+    "**/types/db.ts"
+  ],
   "overrides": [
     {
       "files": ["**/src/lib/index.ts"],
