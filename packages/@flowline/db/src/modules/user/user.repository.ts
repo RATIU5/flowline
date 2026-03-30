@@ -2,8 +2,8 @@ import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as ServiceMap from "effect/ServiceMap";
 
-import { type Selectable } from "../../types";
 import { type DB } from "../../types/db";
+import { type Selectable } from "../../types/selectable";
 import { DatabaseClient, type DatabaseClientError } from "../client";
 
 export class UserRepository extends ServiceMap.Service<
@@ -13,7 +13,7 @@ export class UserRepository extends ServiceMap.Service<
       id: string,
     ) => Effect.Effect<Selectable<DB["user"]>, DatabaseClientError>;
   }
->()("@flowline/db/modules/user/repository/UserRepository") {
+>()("@flowline/db/modules/user/user.repository/UserRepository") {
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {

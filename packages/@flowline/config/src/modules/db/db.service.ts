@@ -1,9 +1,10 @@
 import type * as Redacted from "effect/Redacted";
 
-import { FlowlineConfig } from "@flowline/config";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as ServiceMap from "effect/ServiceMap";
+
+import { FlowlineConfig } from "../../modules/core";
 
 export class DatabaseConfig extends ServiceMap.Service<
   DatabaseConfig,
@@ -14,7 +15,7 @@ export class DatabaseConfig extends ServiceMap.Service<
     readonly password: Redacted.Redacted;
     readonly port: number;
   }
->()("@flowline/db/config/DatabaseConfig") {
+>()("@flowline/config/modules/db/db.service/DatabaseConfig") {
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
@@ -23,7 +24,7 @@ export class DatabaseConfig extends ServiceMap.Service<
         host: appConfig.dbHost,
         name: appConfig.dbName,
         user: appConfig.dbUser,
-        password: appConfig.dbPswd,
+        password: appConfig.dbPassword,
         port: appConfig.dbPort,
       };
     }),
