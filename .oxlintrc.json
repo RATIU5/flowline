@@ -1,6 +1,14 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "unicorn", "oxc", "import", "promise", "node"],
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "promise",
+    "node",
+    "eslint"
+  ],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -50,7 +58,34 @@
         "disallowTypeAnnotations": false
       }
     ],
-    "import/consistent-type-specifier-style": ["error", "prefer-inline"],
+    "import/consistent-type-specifier-style": "off",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-useless-empty-export": "error",
+    "typescript/no-import-type-side-effects": "error",
+    "import/no-duplicates": "error",
+    "import/no-self-import": "error",
+    "import/no-empty-named-blocks": "error",
+    "oxc/misrefactored-assign-op": "error",
+    "eslint/no-useless-constructor": "error",
+    "eslint/no-unneeded-ternary": "error",
+    "eslint/no-useless-concat": "error",
+    "unicorn/prefer-array-flat-map": "error",
+    "unicorn/no-abusive-eslint-disable": "error",
+    "typescript/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "typescript/array-type": [
+      "error",
+      {
+        "default": "generic",
+        "readonly": "generic"
+      }
+    ],
     "no-restricted-imports": [
       "error",
       {

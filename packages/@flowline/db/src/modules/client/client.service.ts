@@ -4,8 +4,9 @@ import * as ServiceMap from "effect/ServiceMap";
 import { PostgresDialect, Kysely, type SelectQueryBuilder } from "kysely";
 
 import { DatabasePool } from "../../modules/pool/pool.service";
-import { type DB } from "../../types/db";
 import { DatabaseClientError } from "./client.errors";
+
+import type { DB } from "../../types/db";
 
 export class DatabaseClient extends ServiceMap.Service<DatabaseClient>()(
   "@flowline/db/client/DatabaseClient",
