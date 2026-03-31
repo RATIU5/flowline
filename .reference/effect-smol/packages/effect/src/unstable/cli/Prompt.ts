@@ -2187,11 +2187,14 @@ const processSelection = Effect.fnUntraced(function*(state: FileState, options: 
 
 const handleFileProcess = (options: FileOptionsReq) => {
   return Effect.fnUntraced(function*(input: Terminal.UserInput, state: FileState) {
-    if (input.key.ctrl && input.key.name === "u") {
-      if (showConfirmation(state.confirm)) {
-        return Action.Beep()
+    if (input.key.ctrl) {
+      if (input.key.name === "u") {
+        if (showConfirmation(state.confirm)) {
+          return Action.Beep()
+        }
+        return yield* processFileClear(state)
       }
-      return yield* processFileClear(state)
+      return Action.Beep()
     }
     switch (input.key.name) {
       case "k":
@@ -2347,7 +2350,9 @@ const renderMultiSelectChoices = <A>(
       const annotatedCheckbox = isHighlighted && renderOptions?.plain !== true
         ? Ansi.annotate(checkbox, Ansi.cyanBright)
         : checkbox
-      const title = choice.title
+      const title = isHighlighted && renderOptions?.plain !== true
+        ? Ansi.annotate(choice.title, Ansi.cyanBright)
+        : choice.title
       const description = renderChoiceDescription(choice as SelectChoice<A>, isHighlighted, renderOptions)
       documents.push(prefix + " " + annotatedCheckbox + " " + title + " " + description)
     }
@@ -3154,8 +3159,11 @@ const handleSelectProcess = <A>(options: SelectOptionsReq<A>) => {
 
 const handleAutoCompleteProcess = <A>(options: AutoCompleteOptionsReq<A>) => {
   return (input: Terminal.UserInput, state: AutoCompleteState) => {
-    if (input.key.ctrl && input.key.name === "u") {
-      return processAutoCompleteClear(state, options)
+    if (input.key.ctrl) {
+      if (input.key.name === "u") {
+        return processAutoCompleteClear(state, options)
+      }
+      return Effect.succeed(Action.Beep())
     }
     switch (input.key.name) {
       case "k":
@@ -3356,6 +3364,20 @@ const processTextCursorRight = (state: TextState) => {
   )
 }
 
+const processTextCursorStart = (state: TextState) =>
+  Effect.succeed(
+    Action.NextFrame({
+      state: { ...state, cursor: 0, error: Option.none() }
+    })
+  )
+
+const processTextCursorEnd = (state: TextState) =>
+  Effect.succeed(
+    Action.NextFrame({
+      state: { ...state, cursor: state.value.length, error: Option.none() }
+    })
+  )
+
 const processTab = (state: TextState, options: TextOptionsReq) => {
   if (state.value === options.default) {
     return Effect.succeed(Action.Beep())
@@ -3392,8 +3414,21 @@ const handleTextRender = (options: TextOptionsReq) => {
 
 const handleTextProcess = (options: TextOptionsReq) => {
   return (input: Terminal.UserInput, state: TextState) => {
-    if (input.key.ctrl && input.key.name === "u") {
-      return processTextClear(state)
+    if (input.key.ctrl) {
+      switch (input.key.name) {
+        case "u": {
+          return processTextClear(state)
+        }
+        case "a": {
+          return processTextCursorStart(state)
+        }
+        case "e": {
+          return processTextCursorEnd(state)
+        }
+        default: {
+          return Effect.succeed(Action.Beep())
+        }
+      }
     }
     switch (input.key.name) {
       case "backspace": {
@@ -3404,6 +3439,12 @@ const handleTextProcess = (options: TextOptionsReq) => {
       }
       case "right": {
         return processTextCursorRight(state)
+      }
+      case "home": {
+        return processTextCursorStart(state)
+      }
+      case "end": {
+        return processTextCursorEnd(state)
       }
       case "enter":
       case "return": {
