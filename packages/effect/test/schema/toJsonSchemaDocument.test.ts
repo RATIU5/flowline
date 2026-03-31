@@ -1,5 +1,5 @@
 import type { Options as AjvOptions } from "ajv"
-import { JsonSchema, Schema, SchemaGetter } from "effect"
+import { Effect, JsonSchema, Schema, SchemaGetter } from "effect"
 // import { FastCheck } from "effect/testing"
 import { describe, it } from "vitest"
 import { assertTrue, deepStrictEqual, throws } from "../utils/assert.ts"
@@ -1497,16 +1497,8 @@ describe("toJsonSchemaDocument", () => {
         schema,
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": ["a"]
-              },
-              {
-                "type": "string",
-                "enum": ["b"]
-              }
-            ]
+            "type": "string",
+            "enum": ["a", "b"]
           }
         }
       )
@@ -1514,16 +1506,8 @@ describe("toJsonSchemaDocument", () => {
         schema.annotate({ description: "a" }),
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": ["a"]
-              },
-              {
-                "type": "string",
-                "enum": ["b"]
-              }
-            ],
+            "type": "string",
+            "enum": ["a", "b"],
             "description": "a"
           }
         }
@@ -1536,16 +1520,8 @@ describe("toJsonSchemaDocument", () => {
         schema,
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "number",
-                "enum": [1]
-              },
-              {
-                "type": "number",
-                "enum": [2]
-              }
-            ]
+            "type": "number",
+            "enum": [1, 2]
           }
         }
       )
@@ -1553,16 +1529,8 @@ describe("toJsonSchemaDocument", () => {
         schema.annotate({ description: "a" }),
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "number",
-                "enum": [1]
-              },
-              {
-                "type": "number",
-                "enum": [2]
-              }
-            ],
+            "type": "number",
+            "enum": [1, 2],
             "description": "a"
           }
         }
@@ -1575,16 +1543,8 @@ describe("toJsonSchemaDocument", () => {
         schema,
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "boolean",
-                "enum": [true]
-              },
-              {
-                "type": "boolean",
-                "enum": [false]
-              }
-            ]
+            "type": "boolean",
+            "enum": [true, false]
           }
         }
       )
@@ -1592,16 +1552,8 @@ describe("toJsonSchemaDocument", () => {
         schema.annotate({ description: "a" }),
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "boolean",
-                "enum": [true]
-              },
-              {
-                "type": "boolean",
-                "enum": [false]
-              }
-            ],
+            "type": "boolean",
+            "enum": [true, false],
             "description": "a"
           }
         }
@@ -1658,16 +1610,8 @@ describe("toJsonSchemaDocument", () => {
         schema,
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": ["a"]
-              },
-              {
-                "type": "string",
-                "enum": ["b"]
-              }
-            ]
+            "type": "string",
+            "enum": ["a", "b"]
           }
         }
       )
@@ -1681,17 +1625,25 @@ describe("toJsonSchemaDocument", () => {
         schema.annotate({ ...jsonAnnotations }),
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": ["a"]
-              },
-              {
-                "type": "string",
-                "enum": ["b"]
-              }
-            ],
+            "type": "string",
+            "enum": ["a", "b"],
             ...jsonAnnotations
+          }
+        }
+      )
+    })
+
+    it("nested literals", () => {
+      const schema = Schema.Union([
+        Schema.Literal("a"),
+        Schema.Literals(["b", "c"])
+      ])
+      assertJsonSchemaDocument(
+        schema,
+        {
+          schema: {
+            "type": "string",
+            "enum": ["a", "b", "c"]
           }
         }
       )
@@ -1756,16 +1708,8 @@ describe("toJsonSchemaDocument", () => {
         schema,
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "number",
-                "enum": [1]
-              },
-              {
-                "type": "number",
-                "enum": [2]
-              }
-            ]
+            "type": "number",
+            "enum": [1, 2]
           }
         }
       )
@@ -1779,16 +1723,8 @@ describe("toJsonSchemaDocument", () => {
         schema.annotate({ ...jsonAnnotations }),
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "number",
-                "enum": [1]
-              },
-              {
-                "type": "number",
-                "enum": [2]
-              }
-            ],
+            "type": "number",
+            "enum": [1, 2],
             ...jsonAnnotations
           }
         }
@@ -1804,16 +1740,8 @@ describe("toJsonSchemaDocument", () => {
         schema,
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "boolean",
-                "enum": [true]
-              },
-              {
-                "type": "boolean",
-                "enum": [false]
-              }
-            ]
+            "type": "boolean",
+            "enum": [true, false]
           }
         }
       )
@@ -1827,16 +1755,8 @@ describe("toJsonSchemaDocument", () => {
         schema.annotate({ ...jsonAnnotations }),
         {
           schema: {
-            "anyOf": [
-              {
-                "type": "boolean",
-                "enum": [true]
-              },
-              {
-                "type": "boolean",
-                "enum": [false]
-              }
-            ],
+            "type": "boolean",
+            "enum": [true, false],
             ...jsonAnnotations
           }
         }
@@ -2299,7 +2219,7 @@ describe("toJsonSchemaDocument", () => {
           Schema.Struct({
             a: Schema.optionalKey(Schema.String).pipe(Schema.encodeTo(Schema.String, {
               decode: SchemaGetter.passthrough(),
-              encode: SchemaGetter.withDefault(() => "")
+              encode: SchemaGetter.withDefault(Effect.succeed(""))
             }))
           }),
           {
@@ -2411,7 +2331,7 @@ describe("toJsonSchemaDocument", () => {
           Schema.Struct({
             a: Schema.optional(Schema.String).pipe(Schema.encodeTo(Schema.String, {
               decode: SchemaGetter.passthrough(),
-              encode: SchemaGetter.withDefault(() => "")
+              encode: SchemaGetter.withDefault(Effect.succeed(""))
             }))
           }),
           {
@@ -2911,7 +2831,7 @@ describe("toJsonSchemaDocument", () => {
           Schema.Tuple([
             Schema.optionalKey(Schema.String).pipe(Schema.encodeTo(Schema.String, {
               decode: SchemaGetter.passthrough(),
-              encode: SchemaGetter.withDefault(() => "")
+              encode: SchemaGetter.withDefault(Effect.succeed(""))
             }))
           ]),
           {
@@ -2931,7 +2851,7 @@ describe("toJsonSchemaDocument", () => {
         Schema.Tuple([
           Schema.optionalKey(Schema.String).pipe(Schema.encodeTo(Schema.String, {
             decode: SchemaGetter.passthrough(),
-            encode: SchemaGetter.withDefault(() => "")
+            encode: SchemaGetter.withDefault(Effect.succeed(""))
           }))
         ]),
         {
@@ -3216,19 +3136,10 @@ describe("toJsonSchemaDocument", () => {
                 ]
               },
               "operator": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "+"
-                    ]
-                  },
-                  {
-                    "type": "string",
-                    "enum": [
-                      "-"
-                    ]
-                  }
+                "type": "string",
+                "enum": [
+                  "+",
+                  "-"
                 ]
               },
               "left": {
@@ -3292,19 +3203,10 @@ describe("toJsonSchemaDocument", () => {
                 ]
               },
               "operator": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "enum": [
-                      "+"
-                    ]
-                  },
-                  {
-                    "type": "string",
-                    "enum": [
-                      "-"
-                    ]
-                  }
+                "type": "string",
+                "enum": [
+                  "+",
+                  "-"
                 ]
               },
               "left": {

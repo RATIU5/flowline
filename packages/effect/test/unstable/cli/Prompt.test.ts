@@ -110,6 +110,54 @@ describe("Prompt.text", () => {
       assert.strictEqual(result, "John")
     }).pipe(Effect.provide(TestLayer)))
 
+  it.effect("moves the cursor to the beginning on ctrl-a", () =>
+    Effect.gen(function*() {
+      const prompt = Prompt.text({
+        message: "Name",
+        default: "Jane"
+      })
+
+      yield* MockTerminal.inputText(" Doe")
+      yield* MockTerminal.inputKey("a", { ctrl: true })
+      yield* MockTerminal.inputText("Dr. ")
+      yield* MockTerminal.inputKey("enter")
+
+      const result = yield* Prompt.run(prompt)
+      assert.strictEqual(result, "Dr. Jane Doe")
+    }).pipe(Effect.provide(TestLayer)))
+
+  it.effect("moves the cursor to the end on ctrl-e", () =>
+    Effect.gen(function*() {
+      const prompt = Prompt.text({
+        message: "Name"
+      })
+
+      yield* MockTerminal.inputText("Jane")
+      yield* MockTerminal.inputKey("left")
+      yield* MockTerminal.inputKey("left")
+      yield* MockTerminal.inputKey("e", { ctrl: true })
+      yield* MockTerminal.inputText(" Doe")
+      yield* MockTerminal.inputKey("enter")
+
+      const result = yield* Prompt.run(prompt)
+      assert.strictEqual(result, "Jane Doe")
+    }).pipe(Effect.provide(TestLayer)))
+
+  it.effect("does not insert characters for unsupported ctrl key combinations", () =>
+    Effect.gen(function*() {
+      const prompt = Prompt.text({
+        message: "Name"
+      })
+
+      yield* MockTerminal.inputText("Ja")
+      yield* MockTerminal.inputKey("l", { ctrl: true })
+      yield* MockTerminal.inputText("ne")
+      yield* MockTerminal.inputKey("enter")
+
+      const result = yield* Prompt.run(prompt)
+      assert.strictEqual(result, "Jane")
+    }).pipe(Effect.provide(TestLayer)))
+
   it.effect("does not render or submit the cleared default value", () =>
     Effect.gen(function*() {
       const prompt = Prompt.text({
