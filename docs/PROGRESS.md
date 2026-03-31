@@ -31,10 +31,11 @@ _This document is updated after each PR_
 - [x] Pick a database (PostgreSQL)
 - [x] Setup Effect services for database access
 - [x] Setup Kysely for type-safe query-building
-- [ ] Setup routes for authentication and handlers
-- [ ] Separate messages to dedicated user accounts
+- [x] Setup routes for authentication and handlers
 - [ ] Setup basic UI for logging in/out and messaging with profiles
+- [ ] Separate messages to dedicated user accounts
 
 ### Decisions Made:
 
 - [20260326-kysely-pg.md](decisions/20260326-kysely-pg.md)
+- [20260331-module-architecture.md](decisions/20260331-module-architecture.md)
