@@ -24,18 +24,16 @@ const DatabasePoolLayer = Layer.provide(
   DatabaseConfigLayer,
 );
 
-const pool = await Effect.gen(function* () {
-  return yield* DatabasePool;
-}).pipe(
+const pool = await Effect.service(DatabasePool).pipe(
   Effect.provide(DatabasePoolLayer),
   Effect.catchTag("PlatformError", (e) =>
     Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(Effect.succeed(undefined)),
+      Effect.andThen(Effect.void),
     ),
   ),
   Effect.catchTag("ConfigError", (e) =>
     Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(Effect.succeed(undefined)),
+      Effect.andThen(Effect.void),
     ),
   ),
   Effect.runPromise,
