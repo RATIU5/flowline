@@ -1,1 +1,1 @@
-export * from "./messages/index.js";
+export * from "./modules/message";

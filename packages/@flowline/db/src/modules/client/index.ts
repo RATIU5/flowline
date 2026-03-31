@@ -1,2 +1,2 @@
-export * from "./service";
-export * from "./errors";
+export * from "./client.service";
+export * from "./client.errors";

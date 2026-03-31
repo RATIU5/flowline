@@ -10,8 +10,8 @@ import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 import { onMount } from "svelte";
 
 let userMessage = $state("");
-let sendingMessages = $state<string[]>([]);
-let messageHistory = $state<string[]>([]);
+let sendingMessages = $state<Array<string>>([]);
+let messageHistory = $state<Array<string>>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,

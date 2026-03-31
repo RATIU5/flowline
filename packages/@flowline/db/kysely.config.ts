@@ -1,12 +1,19 @@
 import { BunFileSystem } from "@effect/platform-bun";
-import { FlowlineConfig } from "@flowline/config";
+import { FlowlineConfig, DatabaseConfig } from "@flowline/config";
 import { Cause, Effect, Layer } from "effect";
+import * as ConfigProvider from "effect/ConfigProvider";
 import { defineConfig } from "kysely-ctl";
 
-import { DatabaseConfig } from "./src/modules/config";
-import { DatabasePool } from "./src/modules/pool/service";
+import { DatabasePool } from "./src/modules/pool/pool.service";
 
 const FlowlineConfigLayer = FlowlineConfig.layer.pipe(
+  Layer.provide(
+    ConfigProvider.layer(
+      ConfigProvider.fromDotEnv({
+        path: `${import.meta.url}/../../../apps/backend/.env`,
+      }),
+    ),
+  ),
   Layer.provide(BunFileSystem.layer),
 );
 const DatabaseConfigLayer = DatabaseConfig.layer.pipe(
@@ -17,18 +24,16 @@ const DatabasePoolLayer = Layer.provide(
   DatabaseConfigLayer,
 );
 
-const pool = await Effect.gen(function* () {
-  return yield* DatabasePool;
-}).pipe(
+const pool = await Effect.service(DatabasePool).pipe(
   Effect.provide(DatabasePoolLayer),
   Effect.catchTag("PlatformError", (e) =>
     Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(Effect.succeed(undefined)),
+      Effect.andThen(Effect.void),
     ),
   ),
   Effect.catchTag("ConfigError", (e) =>
     Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(Effect.succeed(undefined)),
+      Effect.andThen(Effect.void),
     ),
   ),
   Effect.runPromise,
