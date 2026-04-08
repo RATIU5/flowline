@@ -1,12 +1,12 @@
 import { BunFileSystem } from "@effect/platform-bun";
-import { FlowlineConfig, DatabaseConfig } from "@flowline/config";
+import { AppConfig } from "@flowline/config/server";
 import { Cause, Effect, Layer } from "effect";
 import * as ConfigProvider from "effect/ConfigProvider";
 import { defineConfig } from "kysely-ctl";
 
 import { DatabasePool } from "./src/modules/pool/pool.service";
 
-const FlowlineConfigLayer = FlowlineConfig.layer.pipe(
+const FlowlineConfigLayer = AppConfig.layer.pipe(
   Layer.provide(
     ConfigProvider.layer(
       ConfigProvider.fromDotEnv({
@@ -16,12 +16,9 @@ const FlowlineConfigLayer = FlowlineConfig.layer.pipe(
   ),
   Layer.provide(BunFileSystem.layer),
 );
-const DatabaseConfigLayer = DatabaseConfig.layer.pipe(
-  Layer.provide(FlowlineConfigLayer),
-);
 const DatabasePoolLayer = Layer.provide(
   DatabasePool.layer,
-  DatabaseConfigLayer,
+  FlowlineConfigLayer,
 );
 
 const pool = await Effect.service(DatabasePool).pipe(

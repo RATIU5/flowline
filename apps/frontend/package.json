@@ -14,8 +14,11 @@
   },
   "dependencies": {
     "@effect/platform-browser": "catalog:effect",
+    "@flowline/auth": "workspace:*",
+    "@flowline/config": "workspace:*",
     "@flowline/rpc": "workspace:*",
     "effect": "catalog:effect",
+    "sveltekit-effect-runtime": "catalog:svelte",
     "tailwindcss-corner-shape": "catalog:tailwindcss"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
-import { MessageRpcs } from "@flowline/rpc";
+import { MessageRpcs } from "@flowline/rpc/message";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";

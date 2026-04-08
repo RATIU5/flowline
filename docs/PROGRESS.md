@@ -32,10 +32,15 @@ _This document is updated after each PR_
 - [x] Setup Effect services for database access
 - [x] Setup Kysely for type-safe query-building
 - [x] Setup routes for authentication and handlers
-- [ ] Setup basic UI for logging in/out and messaging with profiles
-- [ ] Separate messages to dedicated user accounts
+- [x] Setup basic UI for logging in/out
+- [ ] Messages send from dedicated user accounts
 
 ### Decisions Made:
 
 - [20260326-kysely-pg.md](decisions/20260326-kysely-pg.md)
 - [20260331-module-architecture.md](decisions/20260331-module-architecture.md)
+- [20260408-appconfig-collapse.md](decisions/20260408-appconfig-collapse.md)
+- [20260408-auth-package.md](decisions/20260408-auth-package.md)
+- [20260408-auth-session-strategy.md](decisions/20260408-auth-session-strategy.md)
+- [20260408-package-modules.md](decisions/20260408-package-modules.md)
+- [20260408-sveltekit-effect-runtime.md](decisions/20260408-sveltekit-effect-runtime.md)

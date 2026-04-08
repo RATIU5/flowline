@@ -67,11 +67,13 @@
     "import/no-self-import": "error",
     "import/no-empty-named-blocks": "error",
     "oxc/misrefactored-assign-op": "error",
+    "eslint/max-statements": "off",
     "eslint/no-useless-constructor": "error",
     "eslint/no-unneeded-ternary": "error",
     "eslint/no-useless-concat": "error",
     "unicorn/prefer-array-flat-map": "error",
     "unicorn/no-abusive-eslint-disable": "error",
+    "unicorn/no-array-callback-reference": "off",
     "typescript/no-unused-vars": [
       "error",
       {

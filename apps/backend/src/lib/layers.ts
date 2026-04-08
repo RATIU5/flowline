@@ -1,15 +1,10 @@
 import { BunFileSystem } from "@effect/platform-bun";
-import { DatabaseConfig, FlowlineConfig } from "@flowline/config";
+import { AppConfig } from "@flowline/config/app";
 import { DatabasePool } from "@flowline/db/pool";
 import * as Layer from "effect/Layer";
 
-const FlowlineConfigLayer = FlowlineConfig.layer.pipe(
+const FlowlineConfigLayer = AppConfig.layer.pipe(
   Layer.provide(BunFileSystem.layer),
 );
-const DatabaseConfigLayer = DatabaseConfig.layer.pipe(
-  Layer.provide(FlowlineConfigLayer),
-);
-export const DatabasePoolLayer = Layer.provide(
-  DatabasePool.layer,
-  DatabaseConfigLayer,
-);
+
+export const AuthLayer = Layer.provide(DatabasePool.layer, FlowlineConfigLayer);

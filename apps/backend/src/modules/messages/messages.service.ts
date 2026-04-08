@@ -1,4 +1,4 @@
-import type { Message } from "@flowline/rpc";
+import type { Message } from "@flowline/rpc/message";
 
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
