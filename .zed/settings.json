@@ -15,19 +15,16 @@
           "configPath": ".oxfmtrc.json"
         }
       }
+    },
+    "effect-tsgo": {
+      "binary": {
+        "path": "node_modules/.bin/tsgo",
+        "arguments": ["--lsp", "--stdio"]
+      }
     }
   },
   "languages": {
     "TypeScript": {
-      "language_servers": [
-        "oxfmt",
-        "oxlint",
-        "effect-tsgo",
-        "!typescript-language-server"
-      ],
-      "formatter": { "language_server": { "name": "oxfmt" } }
-    },
-    "TSX": {
       "language_servers": [
         "oxfmt",
         "oxlint",

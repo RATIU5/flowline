@@ -1,0 +1,43 @@
+{
+  "name": "@flowline/auth",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": "./src/modules/client/index.ts",
+    "./server": "./src/modules/server/index.ts",
+    "./shared": "./src/modules/shared/index.ts"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "test": "vitest",
+    "coverage": "vitest --coverage",
+    "typecheck": "tsgo --noEmit --project tsconfig.json"
+  },
+  "dependencies": {
+    "effect": "catalog:effect"
+  },
+  "devDependencies": {
+    "@effect/language-service": "catalog:effect",
+    "@effect/vitest": "catalog:effect",
+    "@flowline/config": "workspace:*",
+    "@flowline/db": "workspace:*",
+    "@typescript/native-preview": "catalog:typescript",
+    "better-auth": "catalog:auth",
+    "vitest": "catalog:testing"
+  },
+  "peerDependencies": {
+    "sveltekit-effect-runtime": "catalog:svelte"
+  },
+  "effect": {
+    "generateExports": {
+      "include": [
+        "**/*.ts"
+      ]
+    },
+    "generateIndex": {
+      "include": [
+        "**/*.ts"
+      ]
+    }
+  }
+}

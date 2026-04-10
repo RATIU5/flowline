@@ -1,30 +1,20 @@
 # <Decision Title>
 
-**Date:** YYYY-MM-DD | **Phase:** N
+**Date:** YYYY-MM-DD | **Phase:** <milestone or feature name>
 
-## Context
+## What & Why
 
-What problem? What constraints? (2-3 sentences)
+What changed, and what drove it? Include constraints, friction, or prior state worth remembering.
 
-## Options
+## Alternatives
 
-| Option | Why Consider | Why Not |
-| ------ | ------------ | ------- |
-| A      |              |         |
-| B      |              |         |
+- **[Alt option]** — why skipped or deferred
+- _(omit if no real alternative existed)_
 
-## Chose: [Option]
+## Tradeoffs
 
-**Why:** 1-2 sentences on deciding factor
+What did this give up? What assumptions does it rely on, and what breaks if they're wrong?
 
-**Tradeoff accepted:** What did you give up? What breaks if assumptions are wrong?
+## Impact
 
-## Distributed Systems Angle
-
-_Skip if not applicable_
-
-How does this choice affect: consistency, availability, failure handling, or scalability?
-
----
-
-_~5 min to fill out during development_
+How does this affect the codebase going forward? Think: structure, coupling, interfaces, maintainability, future flexibility.

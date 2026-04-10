@@ -1,4 +1,4 @@
-import { MessageRpcs } from "@flowline/rpc";
+import { MessageRpcs } from "@flowline/rpc/message";
 import * as Effect from "effect/Effect";
 import * as PubSub from "effect/PubSub";
 import * as Stream from "effect/Stream";

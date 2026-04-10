@@ -1,37 +1,16 @@
-import { BunFileSystem } from "@effect/platform-bun";
-import { FlowlineConfig, DatabaseConfig } from "@flowline/config";
-import { DatabasePool } from "@flowline/db/pool";
-import { betterAuth } from "better-auth";
+import { AuthEffect } from "@flowline/auth/shared";
+import { AppConfig } from "@flowline/config/app";
 import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
-const FlowlineConfigLayer = FlowlineConfig.layer.pipe(
-  Layer.provide(BunFileSystem.layer),
-);
-const DatabaseConfigLayer = DatabaseConfig.layer.pipe(
-  Layer.provide(FlowlineConfigLayer),
-);
-const DatabasePoolLayer = Layer.provide(
-  DatabasePool.layer,
-  DatabaseConfigLayer,
-);
+import { AuthLayer } from "./layers";
 
-const authProgram = Effect.gen(function* () {
-  const pool = yield* DatabasePool;
-  return betterAuth({
-    emailAndPassword: {
-      enabled: true,
-    },
-    database: pool,
-  });
-});
-
-export const AuthEffect = authProgram;
+const AuthAndConfigLayers = Layer.mergeAll(AppConfig.layer, AuthLayer);
 
 export default await Effect.runPromise(
-  authProgram.pipe(
-    Effect.provide(DatabasePoolLayer),
+  AuthEffect.pipe(
+    Effect.provide(AuthAndConfigLayers),
     Effect.catchTag("ConfigError", (e) =>
       Effect.logError(Cause.pretty(Cause.fail(e))).pipe(Effect.orDie),
     ),

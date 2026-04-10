@@ -4,7 +4,6 @@
   "type": "module",
   "exports": {
     "./client": "./src/modules/client/index.ts",
-    "./config": "./src/modules/config/index.ts",
     "./pool": "./src/modules/pool/index.ts",
     "./types": "./src/types/index.ts"
   },

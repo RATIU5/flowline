@@ -2,7 +2,7 @@
 
 **Completed:** YYYY-MM-DD
 
-## What I Built
+## What was Built
 
 1-2 sentences + PR link
 
@@ -43,7 +43,3 @@ _2-3 bullet points you could discuss in an interview about this phase_
 - "I chose X over Y because..."
 - "I learned that Z when..."
 - "If I had to scale this, I would..."
-
----
-
-_~25 min at end of phase_

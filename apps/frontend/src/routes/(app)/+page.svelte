@@ -1,17 +1,22 @@
 <script lang="ts">
 import { BrowserSocket } from "@effect/platform-browser";
-import { MessageRpcs } from "@flowline/rpc";
+import { AuthClient } from "@flowline/auth/client";
+import { type Message, MessageRpcs } from "@flowline/rpc/message";
 import * as Console from "effect/Console";
+import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
+import * as ServiceMap from "effect/ServiceMap";
 import * as Stream from "effect/Stream";
 import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 import { onMount } from "svelte";
+import { PUBLIC_BASE_URL } from "$env/static/public";
+import MessagesDisplay from "$lib/components/chat/messages-display.svelte";
 
 let userMessage = $state("");
 let sendingMessages = $state<Array<string>>([]);
-let messageHistory = $state<Array<string>>([]);
+let messageHistory = $state<Array<typeof Message.Type>>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,
@@ -20,34 +25,63 @@ const ProtocolLive = RpcClient.layerProtocolSocket({
   Layer.provide(RpcSerialization.layerJson),
 );
 
+class RpcMessageClient extends ServiceMap.Service<RpcMessageClient>()(
+  "@flowline/frontend/RpcMessageClient",
+  {
+    make: Effect.gen(function* () {
+      return yield* RpcClient.make(MessageRpcs);
+    }),
+  },
+) {
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(ProtocolLive),
+  );
+}
+
 const messageSubmitProgram = Effect.gen(function* () {
-  const client = yield* RpcClient.make(MessageRpcs);
-  yield* client.PublishMessage({ message: userMessage });
+  if (userMessage.trim() === "") {
+    return yield* Effect.void;
+  }
+  const client = yield* RpcMessageClient;
+  const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
+
+  const session = yield* Effect.promise(() => auth.getSession());
+
+  yield* client.PublishMessage({
+    message: userMessage,
+    user: {
+      displayName: session.data?.user.name ?? "Unknown User",
+    },
+    dateCreated: DateTime.makeUnsafe(new Date(Date.now())),
+  });
+
+  yield* Effect.sync(() => {
+    sendingMessages.push(userMessage);
+    userMessage = "";
+  });
 }).pipe(
   Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
   Effect.catch((error) =>
-    Console.error(error).pipe(Effect.andThen(Effect.succeed(undefined))),
+    Console.error(error).pipe(Effect.andThen(Effect.void)),
   ),
-  Effect.scoped,
 );
 
 const subscribeMessagesProgram = Effect.gen(function* () {
-  const client = yield* RpcClient.make(MessageRpcs);
+  const client = yield* RpcMessageClient;
   yield* client.SubscribeMessages().pipe(
     Stream.runForEach((m) => {
-      messageHistory.push(m.message);
+      messageHistory.push(m);
       return Effect.void;
     }),
   );
 }).pipe(
   Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
   Effect.catch((error) =>
-    Console.error(error).pipe(Effect.andThen(Effect.succeed(undefined))),
+    Console.error(error).pipe(Effect.andThen(Effect.void)),
   ),
-  Effect.scoped,
 );
 
-const runtime = ManagedRuntime.make(ProtocolLive);
+const runtime = ManagedRuntime.make(RpcMessageClient.layer);
 
 const handleSubmit = (e: SubmitEvent) => {
   e.preventDefault();
@@ -60,18 +94,10 @@ onMount(() => {
 </script>
 
 <div class="min-h-screen h-full bg-neutral-100 w-full">
-  <div class="w-full h-full">
-    <div class="prose w-full flex flex-col">
-      {#each messageHistory as msg}
-        <div class="w-full">
-          <p>{msg}</p>
-        </div>
-      {/each}
-    </div>
-  </div>
+  <div class="p-4"><MessagesDisplay messages={messageHistory} /></div>
   <div class="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-xl">
     <form
-      class="flex flex-row items-center justify-between has-focus-within:border-blue-400 bg-white w-full h-12 border border-solid border-neutral-300 rounded-4xl focus:outline-none focus:border-blue-400 overflow-hidden pr-0.75"
+      class="flex flex-row items-center justify-between has-focus-within:border-blue-400 bg-white w-full h-12 border border-solid border-neutral-300 focus:outline-none focus:border-blue-400 overflow-hidden pr-0.75"
       onsubmit={handleSubmit}
     >
       <input
@@ -84,7 +110,7 @@ onMount(() => {
       <button
         type="submit"
         aria-label="Send"
-        class="h-full max-h-10 w-full max-w-10 flex items-center justify-center rounded-3xl bg-neutral-100 text-neutral-600 hover:bg-blue-100 hover:text-blue-700"
+        class="h-full max-h-10 w-full max-w-10 flex items-center justify-center bg-neutral-100 text-neutral-600 hover:bg-blue-100 hover:text-blue-700"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./message": "./src/modules/message/index.ts"
   },
   "scripts": {
     "dev": "bun run --watch src/index.ts",

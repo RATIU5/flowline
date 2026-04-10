@@ -1,4 +1,4 @@
-import type { Message } from "@flowline/rpc";
+import type { Message } from "@flowline/rpc/message";
 
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -9,7 +9,7 @@ export class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
   "@flowline/backend/modules/messages/messages.service/ChatPubSub",
   {
     make: Effect.gen(function* () {
-      const pubSub = yield* PubSub.bounded<Message>(2);
+      const pubSub = yield* PubSub.unbounded<Message>();
       return pubSub;
     }),
   },

@@ -1,4 +1,4 @@
-import { DatabaseConfig } from "@flowline/config";
+import { AppConfig } from "@flowline/config/app";
 import * as Console from "effect/Console";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
@@ -15,13 +15,16 @@ export class DatabasePool extends ServiceMap.Service<DatabasePool, Pool>()(
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const config = yield* DatabaseConfig;
+      const config = yield* AppConfig;
       return yield* Effect.acquireRelease(
         Effect.sync(
           () =>
             new Pool({
-              ...config,
-              password: Redacted.value(config.password),
+              host: config.db.host,
+              port: config.db.port,
+              user: config.db.user,
+              database: config.db.name,
+              password: Redacted.value(config.db.password),
             }),
         ),
         (pool, exit) =>

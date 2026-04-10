@@ -1,6 +1,5 @@
-import { MessageRpcs } from "@flowline/rpc";
+import { MessageRpcs } from "@flowline/rpc/message";
 import * as Layer from "effect/Layer";
-import * as HttpRouter from "effect/unstable/http/HttpRouter";
 import { RpcServer } from "effect/unstable/rpc";
 import * as RpcSerialization from "effect/unstable/rpc/RpcSerialization";
 
@@ -15,5 +14,4 @@ export const MessagesRoute = RpcServer.layerHttp({
   Layer.provide(MessageHandlers),
   Layer.provide(ChatPubSub.layer),
   Layer.provide(RpcSerialization.layerJson),
-  Layer.provide(HttpRouter.cors()),
 );
