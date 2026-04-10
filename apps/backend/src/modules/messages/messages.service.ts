@@ -9,7 +9,7 @@ export class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
   "@flowline/backend/modules/messages/messages.service/ChatPubSub",
   {
     make: Effect.gen(function* () {
-      const pubSub = yield* PubSub.bounded<Message>(2);
+      const pubSub = yield* PubSub.unbounded<Message>();
       return pubSub;
     }),
   },

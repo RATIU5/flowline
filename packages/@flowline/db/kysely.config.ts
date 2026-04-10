@@ -1,5 +1,5 @@
 import { BunFileSystem } from "@effect/platform-bun";
-import { AppConfig } from "@flowline/config/server";
+import { AppConfig } from "@flowline/config/app";
 import { Cause, Effect, Layer } from "effect";
 import * as ConfigProvider from "effect/ConfigProvider";
 import { defineConfig } from "kysely-ctl";

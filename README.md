@@ -2,14 +2,16 @@
 
 > Building a real-time chat application from scratch to deeply understand distributed systems architecture, using Effect-ts
 
+> Phases may be re-arranged or new ones introduced as the project evolves.
+
 ## Project Goals
 
-Learn distributed systems by building a Discord-like chat app that scales from 1 to 10,000+ concurrent users.
+Learn distributed systems by building a Discord-like chat app that scales from 1 to 10,000+ concurrent users using Effect.
 
 **Learning focus:**
 
 - Distributed systems patterns (consensus, sharding, pub/sub)
-- Effect-ts in a complex real-world domain
+- Effect in a complex real-world domain
 - Documenting architectural decisions
 
 **Not focused on:**
@@ -22,8 +24,8 @@ Learn distributed systems by building a Discord-like chat app that scales from 1
 **Start Simple. Add Complexity When Needed.**
 
 - **Phases 1-11:** Single server, core features
-- **Phase 12:** Load testing to find bottlenecks
-- **Phases 13+:** Add distributed patterns as needed
+- **Phase 14:** Load testing to find bottlenecks
+- **Phases 15+:** Add distributed patterns as needed
 
 Avoid premature optimization to learn _why_ distributed patterns exist, not just _how_ to use them.
 
@@ -49,26 +51,27 @@ pnpm dev
 
 ## Roadmap
 
-### MVP (Phases 1-11)
+### MVP (Phases 1-13)
 
 1. [x] WebSocket connection
-2. [ ] User authentication (with DB) _(in progress)_
-3. [ ] Database persistence
-4. [ ] Direct messages
-5. [ ] Channels & spaces
-6. [ ] User presence
-7. [ ] Typing indicators
-8. [ ] Message types
-9. [ ] Reactions
-10. [ ] Threads
-11. [ ] File uploads
+2. [x] User authentication (with DB)
+3. [ ] Database persistence _(in progress)_
+4. [ ] Direct messages for 1:1 communication
+5. [ ] Channels & spaces for 1:N communication
+6. [ ] User presence (active, offline, away, custom)
+7. [ ] Custom UI/UX library
+8. [ ] Typing indicators
+9. [ ] Message types (text, markdown, forward, reply, quote)
+10. [ ] Reactions to messages
+11. [ ] Threads (group similar messages in a sub-container)
+12. [ ] File uploads
+13. [ ] Public API to work for different client and load testing
 
-### Scale (Phases 12+)
+### Scale (Phases 14+)
 
-12. [ ] Load testing (10k users)
-13. [ ] Multiple app servers
-14. [ ] Redis pub/sub
-15. [ ] Message queue
+14. [ ] Load testing (10k users)
+15. [ ] Redis pub/sub
+16. [ ] Message queue
 
 [View detailed roadmap →](docs/PROGRESS.md)
 
@@ -79,20 +82,6 @@ pnpm dev
 - [Documentation Process](docs/PROCESS.md) - How to document decisions
 - [Decision Log](docs/decisions/) - Architecture choices & trade-offs
 - [Phase Retrospectives](docs/phases/) - Lessons learned
-
-## Key Learnings
-
-_Updated after each phase_
-
-- Phase 1: _In progress_
-
-[See all retrospectives →](docs/phases/)
-
-## Open Questions
-
-- When to introduce multiple app servers?
-- How to handle message ordering across distributed servers?
-- Right balance between consistency and availability?
 
 ## Connect
 
@@ -109,4 +98,4 @@ Learning distributed systems for career growth. Documenting decisions shows grow
 
 _"The best way to learn distributed systems is to build one, break it, and fix it."_
 
-**Last Updated:** January 17, 2026
+**Last Updated:** April 10, 2026

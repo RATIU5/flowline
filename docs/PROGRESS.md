@@ -33,7 +33,7 @@ _This document is updated after each PR_
 - [x] Setup Kysely for type-safe query-building
 - [x] Setup routes for authentication and handlers
 - [x] Setup basic UI for logging in/out
-- [ ] Messages send from dedicated user accounts
+- [x] Messages send from dedicated user accounts
 
 ### Decisions Made:
 
@@ -44,3 +44,4 @@ _This document is updated after each PR_
 - [20260408-auth-session-strategy.md](decisions/20260408-auth-session-strategy.md)
 - [20260408-package-modules.md](decisions/20260408-package-modules.md)
 - [20260408-sveltekit-effect-runtime.md](decisions/20260408-sveltekit-effect-runtime.md)
+- [20260410-client-rpc-layer.md](decisions/20260410-client-rpc-layer.md)
