@@ -1,13 +1,10 @@
+import { runtime } from "$lib/shared/effects/runtime";
 import { redirect } from "@sveltejs/kit";
 import * as Effect from "effect/Effect";
-import {
-  SvelteKitRequestEvent,
-  wrapServerLoad,
-} from "sveltekit-effect-runtime";
 
-export const load = wrapServerLoad(
+export const load = runtime.load(
   Effect.gen(function* () {
-    const { url, locals } = yield* SvelteKitRequestEvent;
+    const { url, locals } = yield* runtime.CurrentServerLoadEvent;
     if (!locals.user) {
       return redirect(302, `/login?next=${encodeURIComponent(url.pathname)}`);
     }

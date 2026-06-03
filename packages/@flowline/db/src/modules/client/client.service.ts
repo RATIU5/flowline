@@ -1,6 +1,6 @@
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as ServiceMap from "effect/ServiceMap";
 import { PostgresDialect, Kysely, type SelectQueryBuilder } from "kysely";
 
 import { DatabasePool } from "../../modules/pool/pool.service";
@@ -8,7 +8,7 @@ import { DatabaseClientError } from "./client.errors";
 
 import type { DB } from "../../types/db";
 
-export class DatabaseClient extends ServiceMap.Service<DatabaseClient>()(
+export class DatabaseClient extends Context.Service<DatabaseClient>()(
   "@flowline/db/client/DatabaseClient",
   {
     make: Effect.gen(function* () {

@@ -2,13 +2,11 @@ import type { Handle } from "@sveltejs/kit";
 
 import { PUBLIC_BASE_URL } from "$env/static/public";
 import { AuthClient } from "$lib/client/effects/auth";
+import { runtime } from "$lib/shared/effects/runtime";
 import * as Effect from "effect/Effect";
-import { SvelteHandleParams, wrapHandle } from "sveltekit-effect-runtime";
 
-export const handle: Handle = wrapHandle(
+export const handle: Handle = runtime.handle(({ event, resolve }) =>
   Effect.gen(function* () {
-    const { event, resolve } = yield* SvelteHandleParams.SvelteHandleParams;
-
     const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
     const { data, error } = yield* Effect.promise(() =>
       auth.getSession({
@@ -24,6 +22,6 @@ export const handle: Handle = wrapHandle(
       yield* Effect.logDebug(error.message);
     }
 
-    return yield* resolve(event);
+    return yield* Effect.promise(() => Promise.resolve(resolve(event)));
   }),
 );
