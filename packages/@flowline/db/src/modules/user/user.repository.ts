@@ -1,13 +1,13 @@
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import * as ServiceMap from "effect/ServiceMap";
 
 import { DatabaseClient, type DatabaseClientError } from "../client";
 
 import type { DB } from "../../types/db";
 import type { Selectable } from "../../types/selectable";
 
-export class UserRepository extends ServiceMap.Service<
+export class UserRepository extends Context.Service<
   UserRepository,
   {
     findById: (

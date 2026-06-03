@@ -1,8 +1,8 @@
 import type * as Redacted from "effect/Redacted";
 
 import * as Config from "effect/Config";
+import * as Context from "effect/Context";
 import * as Layer from "effect/Layer";
-import * as ServiceMap from "effect/ServiceMap";
 
 export interface AppConfigShape {
   readonly general: {
@@ -21,7 +21,7 @@ export interface AppConfigShape {
   };
 }
 
-export class AppConfig extends ServiceMap.Service<AppConfig, AppConfigShape>()(
+export class AppConfig extends Context.Service<AppConfig, AppConfigShape>()(
   "@flowline/config/modules/app/app.service/AppConfig",
 ) {
   static readonly layer = Layer.effect(
@@ -35,25 +35,23 @@ export class AppConfig extends ServiceMap.Service<AppConfig, AppConfigShape>()(
       dbName: Config.nonEmptyString("DB_NAME"),
       authSecret: Config.redacted("AUTH_SECRET"),
       authUrl: Config.url("AUTH_URL"),
-    })
-      .pipe(
-        Config.map((config) => ({
-          general: {
-            clientUrl: config.clientUrl,
-          },
-          db: {
-            host: config.dbHost,
-            port: config.dbPort,
-            user: config.dbUser,
-            password: config.dbPswd,
-            name: config.dbName,
-          },
-          auth: {
-            secret: config.authSecret,
-            url: config.authUrl,
-          },
-        })),
-      )
-      .asEffect(),
+    }).pipe(
+      Config.map((config) => ({
+        general: {
+          clientUrl: config.clientUrl,
+        },
+        db: {
+          host: config.dbHost,
+          port: config.dbPort,
+          user: config.dbUser,
+          password: config.dbPswd,
+          name: config.dbName,
+        },
+        auth: {
+          secret: config.authSecret,
+          url: config.authUrl,
+        },
+      })),
+    ),
   );
 }

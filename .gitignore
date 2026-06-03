@@ -22,3 +22,4 @@ package-lock.json
 TODO.md
 .svelte-kit/
 .reference
+.claude

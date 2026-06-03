@@ -1,15 +1,15 @@
 import { AppConfig } from "@flowline/config/app";
 import * as Console from "effect/Console";
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Layer from "effect/Layer";
 import * as Redacted from "effect/Redacted";
-import * as ServiceMap from "effect/ServiceMap";
 import { Pool } from "pg";
 
 import { DatabasePoolEndError } from "./pool.errors";
 
-export class DatabasePool extends ServiceMap.Service<DatabasePool, Pool>()(
+export class DatabasePool extends Context.Service<DatabasePool, Pool>()(
   "@flowline/db/modules/pool/pool.service/DatabasePool",
 ) {
   static readonly layer = Layer.effect(

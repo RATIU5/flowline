@@ -1,11 +1,11 @@
 import type { Message } from "@flowline/rpc/message";
 
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as PubSub from "effect/PubSub";
-import * as ServiceMap from "effect/ServiceMap";
 
-export class ChatPubSub extends ServiceMap.Service<ChatPubSub>()(
+export class ChatPubSub extends Context.Service<ChatPubSub>()(
   "@flowline/backend/modules/messages/messages.service/ChatPubSub",
   {
     make: Effect.gen(function* () {

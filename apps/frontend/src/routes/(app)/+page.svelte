@@ -3,11 +3,11 @@ import { BrowserSocket } from "@effect/platform-browser";
 import { AuthClient } from "@flowline/auth/client";
 import { type Message, MessageRpcs } from "@flowline/rpc/message";
 import * as Console from "effect/Console";
+import * as Context from "effect/Context";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as ManagedRuntime from "effect/ManagedRuntime";
-import * as ServiceMap from "effect/ServiceMap";
 import * as Stream from "effect/Stream";
 import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 import { onMount } from "svelte";
@@ -25,7 +25,7 @@ const ProtocolLive = RpcClient.layerProtocolSocket({
   Layer.provide(RpcSerialization.layerJson),
 );
 
-class RpcMessageClient extends ServiceMap.Service<RpcMessageClient>()(
+class RpcMessageClient extends Context.Service<RpcMessageClient>()(
   "@flowline/frontend/RpcMessageClient",
   {
     make: Effect.gen(function* () {
