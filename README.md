@@ -38,16 +38,22 @@ Avoid premature optimization to learn _why_ distributed patterns exist, not just
 
 [See tech decision docs →](docs/decisions/)
 
-## Quick Start
+## Quick Start (first time)
 
 ```bash
 git clone https://github.com/RATIU5/flowline
 cd flowline
-pnpm install
-pnpm dev
+cp apps/backend/.env.example apps/backend/.env
+cp apps/frontend/.env.example apps/frontend/.env
+bun i
+bun db:up
+bun --bun db:migrate
+bun dev
 ```
 
 **Prerequisites:** Bun v1.3.5+, PostgreSQL 17+
+
+Make sure to fill out your `.env` files with your credentials.
 
 ## Roadmap
 

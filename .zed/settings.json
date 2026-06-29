@@ -15,12 +15,6 @@
           "configPath": ".oxfmtrc.json"
         }
       }
-    },
-    "effect-tsgo": {
-      "binary": {
-        "path": "node_modules/.bin/tsgo",
-        "arguments": ["--lsp", "--stdio"]
-      }
     }
   },
   "languages": {

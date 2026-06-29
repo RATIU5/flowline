@@ -18,8 +18,7 @@
     "@flowline/config": "workspace:*",
     "@flowline/rpc": "workspace:*",
     "effect": "catalog:effect",
-    "sveltekit-effect-runtime": "catalog:svelte",
-    "tailwindcss-corner-shape": "catalog:tailwindcss"
+    "sveltekit-effect-runtime": "catalog:svelte"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "catalog:svelte",

@@ -1,16 +1,24 @@
 import { BunFileSystem } from "@effect/platform-bun";
 import { AppConfig } from "@flowline/config/app";
-import { Cause, Effect, Layer } from "effect";
+import { Context, Effect, Layer } from "effect";
 import * as ConfigProvider from "effect/ConfigProvider";
+import * as Scope from "effect/Scope";
 import { defineConfig } from "kysely-ctl";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { DatabasePool } from "./src/modules/pool/pool.service";
+
+const scope = Effect.runSync(Scope.make());
 
 const FlowlineConfigLayer = AppConfig.layer.pipe(
   Layer.provide(
     ConfigProvider.layer(
       ConfigProvider.fromDotEnv({
-        path: `${import.meta.url}/../../../apps/backend/.env`,
+        path: join(
+          dirname(fileURLToPath(import.meta.url)),
+          "../../../apps/backend/.env",
+        ),
       }),
     ),
   ),
@@ -21,20 +29,12 @@ const DatabasePoolLayer = Layer.provide(
   FlowlineConfigLayer,
 );
 
-const pool = await Effect.service(DatabasePool).pipe(
-  Effect.provide(DatabasePoolLayer),
-  Effect.catchTag("PlatformError", (e) =>
-    Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(Effect.void),
-    ),
-  ),
-  Effect.catchTag("ConfigError", (e) =>
-    Effect.logError(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(Effect.void),
-    ),
-  ),
+const context = await Layer.build(DatabasePoolLayer).pipe(
+  Scope.provide(scope),
   Effect.runPromise,
 );
+
+const pool = Context.get(context, DatabasePool);
 
 export default defineConfig({
   dialect: "pg",
