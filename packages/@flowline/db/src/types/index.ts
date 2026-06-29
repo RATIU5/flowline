@@ -1,2 +1,2 @@
-export * from "./db";
-export * from "./selectable";
+export type * from "./db";
+export type * from "./selectable";

@@ -1,16 +1,16 @@
 import { PUBLIC_BASE_URL } from "$env/static/public";
 import { AuthClient } from "$lib/client/effects/auth";
+import { runtime } from "$lib/shared/effects/runtime";
 import { redirect } from "@sveltejs/kit";
 import * as Effect from "effect/Effect";
-import { wrapServerLoad } from "sveltekit-effect-runtime";
 
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = wrapServerLoad(
+export const load: PageServerLoad = runtime.load(
   Effect.gen(function* () {
     const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
 
-    yield* Effect.promise(() =>
+    return yield* Effect.promise(() =>
       auth.signOut({
         fetchOptions: {
           onSuccess: () => redirect(302, "/login"),

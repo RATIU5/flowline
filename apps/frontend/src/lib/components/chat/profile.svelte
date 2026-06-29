@@ -18,7 +18,7 @@ let {
 let imageFailed = $state(false);
 
 const initials = $derived.by(() => {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const parts = name.trim().split(/\s+/u).filter(Boolean);
 
   if (parts.length === 0) {
     return "?";

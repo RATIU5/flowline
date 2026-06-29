@@ -37,6 +37,13 @@
     "promise/prefer-await-to-then": "off",
     "unicorn/prefer-top-level-await": "off",
     "unicorn/no-useless-undefined": "off",
+    "unicorn/no-negated-condition": "off",
+    "unicorn/max-nested-calls": [
+      "warn",
+      {
+        "max": 5
+      }
+    ],
     "no-magic-numbers": "off",
     "sort-keys": "off",
     "id-length": [
@@ -58,6 +65,7 @@
         "disallowTypeAnnotations": false
       }
     ],
+    "typescript/prefer-readonly-parameter-types": "off",
     "import/consistent-type-specifier-style": "off",
     "import/max-dependencies": "off",
     "typescript/no-unnecessary-type-assertion": "error",
@@ -89,6 +97,7 @@
         "readonly": "generic"
       }
     ],
+    "typescript/strict-void-return": "off",
     "no-restricted-imports": [
       "error",
       {

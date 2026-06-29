@@ -1,40 +1,32 @@
 import { BunFileSystem } from "@effect/platform-bun";
 import { AppConfig } from "@flowline/config/app";
-import { Context, Effect, Layer } from "effect";
+import { Layer, ManagedRuntime } from "effect";
 import * as ConfigProvider from "effect/ConfigProvider";
-import * as Scope from "effect/Scope";
 import { defineConfig } from "kysely-ctl";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 import { DatabasePool } from "./src/modules/pool/pool.service";
 
-const scope = Effect.runSync(Scope.make());
+const backendEnv = join(import.meta.dirname, "../../../apps/backend/.env");
 
 const FlowlineConfigLayer = AppConfig.layer.pipe(
   Layer.provide(
     ConfigProvider.layer(
       ConfigProvider.fromDotEnv({
-        path: join(
-          dirname(fileURLToPath(import.meta.url)),
-          "../../../apps/backend/.env",
-        ),
+        path: backendEnv,
       }),
     ),
   ),
   Layer.provide(BunFileSystem.layer),
 );
+
 const DatabasePoolLayer = Layer.provide(
   DatabasePool.layer,
   FlowlineConfigLayer,
 );
 
-const context = await Layer.build(DatabasePoolLayer).pipe(
-  Scope.provide(scope),
-  Effect.runPromise,
-);
-
-const pool = Context.get(context, DatabasePool);
+const runtime = ManagedRuntime.make(DatabasePoolLayer);
+const pool = await runtime.runPromise(DatabasePool);
 
 export default defineConfig({
   dialect: "pg",
