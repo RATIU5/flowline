@@ -13,8 +13,8 @@
     "coverage": "vitest --coverage",
     "typecheck": "tsgo --noEmit --project tsconfig.json",
     "codegen": "set -a && source ../../../apps/backend/.env && set +a && kysely-codegen --dialect postgres --out-file src/types/db.ts --camel-case --url=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}",
-    "migrate": "set -a && source ../../../apps/backend/.env && set +a && kysely migrate",
-    "seed": "set -a && source ../../../apps/backend/.env && set +a && kysely seed"
+    "migrate": "set -a && source ../../../apps/backend/.env && set +a && kysely --bun migrate",
+    "seed": "set -a && source ../../../apps/backend/.env && set +a && kysely --bun seed"
   },
   "dependencies": {
     "@effect/platform-bun": "catalog:effect",

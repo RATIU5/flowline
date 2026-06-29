@@ -7,76 +7,72 @@ import { AuthLayer } from "../../lib/layers";
 
 export const AuthApiHandlers = AuthHandler.pipe(
   Effect.provide(AuthLayer),
-  Effect.catchTag("AuthError", (e) =>
-    Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(
-        Effect.succeed(
-          HttpServerResponse.jsonUnsafe(
-            { message: e.message },
-            { status: 500 },
+  Effect.catchTags({
+    AuthError: (e) =>
+      Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
+        Effect.andThen(
+          Effect.succeed(
+            HttpServerResponse.jsonUnsafe(
+              { message: e.message },
+              { status: 500 },
+            ),
           ),
         ),
       ),
-    ),
-  ),
-  Effect.catchTag("AuthUnknownError", (e) =>
-    Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(
-        Effect.succeed(
-          HttpServerResponse.jsonUnsafe(
-            { message: e.message },
-            { status: 500 },
+    AuthUnknownError: (e) =>
+      Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
+        Effect.andThen(
+          Effect.succeed(
+            HttpServerResponse.jsonUnsafe(
+              { message: e.message },
+              { status: 500 },
+            ),
           ),
         ),
       ),
-    ),
-  ),
-  Effect.catchTag("ConfigError", (e) =>
-    Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(
-        Effect.succeed(
-          HttpServerResponse.jsonUnsafe(
-            { message: e.message },
-            { status: 500 },
+    ConfigError: (e) =>
+      Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
+        Effect.andThen(
+          Effect.succeed(
+            HttpServerResponse.jsonUnsafe(
+              { message: e.message },
+              { status: 500 },
+            ),
           ),
         ),
       ),
-    ),
-  ),
-  Effect.catchTag("InternalError", (e) =>
-    Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(
-        Effect.succeed(
-          HttpServerResponse.jsonUnsafe(
-            { message: e.message },
-            { status: 500 },
+    InternalError: (e) =>
+      Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
+        Effect.andThen(
+          Effect.succeed(
+            HttpServerResponse.jsonUnsafe(
+              { message: e.message },
+              { status: 500 },
+            ),
           ),
         ),
       ),
-    ),
-  ),
-  Effect.catchTag("RequestParseError", (e) =>
-    Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(
-        Effect.succeed(
-          HttpServerResponse.jsonUnsafe(
-            { message: e.message },
-            { status: 400 },
+    RequestParseError: (e) =>
+      Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
+        Effect.andThen(
+          Effect.succeed(
+            HttpServerResponse.jsonUnsafe(
+              { message: e.message },
+              { status: 400 },
+            ),
           ),
         ),
       ),
-    ),
-  ),
-  Effect.catchTag("RouteNotFound", (e) =>
-    Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
-      Effect.andThen(
-        Effect.succeed(
-          HttpServerResponse.jsonUnsafe(
-            { message: e.message },
-            { status: 404 },
+    RouteNotFound: (e) =>
+      Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(
+        Effect.andThen(
+          Effect.succeed(
+            HttpServerResponse.jsonUnsafe(
+              { message: e.message },
+              { status: 404 },
+            ),
           ),
         ),
       ),
-    ),
-  ),
+  }),
 );
