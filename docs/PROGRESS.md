@@ -23,7 +23,7 @@ _This document is updated after each PR_
 
 ## Phase 2: User Authentication
 
-**Status:** In Progress
+**Status:** Completed
 **Started:** Mar 23, 2026
 
 ### Goals:
@@ -34,6 +34,21 @@ _This document is updated after each PR_
 - [x] Setup routes for authentication and handlers
 - [x] Setup basic UI for logging in/out
 - [x] Messages send from dedicated user accounts
+
+## Phase 3: Database Persistence
+
+**Status:** In Progress
+**Started:** Jul 1, 2026
+
+### Goals:
+
+- [ ] Create a messages table
+- [ ] Persist messages on send then broadcast
+- [ ] Load message history on connect
+- [ ] Create a channel table
+- [ ] Cursor-based pagination
+- [ ] Message edits & soft deletes
+- [ ] Monotonic IDs for messages (snowflake vs ULID)
 
 ### Decisions Made:
 

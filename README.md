@@ -62,8 +62,8 @@ Make sure to fill out your `.env` files with your credentials.
 1. [x] WebSocket connection
 2. [x] User authentication (with DB)
 3. [ ] Database persistence _(in progress)_
-4. [ ] Direct messages for 1:1 communication
-5. [ ] Channels & spaces for 1:N communication
+4. [ ] Channels & spaces for 1:N communication
+5. [ ] Direct messages for 1:1 communication
 6. [ ] User presence (active, offline, away, custom)
 7. [ ] Custom UI/UX library
 8. [ ] Typing indicators
