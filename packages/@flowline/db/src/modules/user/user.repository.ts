@@ -5,7 +5,7 @@ import * as Layer from "effect/Layer";
 import { DatabaseClient, type DatabaseClientError } from "../client";
 
 import type { DB } from "../../types/db";
-import type { Selectable } from "../../types/selectable";
+import type { Selectable } from "../../types/utils";
 
 export class UserRepository extends Context.Service<
   UserRepository,
@@ -18,15 +18,14 @@ export class UserRepository extends Context.Service<
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const db = yield* DatabaseClient;
+      const client = yield* DatabaseClient;
       return {
-        findById(id) {
-          return db
-            .query((qb) =>
-              qb.selectFrom("user").selectAll().where("id", "=", id),
+        findById: (id) =>
+          client
+            .execute((db) =>
+              db.selectFrom("user").selectAll().where("id", "=", id),
             )
-            .pipe(Effect.map((u) => u[0]));
-        },
+            .pipe(Effect.map((u) => u[0])),
       };
     }),
   );
