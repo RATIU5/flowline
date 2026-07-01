@@ -14,6 +14,7 @@ export interface AppConfigShape {
     readonly user: string;
     readonly password: Redacted.Redacted;
     readonly port: number;
+    readonly seedEmail: string;
   };
   readonly auth: {
     readonly secret: Redacted.Redacted;
@@ -33,6 +34,7 @@ export class AppConfig extends Context.Service<AppConfig, AppConfigShape>()(
       dbUser: Config.nonEmptyString("DB_USER"),
       dbPswd: Config.redacted("DB_PASSWORD"),
       dbName: Config.nonEmptyString("DB_NAME"),
+      dbSeedUserEmail: Config.string("SEED_USER_EMAIL"),
       authSecret: Config.redacted("AUTH_SECRET"),
       authUrl: Config.url("AUTH_URL"),
     }).pipe(
@@ -46,6 +48,7 @@ export class AppConfig extends Context.Service<AppConfig, AppConfigShape>()(
           user: config.dbUser,
           password: config.dbPswd,
           name: config.dbName,
+          seedEmail: config.dbSeedUserEmail,
         },
         auth: {
           secret: config.authSecret,

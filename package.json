@@ -19,6 +19,7 @@
       },
       "typescript": {
         "@effect/tsgo": "0.15.0",
+        "typescript": "7.0.1-rc",
         "@typescript/native-preview": "7.0.0-dev.20260629.1"
       },
       "auth": {

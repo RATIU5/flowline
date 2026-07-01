@@ -9,6 +9,22 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
+
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+export type MessageType = "DEFAULT" | "REFERENCE" | "SYSTEM" | "THREAD_STARTER";
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Account {
@@ -27,6 +43,28 @@ export interface Account {
   userId: string;
 }
 
+export interface Channel {
+  createdAt: Generated<Timestamp>;
+  id: Int8;
+  name: string;
+  position: number;
+  spaceId: string;
+}
+
+export interface Message {
+  channelId: Int8;
+  content: string | null;
+  createdAt: Generated<Timestamp>;
+  editedAt: Timestamp | null;
+  id: Int8;
+  isDeletable: Generated<boolean>;
+  metadata: Json | null;
+  pinned: Generated<boolean>;
+  referenceId: Int8 | null;
+  type: MessageType;
+  userId: string | null;
+}
+
 export interface Session {
   createdAt: Generated<Timestamp>;
   expiresAt: Timestamp;
@@ -36,6 +74,13 @@ export interface Session {
   updatedAt: Timestamp;
   userAgent: string | null;
   userId: string;
+}
+
+export interface Space {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  name: string;
+  ownerId: string;
 }
 
 export interface User {
@@ -59,7 +104,10 @@ export interface Verification {
 
 export interface DB {
   account: Account;
+  channel: Channel;
+  message: Message;
   session: Session;
+  space: Space;
   user: User;
   verification: Verification;
 }

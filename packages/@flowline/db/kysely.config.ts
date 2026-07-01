@@ -1,7 +1,8 @@
 import { BunFileSystem } from "@effect/platform-bun";
 import { AppConfig } from "@flowline/config/app";
-import { Layer, ManagedRuntime } from "effect";
 import * as ConfigProvider from "effect/ConfigProvider";
+import * as Layer from "effect/Layer";
+import * as ManagedRuntime from "effect/ManagedRuntime";
 import { defineConfig } from "kysely-ctl";
 import { join } from "node:path";
 
