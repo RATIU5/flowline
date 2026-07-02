@@ -1,10 +1,11 @@
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
+import * as SnowFlake from "effect/unstable/cluster/Snowflake";
 
 import { DatabaseClient, type DatabaseClientError } from "../client";
 
-import type { InsertResult, UpdateResult } from "../../types/utils";
+import type { InsertResult } from "../../types/utils";
 
 export class ChannelRepository extends Context.Service<
   ChannelRepository,
@@ -25,13 +26,14 @@ export class ChannelRepository extends Context.Service<
     this,
     Effect.gen(function* () {
       const client = yield* DatabaseClient;
+      const snowflake = yield* SnowFlake.Generator;
       return {
         create: ({ channelName, spaceId }) =>
           client
             .execute((db) =>
               db.insertInto("channel").values({
                 name: channelName,
-                id: "", // TODO: fill in with snowflake id
+                id: snowflake.nextUnsafe(),
                 position: 1, // TODO: read other channels, increment by 1
                 spaceId,
               }),

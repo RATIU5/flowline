@@ -38,6 +38,12 @@
     "unicorn/prefer-top-level-await": "off",
     "unicorn/no-useless-undefined": "off",
     "unicorn/no-negated-condition": "off",
+    "max-lines-per-function": [
+      "error",
+      {
+        "max": 100
+      }
+    ],
     "unicorn/max-nested-calls": [
       "warn",
       {
