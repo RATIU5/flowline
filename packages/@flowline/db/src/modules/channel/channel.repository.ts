@@ -28,17 +28,14 @@ export class ChannelRepository extends Context.Service<
       const client = yield* DatabaseClient;
       const snowflake = yield* SnowFlake.Generator;
       return {
-        create: ({ channelName, spaceId }) =>
-          client
-            .execute((db) =>
-              db.insertInto("channel").values({
-                name: channelName,
-                id: snowflake.nextUnsafe(),
-                position: 1, // TODO: read other channels, increment by 1
-                spaceId,
-              }),
-            )
-            .pipe(Effect.map((u) => u[0])),
+        create: ({ channelName, spaceId }) => {
+          const maxChannels = client.execute((db) =>
+            db
+              .selectFrom("channel")
+              .select("position")
+              .where("spaceId", "=", spaceId),
+          );
+        },
       };
     }),
   );
