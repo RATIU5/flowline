@@ -7,6 +7,7 @@ import {
   type SelectQueryBuilder,
   type InsertQueryBuilder,
   type UpdateQueryBuilder,
+  DeleteQueryBuilder,
 } from "kysely";
 
 import { DatabasePool } from "../../modules/pool/pool.service";
@@ -30,7 +31,9 @@ export class DatabaseClient extends Context.Service<DatabaseClient>()(
             // oxlint-disable-next-line typescript/no-explicit-any
             | InsertQueryBuilder<DB, any, T>
             // oxlint-disable-next-line typescript/no-explicit-any
-            | UpdateQueryBuilder<DB, any, any, T>,
+            | UpdateQueryBuilder<DB, any, any, T>
+            // oxlint-disable-next-line typescript/no-explicit-any
+            | DeleteQueryBuilder<DB, any, T>,
         ) =>
           Effect.tryPromise(() => build(kysely).execute()).pipe(
             Effect.catchTag("UnknownError", (e) =>
