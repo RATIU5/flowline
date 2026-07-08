@@ -27,9 +27,9 @@
     "@effect/language-service": "catalog:effect",
     "@effect/vitest": "catalog:effect",
     "@types/pg": "^8.20.0",
-    "@typescript/native-preview": "catalog:typescript",
     "kysely-codegen": "catalog:db",
     "kysely-ctl": "catalog:db",
+    "typescript": "catalog:typescript",
     "vitest": "catalog:testing"
   },
   "effect": {

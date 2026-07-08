@@ -21,8 +21,8 @@
     "@effect/vitest": "catalog:effect",
     "@flowline/config": "workspace:*",
     "@flowline/db": "workspace:*",
-    "@typescript/native-preview": "catalog:typescript",
     "better-auth": "catalog:auth",
+    "typescript": "catalog:typescript",
     "vitest": "catalog:testing"
   },
   "peerDependencies": {
