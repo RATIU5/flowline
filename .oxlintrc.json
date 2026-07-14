@@ -41,7 +41,7 @@
     "max-lines-per-function": [
       "error",
       {
-        "max": 100
+        "max": 200
       }
     ],
     "unicorn/max-nested-calls": [

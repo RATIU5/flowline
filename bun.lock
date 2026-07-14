@@ -21,6 +21,7 @@
       "name": "backend",
       "dependencies": {
         "@effect/platform-bun": "catalog:effect",
+        "@flowline/api": "workspace:*",
         "@flowline/auth": "workspace:*",
         "@flowline/config": "workspace:*",
         "@flowline/db": "workspace:*",
@@ -58,6 +59,18 @@
         "tailwindcss": "catalog:tailwindcss",
         "typescript": "catalog:typescript",
         "vite": "catalog:",
+      },
+    },
+    "packages/@flowline/api": {
+      "name": "@flowline/api",
+      "dependencies": {
+        "effect": "catalog:effect",
+      },
+      "devDependencies": {
+        "@effect/language-service": "catalog:effect",
+        "@effect/vitest": "catalog:effect",
+        "typescript": "catalog:typescript",
+        "vitest": "catalog:testing",
       },
     },
     "packages/@flowline/auth": {
@@ -243,6 +256,8 @@
     "@emnapi/runtime": ["@emnapi/runtime@1.11.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-vgj7R3y3Wgx24IQaGPA/R6YFXLHVMOZ0uVEyIQPaWs+rd1AzfEMXlAC22FYwO1XkKR6NPsq7mUandH8oIRdZFw=="],
 
     "@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.2.2", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA=="],
+
+    "@flowline/api": ["@flowline/api@workspace:packages/@flowline/api"],
 
     "@flowline/auth": ["@flowline/auth@workspace:packages/@flowline/auth"],
 

@@ -3,17 +3,18 @@ import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as SnowFlake from "effect/unstable/cluster/Snowflake";
 
+import { toPatch } from "../../utils";
 import { DatabaseClient, type DatabaseClientError } from "../client";
 import { ChannelRepositoryError } from "./channel.errors";
 
-import type { DB } from "../../types";
+import type { DB, Nullable } from "../../types";
 import type {
   InsertResult,
   UpdateResult,
   DeleteResult,
 } from "../../types/utils";
 
-type ChannelUpdateCols = Partial<
+type ChannelUpdateCols = Nullable<
   Omit<DB["channel"], "createdAt" | "id" | "spaceId">
 >;
 
@@ -42,11 +43,9 @@ export class ChannelRepository extends Context.Service<
       DatabaseClientError | ChannelRepositoryError
     >;
 
-    delete: ({
-      channelId,
-    }: {
-      channelId: string;
-    }) => Effect.Effect<
+    delete: (
+      channelId: string,
+    ) => Effect.Effect<
       DeleteResult,
       DatabaseClientError | ChannelRepositoryError
     >;
@@ -98,6 +97,55 @@ export class ChannelRepository extends Context.Service<
             }
 
             return insertResult;
+          }).pipe(Effect.map((r) => r[0])),
+
+        update: (channelId, columns) =>
+          Effect.gen(function* () {
+            const updateResult = yield* client.execute((db) =>
+              db
+                .updateTable("channel")
+                .set(toPatch(columns))
+                .where("id", "=", channelId),
+            );
+
+            if (updateResult.length === 0) {
+              return yield* new ChannelRepositoryError({
+                function: "update",
+                name: "NoUpdateRows",
+                message: "Failed to update channel row",
+              });
+            } else if (updateResult.length > 1) {
+              return yield* new ChannelRepositoryError({
+                function: "update",
+                name: "TooManyUpdateRows",
+                message: "Too many rows returned from channel update",
+              });
+            }
+
+            return updateResult;
+          }).pipe(Effect.map((r) => r[0])),
+
+        delete: (channelId) =>
+          Effect.gen(function* () {
+            const deleteResult = yield* client.execute((db) =>
+              db.deleteFrom("channel").where("id", "=", channelId),
+            );
+
+            if (deleteResult.length === 0) {
+              return yield* new ChannelRepositoryError({
+                function: "delete",
+                name: "NoDeleteRows",
+                message: "Failed to delete channel row",
+              });
+            } else if (deleteResult.length > 1) {
+              return yield* new ChannelRepositoryError({
+                function: "delete",
+                name: "TooManyDeleteRows",
+                message: "Too many rows returned from channel delete",
+              });
+            }
+
+            return deleteResult;
           }).pipe(Effect.map((r) => r[0])),
       };
     }),

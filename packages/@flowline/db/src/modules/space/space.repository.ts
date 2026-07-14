@@ -2,35 +2,50 @@ import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
+import { toPatch } from "../../utils";
 import { DatabaseClient, type DatabaseClientError } from "../client";
 import { SpaceRepositoryError } from "./space.errors";
 
+import type { DB, Selectable } from "../../types";
 import type {
   InsertResult,
   UpdateResult,
   DeleteResult,
+  Nullable,
 } from "../../types/utils";
+
+type SpaceRow = Selectable<DB["space"]>;
+type SpaceGetCols = Array<keyof Omit<SpaceRow, "id">>;
+type SpaceGetResponse = Pick<SpaceRow, "id"> & Partial<Omit<SpaceRow, "id">>;
+type SpaceUpdateCols = Nullable<Omit<SpaceRow, "createdAt" | "id" | "spaceId">>;
 
 export class SpaceRepository extends Context.Service<
   SpaceRepository,
   {
+    get: (
+      spaceId: string,
+    ) => Effect.Effect<
+      SpaceGetResponse,
+      DatabaseClientError | SpaceRepositoryError
+    >;
+
     /*
      * Create a new space on the database
      */
-    create: ({
-      spaceName,
-      ownerId,
-    }: {
-      spaceName: string;
-      ownerId: string;
-    }) => Effect.Effect<InsertResult, DatabaseClientError>;
+    create: (
+      spaceName: string,
+      ownerId: string,
+    ) => Effect.Effect<
+      InsertResult,
+      DatabaseClientError | SpaceRepositoryError
+    >;
 
     /*
      * Update a space's name on the database
      */
-    updateName: (
-      newName: string,
+    update: (
       spaceId: string,
+      cols: SpaceUpdateCols,
     ) => Effect.Effect<
       UpdateResult,
       DatabaseClientError | SpaceRepositoryError
@@ -49,7 +64,34 @@ export class SpaceRepository extends Context.Service<
     Effect.gen(function* () {
       const client = yield* DatabaseClient;
       return {
-        create: ({ spaceName, ownerId }) =>
+        get: (spaceId, cols?: SpaceGetCols) =>
+          Effect.gen(function* () {
+            const selectCols = cols ?? [];
+            const results = yield* client.execute((db) =>
+              db
+                .selectFrom("space")
+                .select(["id", ...selectCols])
+                .where("id", "=", spaceId),
+            );
+
+            if (results.length === 0) {
+              return yield* new SpaceRepositoryError({
+                function: "get",
+                name: "NoGetRows",
+                message: "Failed to get space row",
+              });
+            } else if (results.length > 1) {
+              return yield* new SpaceRepositoryError({
+                function: "get",
+                name: "TooManyGetRows",
+                message: "Too many rows returned from space get",
+              });
+            }
+
+            return results;
+          }).pipe(Effect.map((r) => r[0])),
+
+        create: (spaceName, ownerId) =>
           Effect.gen(function* () {
             const results = yield* client.execute((db) =>
               db.insertInto("space").values({
@@ -61,41 +103,39 @@ export class SpaceRepository extends Context.Service<
             if (results.length === 0) {
               return yield* new SpaceRepositoryError({
                 function: "create",
-                name: "NoInsertRows",
-                message: "Failed to insert new space row",
+                name: "NoCreateRows",
+                message: "Failed to create new space row",
               });
             } else if (results.length > 1) {
               return yield* new SpaceRepositoryError({
                 function: "create",
-                name: "TooManyInsertRows",
-                message: "Too many rows returned from space insert",
+                name: "TooManyCreateRows",
+                message: "Too many rows returned from space create",
               });
             }
 
             return results;
           }).pipe(Effect.map((u) => u[0])),
 
-        updateName: (newName, spaceId) =>
+        update: (spaceId, cols) =>
           Effect.gen(function* () {
             const results = yield* client.execute((db) =>
               db
                 .updateTable("space")
-                .set({
-                  name: newName,
-                })
+                .set(toPatch(cols))
                 .where("id", "=", spaceId),
             );
 
             if (results.length === 0) {
               return yield* new SpaceRepositoryError({
-                function: "updateName",
-                name: "NoInsertRows",
+                function: "update",
+                name: "NoUpdateRows",
                 message: "Failed to update space row",
               });
             } else if (results.length > 1) {
               return yield* new SpaceRepositoryError({
-                function: "updateName",
-                name: "TooManyInsertRows",
+                function: "update",
+                name: "TooManyUpdateRows",
                 message: "Too many rows returned from space update",
               });
             }

@@ -3,8 +3,10 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./channel": "./src/modules/channel/index.ts",
     "./client": "./src/modules/client/index.ts",
     "./pool": "./src/modules/pool/index.ts",
+    "./space": "./src/modules/space/index.ts",
     "./types": "./src/types/index.ts"
   },
   "scripts": {
