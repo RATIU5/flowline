@@ -1,7 +1,8 @@
 import { apiV1 } from "@flowline/api/api";
-import { SpaceRepository } from "@flowline/db/space";
-import { Effect } from "effect";
+import * as Effect from "effect/Effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
+
+import { SpaceService } from "./space.service";
 
 export const SpaceHandlers = HttpApiBuilder.group(
   apiV1.Api,
@@ -9,9 +10,8 @@ export const SpaceHandlers = HttpApiBuilder.group(
   (handlers) =>
     handlers.handle("getSpace", () =>
       Effect.gen(function* () {
-        const repo = yield* SpaceRepository;
-
-        return yield* repo.get("test");
-      }).pipe(Effect.provide(SpaceRepository.layer)),
+        const svc = yield* SpaceService;
+        return yield* svc.getSpace("CHANGEME");
+      }),
     ),
 );

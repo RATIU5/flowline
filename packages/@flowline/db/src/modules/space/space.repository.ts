@@ -56,7 +56,10 @@ export class SpaceRepository extends Context.Service<
      */
     delete: (
       spaceId: string,
-    ) => Effect.Effect<DeleteResult, DatabaseClientError>;
+    ) => Effect.Effect<
+      DeleteResult,
+      DatabaseClientError | SpaceRepositoryError
+    >;
   }
 >()("@flowline/db/modules/space/space.repository/SpaceRepository") {
   static readonly layer = Layer.effect(

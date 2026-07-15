@@ -1,8 +1,10 @@
 import * as Schema from "effect/Schema";
 
-export const SpaceSchemaGetResponse = Schema.Struct({
+export class SpaceSchemaGetResponse extends Schema.Class<SpaceSchemaGetResponse>(
+  "SpaceSchemaGetResponse",
+)({
   id: Schema.String,
-  name: Schema.UndefinedOr(Schema.String),
-  createdAt: Schema.UndefinedOr(Schema.DateTimeUtcFromString),
-  ownerId: Schema.UndefinedOr(Schema.String),
-});
+  name: Schema.optional(Schema.String),
+  createdAt: Schema.optional(Schema.DateTimeUtcFromString),
+  ownerId: Schema.optional(Schema.String),
+}) {}

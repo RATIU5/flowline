@@ -3,8 +3,11 @@ import { AppConfig } from "@flowline/config/app";
 import { DatabasePool } from "@flowline/db/pool";
 import * as Layer from "effect/Layer";
 
-const FlowlineConfigLayer = AppConfig.layer.pipe(
+export const FlowlineConfigLayer = AppConfig.layer.pipe(
   Layer.provide(BunFileSystem.layer),
 );
 
-export const AuthLayer = Layer.provide(DatabasePool.layer, FlowlineConfigLayer);
+export const DBAndConfigLayer = Layer.provide(
+  DatabasePool.layer,
+  FlowlineConfigLayer,
+);

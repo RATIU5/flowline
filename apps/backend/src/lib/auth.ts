@@ -4,9 +4,9 @@ import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
-import { AuthLayer } from "./layers";
+import { DBAndConfigLayer } from "./layers";
 
-const AuthAndConfigLayers = Layer.mergeAll(AppConfig.layer, AuthLayer);
+const AuthAndConfigLayers = Layer.mergeAll(AppConfig.layer, DBAndConfigLayer);
 
 export default await Effect.runPromise(
   AuthEffect.pipe(

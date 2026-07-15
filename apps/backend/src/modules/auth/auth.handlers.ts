@@ -3,10 +3,10 @@ import * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import { HttpServerResponse } from "effect/unstable/http";
 
-import { AuthLayer } from "../../lib/layers";
+import { DBAndConfigLayer } from "../../lib/layers";
 
 export const AuthApiHandlers = AuthHandler.pipe(
-  Effect.provide(AuthLayer),
+  Effect.provide(DBAndConfigLayer),
   Effect.catchTags({
     AuthError: (e) =>
       Effect.logDebug(Cause.pretty(Cause.fail(e))).pipe(

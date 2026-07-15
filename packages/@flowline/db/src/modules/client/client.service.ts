@@ -7,7 +7,7 @@ import {
   type SelectQueryBuilder,
   type InsertQueryBuilder,
   type UpdateQueryBuilder,
-  DeleteQueryBuilder,
+  type DeleteQueryBuilder,
 } from "kysely";
 
 import { DatabasePool } from "../../modules/pool/pool.service";
