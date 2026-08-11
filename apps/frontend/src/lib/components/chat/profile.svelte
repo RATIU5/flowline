@@ -8,48 +8,44 @@ interface Props {
 }
 
 let {
-  name,
-  src = undefined,
-  size = 40,
-  alt,
-  class: className = "",
-}: Props = $props(),
-
- imageFailed = $state(false);
+    name,
+    src = undefined,
+    size = 40,
+    alt,
+    class: className = "",
+  }: Props = $props(),
+  imageFailed = $state(false);
 
 const initials = $derived.by(() => {
-  const parts = name.trim().split(/\s+/u).filter(Boolean);
+    const parts = name.trim().split(/\s+/u).filter(Boolean);
 
-  if (parts.length === 0) {
-    return "?";
-  }
-  if (parts.length === 1) {
-    return parts[0]?.slice(0, 2).toUpperCase();
-  }
+    if (parts.length === 0) {
+      return "?";
+    }
+    if (parts.length === 1) {
+      return parts[0]?.slice(0, 2).toUpperCase();
+    }
 
-  return `${parts[0]?.[0] ?? "U"}${parts[1]?.[0] ?? "n"}`.toUpperCase();
-}),
+    return `${parts[0]?.[0] ?? "U"}${parts[1]?.[0] ?? "n"}`.toUpperCase();
+  }),
+  hue = $derived.by(() => {
+    let hash = 0;
 
- hue = $derived.by(() => {
-  let hash = 0;
+    for (const char of initials) {
+      hash = (char.codePointAt(0) ?? -1) + ((hash << 5) - hash);
+    }
 
-  for (const char of initials) {
-    hash = (char.codePointAt(0) ?? -1) + ((hash << 5) - hash);
-  }
-
-  return Math.abs(hash) % 360;
-}),
-
- showImage = $derived(Boolean(src) && !imageFailed),
-
- styleVars = $derived(
-  [
-    `--avatar-size:${size}px`,
-    `--avatar-font-size:${Math.max(12, Math.round(size * 0.36))}px`,
-    `--avatar-bg:hsl(${hue} 60% 50%)`,
-    `--avatar-fg:white`,
-  ].join(";"),
-);
+    return Math.abs(hash) % 360;
+  }),
+  showImage = $derived(Boolean(src) && !imageFailed),
+  styleVars = $derived(
+    [
+      `--avatar-size:${size}px`,
+      `--avatar-font-size:${Math.max(12, Math.round(size * 0.36))}px`,
+      `--avatar-bg:hsl(${hue} 60% 50%)`,
+      `--avatar-fg:white`,
+    ].join(";"),
+  );
 </script>
 
 <div

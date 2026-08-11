@@ -70,12 +70,12 @@ export class SpaceRepository extends Context.Service<
         get: (spaceId, cols?: SpaceGetCols) =>
           Effect.gen(function* () {
             const selectCols = cols ?? [],
-             results = yield* client.execute((db) =>
-              db
-                .selectFrom("space")
-                .select(["id", ...selectCols])
-                .where("id", "=", spaceId),
-            );
+              results = yield* client.execute((db) =>
+                db
+                  .selectFrom("space")
+                  .select(["id", ...selectCols])
+                  .where("id", "=", spaceId),
+              );
 
             if (results.length === 0) {
               return yield* new SpaceRepositoryError({

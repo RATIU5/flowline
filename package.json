@@ -14,7 +14,7 @@
       "lint": {
         "@biomejs/biome": "2.5.7",
         "oxfmt": "0.63.0",
-        "oxlint": "1.78.0",
+        "oxlint": "1.77.0",
         "oxlint-tsgolint": "7.0.2001"
       },
       "typescript": {
@@ -58,7 +58,7 @@
   },
   "type": "module",
   "scripts": {
-    "prepare": "effect-tsgo patch",
+    "prepare": "effect-tsgo patch --oxlint",
     "dev:fe": "bun run --elide-lines 0 --filter frontend dev",
     "dev:be": "bun run --elide-lines 0 --filter backend dev",
     "db:up": "set -a && source apps/backend/.env && set +a && podman run -d --name postgres -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -e POSTGRES_DB=${DB_NAME} -p 5432:5432 -v pgdata:/var/lib/postgresql/data postgres:16-alpine",

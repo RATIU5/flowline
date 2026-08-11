@@ -5,52 +5,50 @@ import { PUBLIC_BASE_URL } from "$env/static/public";
 import { AuthClient } from "$lib/client/effects/auth";
 
 let email = $state(""),
- password = $state(""),
- error = $state(""),
- loading = $state(false);
+  password = $state(""),
+  error = $state(""),
+  loading = $state(false);
 
 const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
-  function* (e: Event) {
-    const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
+    function* (e: Event) {
+      const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
 
-    e.preventDefault();
-    error = "";
+      e.preventDefault();
+      error = "";
 
-    loading = true;
+      loading = true;
 
-    const { error: authError } = yield* Effect.tryPromise(() =>
-      auth.signIn.email(
-        { email, password },
-        {
-          onSuccess: () => {
-            goto("/");
+      const { error: authError } = yield* Effect.tryPromise(() =>
+        auth.signIn.email(
+          { email, password },
+          {
+            onSuccess: () => {
+              goto("/");
+            },
           },
-        },
-      ),
-    ).pipe(
-      Effect.catchTag("UnknownError", () =>
-        Effect.succeed({
-          error: {
-            status: 500,
-            statusText: "An internal error occurred",
-            message: "An internal error occurred",
-          },
-        }),
-      ),
-    );
+        ),
+      ).pipe(
+        Effect.catchTag("UnknownError", () =>
+          Effect.succeed({
+            error: {
+              status: 500,
+              statusText: "An internal error occurred",
+              message: "An internal error occurred",
+            },
+          }),
+        ),
+      );
 
-    if (authError) {
-      error = authError.message ?? "Something went wrong.";
-    }
+      if (authError) {
+        error = authError.message ?? "Something went wrong.";
+      }
 
-    loading = false;
+      loading = false;
 
-    return yield* Effect.void;
-  },
-),
-
- handleSubmit = (e: Event) =>
-  HandleSubmitEffect(e).pipe(Effect.runPromise);
+      return yield* Effect.void;
+    },
+  ),
+  handleSubmit = (e: Event) => HandleSubmitEffect(e).pipe(Effect.runPromise);
 </script>
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">

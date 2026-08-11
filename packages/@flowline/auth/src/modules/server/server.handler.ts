@@ -8,22 +8,22 @@ import { AuthError, AuthUnknownError } from "../shared/auth.errors";
 
 export const AuthHandler = Effect.gen(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest,
-   webRequest = yield* HttpServerRequest.toWeb(request),
-   auth = yield* AuthEffect,
-   handler = yield* Effect.tryPromise({
-    try: () => auth.handler(webRequest),
-    catch: (e) => {
-      if (e instanceof ba_BetterAuthError) {
-        return new AuthError({
-          name: e.name,
-          message: e.message,
+    webRequest = yield* HttpServerRequest.toWeb(request),
+    auth = yield* AuthEffect,
+    handler = yield* Effect.tryPromise({
+      try: () => auth.handler(webRequest),
+      catch: (e) => {
+        if (e instanceof ba_BetterAuthError) {
+          return new AuthError({
+            name: e.name,
+            message: e.message,
+          });
+        }
+        return new AuthUnknownError({
+          name: "UNKNOWN_BETTER_AUTH_ERROR",
+          message: "An unknown auth error occurred",
         });
-      }
-      return new AuthUnknownError({
-        name: "UNKNOWN_BETTER_AUTH_ERROR",
-        message: "An unknown auth error occurred",
-      });
-    },
-  });
+      },
+    });
   return HttpServerResponse.fromWeb(handler);
 });

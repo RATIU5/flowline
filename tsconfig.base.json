@@ -16,7 +16,7 @@
     "plugins": [
       {
         "name": "@effect/language-service",
-        "diagnosticSeverity": {}
+        "diagnostics": false
       }
     ]
   }

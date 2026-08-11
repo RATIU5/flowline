@@ -55,7 +55,7 @@ export class ChannelRepository extends Context.Service<
     this,
     Effect.gen(function* () {
       const client = yield* DatabaseClient,
-       snowflake = yield* SnowFlake.Generator;
+        snowflake = yield* SnowFlake.Generator;
       return {
         create: ({ channelName, spaceId }) =>
           Effect.gen(function* () {

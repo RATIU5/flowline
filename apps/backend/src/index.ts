@@ -8,24 +8,22 @@ import * as HttpRouter from "effect/unstable/http/HttpRouter";
 import { Routes } from "./router";
 
 const CorsLive = Layer.unwrap(
-  Effect.gen(function* () {
-    const config = yield* AppConfig,
-     trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
-      ? config.general.clientUrl.toString().slice(0, -1)
-      : config.general.clientUrl.toString();
-    return HttpRouter.cors({
-      allowedOrigins: [trimmedUrlString],
-      credentials: true,
-    });
-  }),
-),
-
- RoutesWithCors = Routes.pipe(
-  Layer.provide(CorsLive),
-  Layer.provide(AppConfig.layer),
-),
-
- ServerLive = BunHttpServer.layer({ port: 3000 });
+    Effect.gen(function* () {
+      const config = yield* AppConfig,
+        trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
+          ? config.general.clientUrl.toString().slice(0, -1)
+          : config.general.clientUrl.toString();
+      return HttpRouter.cors({
+        allowedOrigins: [trimmedUrlString],
+        credentials: true,
+      });
+    }),
+  ),
+  RoutesWithCors = Routes.pipe(
+    Layer.provide(CorsLive),
+    Layer.provide(AppConfig.layer),
+  ),
+  ServerLive = BunHttpServer.layer({ port: 3000 });
 HttpRouter.serve(RoutesWithCors).pipe(
   Layer.provide(ServerLive),
   Layer.provide(AppConfig.layer),

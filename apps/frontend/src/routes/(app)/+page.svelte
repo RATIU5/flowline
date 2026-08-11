@@ -15,8 +15,8 @@ import { PUBLIC_BASE_URL } from "$env/static/public";
 import MessagesDisplay from "$lib/components/chat/messages-display.svelte";
 
 let userMessage = $state(""),
- sendingMessages = $state<Array<string>>([]),
- messageHistory = $state<Array<typeof Message.Type>>([]);
+  sendingMessages = $state<Array<string>>([]),
+  messageHistory = $state<Array<typeof Message.Type>>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,
@@ -39,54 +39,50 @@ class RpcMessageClient extends Context.Service<RpcMessageClient>()(
 }
 
 const messageSubmitProgram = Effect.gen(function* () {
-  if (userMessage.trim() === "") {
-    return yield* Effect.void;
-  }
-  const client = yield* RpcMessageClient,
-   auth = yield* AuthClient(new URL(PUBLIC_BASE_URL)),
+    if (userMessage.trim() === "") {
+      return yield* Effect.void;
+    }
+    const client = yield* RpcMessageClient,
+      auth = yield* AuthClient(new URL(PUBLIC_BASE_URL)),
+      session = yield* Effect.promise(() => auth.getSession());
 
-   session = yield* Effect.promise(() => auth.getSession());
+    yield* client.PublishMessage({
+      message: userMessage,
+      user: {
+        displayName: session.data?.user.name ?? "Unknown User",
+      },
+      dateCreated: DateTime.makeUnsafe(new Date(Date.now())),
+    });
 
-  yield* client.PublishMessage({
-    message: userMessage,
-    user: {
-      displayName: session.data?.user.name ?? "Unknown User",
-    },
-    dateCreated: DateTime.makeUnsafe(new Date(Date.now())),
-  });
-
-  yield* Effect.sync(() => {
-    sendingMessages.push(userMessage);
-    userMessage = "";
-  });
-}).pipe(
-  Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
-  Effect.catch((error) =>
-    Console.error(error).pipe(Effect.andThen(Effect.void)),
+    yield* Effect.sync(() => {
+      sendingMessages.push(userMessage);
+      userMessage = "";
+    });
+  }).pipe(
+    Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
+    Effect.catch((error) =>
+      Console.error(error).pipe(Effect.andThen(Effect.void)),
+    ),
   ),
-),
-
- subscribeMessagesProgram = Effect.gen(function* () {
-  const client = yield* RpcMessageClient;
-  yield* client.SubscribeMessages().pipe(
-    Stream.runForEach((m) => {
-      messageHistory.push(m);
-      return Effect.void;
-    }),
-  );
-}).pipe(
-  Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
-  Effect.catch((error) =>
-    Console.error(error).pipe(Effect.andThen(Effect.void)),
+  subscribeMessagesProgram = Effect.gen(function* () {
+    const client = yield* RpcMessageClient;
+    yield* client.SubscribeMessages().pipe(
+      Stream.runForEach((m) => {
+        messageHistory.push(m);
+        return Effect.void;
+      }),
+    );
+  }).pipe(
+    Effect.catchTag("RpcClientError", (error) => Effect.die(error.message)),
+    Effect.catch((error) =>
+      Console.error(error).pipe(Effect.andThen(Effect.void)),
+    ),
   ),
-),
-
- runtime = ManagedRuntime.make(RpcMessageClient.layer),
-
- handleSubmit = (e: SubmitEvent) => {
-  e.preventDefault();
-  messageSubmitProgram.pipe(runtime.runPromise);
-};
+  runtime = ManagedRuntime.make(RpcMessageClient.layer),
+  handleSubmit = (e: SubmitEvent) => {
+    e.preventDefault();
+    messageSubmitProgram.pipe(runtime.runPromise);
+  };
 
 onMount(() => {
   subscribeMessagesProgram.pipe(runtime.runPromise);

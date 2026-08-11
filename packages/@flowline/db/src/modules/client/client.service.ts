@@ -20,9 +20,9 @@ export class DatabaseClient extends Context.Service<DatabaseClient>()(
   {
     make: Effect.gen(function* () {
       const pool = yield* DatabasePool,
-       kysely = new Kysely<DB>({
-        dialect: new PostgresDialect({ pool }),
-      });
+        kysely = new Kysely<DB>({
+          dialect: new PostgresDialect({ pool }),
+        });
       return {
         execute: <T>(
           build: (qb: Kysely<DB>) =>

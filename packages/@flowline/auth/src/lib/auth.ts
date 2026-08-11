@@ -5,11 +5,10 @@ import * as Effect from "effect/Effect";
 
 export const AuthEffect = Effect.gen(function* () {
   const pool = yield* DatabasePool,
-   config = yield* AppConfig,
-
-   trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
-    ? config.general.clientUrl.toString().slice(0, -1)
-    : config.general.clientUrl.toString();
+    config = yield* AppConfig,
+    trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
+      ? config.general.clientUrl.toString().slice(0, -1)
+      : config.general.clientUrl.toString();
 
   return betterAuth({
     trustedOrigins: [trimmedUrlString],

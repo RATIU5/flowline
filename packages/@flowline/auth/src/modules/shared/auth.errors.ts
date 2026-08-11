@@ -14,13 +14,10 @@ export class AuthUnknownError extends Schema.TaggedError<AuthUnknownError>()(
   },
 ) {}
 
-export class AuthError extends Schema.TaggedError<AuthError>()(
-  "AuthError",
-  {
-    message: Schema.String,
-    name: Schema.String,
-  },
-) {}
+export class AuthError extends Schema.TaggedError<AuthError>()("AuthError", {
+  message: Schema.String,
+  name: Schema.String,
+}) {}
 
 export class AuthApiError extends Schema.TaggedError<AuthApiError>()(
   "AuthApiError",

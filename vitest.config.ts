@@ -10,9 +10,6 @@ const alias = (name: string) => {
 };
 
 export default defineConfig({
-  esbuild: {
-    target: "es2020",
-  },
   optimizeDeps: {
     exclude: ["bun:sqlite"],
   },

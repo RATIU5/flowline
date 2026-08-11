@@ -10,12 +10,11 @@ import { MessagesRoute } from "./modules/messages";
 import { SpaceApiLive, SpaceService } from "./modules/space/http-v1";
 
 const SpaceStack = SpaceService.layer.pipe(
-  Layer.provide(SpaceRepository.layer),
-  Layer.provide(DatabaseClient.layer),
-  Layer.provide(DBAndConfigLayer),
-),
-
- SpaceHttpLive = SpaceApiLive.pipe(HttpRouter.provideRequest(SpaceStack));
+    Layer.provide(SpaceRepository.layer),
+    Layer.provide(DatabaseClient.layer),
+    Layer.provide(DBAndConfigLayer),
+  ),
+  SpaceHttpLive = SpaceApiLive.pipe(HttpRouter.provideRequest(SpaceStack));
 
 export const Routes = Layer.mergeAll(
   MessagesRoute,
