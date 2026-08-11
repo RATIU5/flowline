@@ -8,10 +8,17 @@ export const SpaceHandlers = HttpApiBuilder.group(
   apiV1.Api,
   "space",
   (handlers) =>
-    handlers.handle("getSpace", () =>
-      Effect.gen(function* () {
-        const svc = yield* SpaceService;
-        return yield* svc.getSpace("CHANGEME");
-      }),
-    ),
+    handlers
+      .handle("getSpace", ({ params }) =>
+        Effect.gen(function* () {
+          const svc = yield* SpaceService;
+          return yield* svc.getSpace(params.spaceId);
+        }),
+      )
+      .handle("getSpacesByUser", ({ params }) =>
+        Effect.gen(function* () {
+          const svc = yield* SpaceService;
+          return yield* svc.getSpacesByUser(params.userId);
+        }),
+      ),
 );

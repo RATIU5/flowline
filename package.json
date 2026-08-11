@@ -87,7 +87,11 @@
     "oxlint-tsgolint": "catalog:lint",
     "rimraf": "^6.1.3",
     "typescript": "catalog:typescript",
-    "vitest": "catalog:testing"
+    "vitest": "catalog:testing",
+    "typescript-legacy": "npm:typescript@6.0.3"
   },
-  "packageManager": "bun@1.3.10"
+  "packageManager": "bun@1.3.10",
+  "patchedDependencies": {
+    "@sveltejs/kit@2.70.2": "patches/@sveltejs%2Fkit@2.70.2.patch"
+  }
 }

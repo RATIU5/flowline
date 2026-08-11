@@ -1,3 +1,6 @@
+import type { apiV1 } from "@flowline/api/api";
+
+import { ApiClient } from "$lib/client/effects/api-client";
 import { runtime } from "$lib/shared/effects/runtime";
 import { redirect } from "@sveltejs/kit";
 import * as Effect from "effect/Effect";
@@ -5,12 +8,26 @@ import * as Effect from "effect/Effect";
 export const load = runtime.load(
   Effect.gen(function* () {
     const { url, locals } = yield* runtime.CurrentServerLoadEvent;
+    const client = yield* ApiClient;
     if (!locals.user) {
       return redirect(302, `/login?next=${encodeURIComponent(url.pathname)}`);
     }
 
+    const userSpaces = yield* client.space
+      .getSpacesByUser({
+        params: {
+          userId: locals.user.id,
+        },
+      })
+      .pipe(
+        Effect.catchTag("NoSpacesForUserError", () =>
+          Effect.succeed<apiV1.SpacesSchemaGetResponse>({ spaces: [] }),
+        ),
+      );
+
     return {
       user: locals.user,
+      spaces: userSpaces.spaces,
     };
-  }),
+  }).pipe(Effect.provide(ApiClient.layer)),
 );

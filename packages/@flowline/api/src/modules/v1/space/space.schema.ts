@@ -8,3 +8,16 @@ export class SpaceSchemaGetResponse extends Schema.Class<SpaceSchemaGetResponse>
   createdAt: Schema.optional(Schema.DateTimeUtcFromString),
   ownerId: Schema.optional(Schema.String),
 }) {}
+
+export class SpacesSchemaGetResponse extends Schema.Class<SpacesSchemaGetResponse>(
+  "SpacesSchemaGetResponse",
+)({
+  spaces: Schema.Array(
+    Schema.Struct({
+      id: Schema.String,
+      name: Schema.optional(Schema.String),
+      createdAt: Schema.optional(Schema.DateTimeUtcFromString),
+      ownerId: Schema.optional(Schema.String),
+    }),
+  ),
+}) {}

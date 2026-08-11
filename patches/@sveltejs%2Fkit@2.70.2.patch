@@ -1,0 +1,21 @@
+diff --git a/src/core/sync/ts.js b/src/core/sync/ts.js
+index 61c79e37f882d09bf3063934d1d61cdde13c5b84..f738864860ba60be9de0bd39fa040b832c06b8f2 100644
+--- a/src/core/sync/ts.js
++++ b/src/core/sync/ts.js
+@@ -1,6 +1,15 @@
+ /** @type {import('typescript')} */
+ // @ts-ignore
+ export let ts = undefined;
++// TS7 dropped the classic compiler API from its main export, which svelte-kit
++// sync needs to generate ./$types. Prefer a TS6 copy aliased as
++// `typescript-legacy`, fall back to the normal resolution.
++// Revert once TS 7.1 ships the stable programmatic API.
+ try {
+-	ts = (await import('typescript')).default;
++	ts = (await import('typescript-legacy')).default;
+ } catch {}
++if (!ts?.createSourceFile) {
++	try {
++		ts = (await import('typescript')).default;
++	} catch {}
++}

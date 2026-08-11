@@ -22,10 +22,25 @@ type SpaceUpdateCols = Nullable<Omit<SpaceRow, "createdAt" | "id" | "spaceId">>;
 export class SpaceRepository extends Context.Service<
   SpaceRepository,
   {
+    /*
+     * Get space data by id
+     */
     get: (
       spaceId: string,
+      cols?: SpaceGetCols,
     ) => Effect.Effect<
       SpaceGetResponse,
+      DatabaseClientError | SpaceRepositoryError
+    >;
+
+    /*
+     * Get space data by user id
+     */
+    getByUserId: (
+      userId: string,
+      cols?: SpaceGetCols,
+    ) => Effect.Effect<
+      Array<SpaceGetResponse>,
       DatabaseClientError | SpaceRepositoryError
     >;
 
@@ -69,13 +84,13 @@ export class SpaceRepository extends Context.Service<
       return {
         get: (spaceId, cols?: SpaceGetCols) =>
           Effect.gen(function* () {
-            const selectCols = cols ?? [],
-              results = yield* client.execute((db) =>
-                db
-                  .selectFrom("space")
-                  .select(["id", ...selectCols])
-                  .where("id", "=", spaceId),
-              );
+            const selectCols = cols ?? [];
+            const results = yield* client.execute((db) =>
+              db
+                .selectFrom("space")
+                .select(["id", ...selectCols])
+                .where("id", "=", spaceId),
+            );
 
             if (results.length === 0) {
               return yield* new SpaceRepositoryError({
@@ -93,6 +108,30 @@ export class SpaceRepository extends Context.Service<
 
             return results;
           }).pipe(Effect.map((r) => r[0])),
+
+        getByUserId: (userId, cols?: SpaceGetCols) =>
+          Effect.gen(function* () {
+            const selectCols = cols ?? [];
+            const results = yield* client.execute((db) =>
+              db
+                .selectFrom("space")
+                .select(["space.id", ...selectCols])
+                .leftJoin("user", (join) =>
+                  join
+                    .onRef("space.ownerId", "=", "user.id")
+                    .on("user.id", "=", userId),
+                ),
+            );
+            if (results.length === 0) {
+              return yield* new SpaceRepositoryError({
+                function: "getByUserId",
+                name: "NoSpacesForUserId",
+                message: "No rows returned from space get by user id",
+              });
+            }
+
+            return results;
+          }),
 
         create: (spaceName, ownerId) =>
           Effect.gen(function* () {

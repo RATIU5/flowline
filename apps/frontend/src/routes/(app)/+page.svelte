@@ -14,9 +14,9 @@ import { onMount } from "svelte";
 import { PUBLIC_BASE_URL } from "$env/static/public";
 import MessagesDisplay from "$lib/components/chat/messages-display.svelte";
 
-let userMessage = $state(""),
-  sendingMessages = $state<Array<string>>([]),
-  messageHistory = $state<Array<typeof Message.Type>>([]);
+let userMessage = $state("");
+let sendingMessages = $state<Array<string>>([]);
+let messageHistory = $state<Array<typeof Message.Type>>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,
@@ -77,12 +77,13 @@ const messageSubmitProgram = Effect.gen(function* () {
     Effect.catch((error) =>
       Console.error(error).pipe(Effect.andThen(Effect.void)),
     ),
-  ),
-  runtime = ManagedRuntime.make(RpcMessageClient.layer),
-  handleSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
-    messageSubmitProgram.pipe(runtime.runPromise);
-  };
+  );
+
+const runtime = ManagedRuntime.make(RpcMessageClient.layer);
+const handleSubmit = (e: SubmitEvent) => {
+  e.preventDefault();
+  messageSubmitProgram.pipe(runtime.runPromise);
+};
 
 onMount(() => {
   subscribeMessagesProgram.pipe(runtime.runPromise);

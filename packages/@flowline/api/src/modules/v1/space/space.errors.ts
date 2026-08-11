@@ -27,3 +27,25 @@ export class SpaceInternalError extends Schema.TaggedError<SpaceInternalError>()
     httpApiStatus: 500,
   },
 ) {}
+
+export class NoSpacesForUserError extends Schema.TaggedError<NoSpacesForUserError>()(
+  "NoSpacesForUserError",
+  {
+    message: Schema.String,
+  },
+  {
+    httpApiStatus: 404,
+  },
+) {}
+
+export const SpaceGetErrors = Schema.Union([
+  SpaceNotFound,
+  SpaceConflict,
+  SpaceInternalError,
+  NoSpacesForUserError,
+]);
+
+export const SpaceGetByUserErrors = Schema.Union([
+  SpaceInternalError,
+  NoSpacesForUserError,
+]);

@@ -15,6 +15,7 @@
   "dependencies": {
     "@effect/platform-browser": "catalog:effect",
     "@flowline/auth": "workspace:*",
+    "@flowline/api": "workspace:*",
     "@flowline/config": "workspace:*",
     "@flowline/rpc": "workspace:*",
     "effect": "catalog:effect",

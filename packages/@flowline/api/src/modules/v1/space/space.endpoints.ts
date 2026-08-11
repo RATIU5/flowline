@@ -1,22 +1,21 @@
-import * as Schema from "effect/Schema";
+import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
+import { SpaceGetByUserErrors, SpaceGetErrors } from "./space.errors";
 import {
-  SpaceConflict,
-  SpaceInternalError,
-  SpaceNotFound,
-} from "./space.errors";
-import { SpaceSchemaGetResponse } from "./space.schema";
-
-export const SpaceErrors = Schema.Union([
-  SpaceNotFound,
-  SpaceConflict,
-  SpaceInternalError,
-]);
+  SpaceSchemaGetResponse,
+  SpacesSchemaGetResponse,
+} from "./space.schema";
 
 export const Space = HttpApiGroup.make("space").add(
   HttpApiEndpoint.get("getSpace", "/space", {
+    params: { spaceId: Schema.String },
     success: SpaceSchemaGetResponse,
-    error: SpaceErrors,
+    error: SpaceGetErrors,
+  }),
+  HttpApiEndpoint.get("getSpacesByUser", "/space/:userId", {
+    params: { userId: Schema.String },
+    success: SpacesSchemaGetResponse,
+    error: SpaceGetByUserErrors,
   }),
 );
