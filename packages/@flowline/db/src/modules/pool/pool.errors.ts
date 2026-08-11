@@ -1,6 +1,6 @@
 import * as Schema from "effect/Schema";
 
-export class DatabasePoolEndError extends Schema.ErrorClass<DatabasePoolEndError>(
+export class DatabasePoolEndError extends Schema.Error<DatabasePoolEndError>(
   "DatabaseClientError",
 )({
   message: Schema.String,

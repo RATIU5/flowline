@@ -6,7 +6,7 @@ import { objectKeys } from "../../lib/utils";
 export const isErrorCode = (code: unknown): code is APIErrorCode =>
   typeof code === "string" && code in BASE_ERROR_CODES;
 
-export class AuthUnknownError extends Schema.TaggedErrorClass<AuthUnknownError>()(
+export class AuthUnknownError extends Schema.TaggedError<AuthUnknownError>()(
   "AuthUnknownError",
   {
     message: Schema.String,
@@ -14,7 +14,7 @@ export class AuthUnknownError extends Schema.TaggedErrorClass<AuthUnknownError>(
   },
 ) {}
 
-export class AuthError extends Schema.TaggedErrorClass<AuthError>()(
+export class AuthError extends Schema.TaggedError<AuthError>()(
   "AuthError",
   {
     message: Schema.String,
@@ -22,7 +22,7 @@ export class AuthError extends Schema.TaggedErrorClass<AuthError>()(
   },
 ) {}
 
-export class AuthApiError extends Schema.TaggedErrorClass<AuthApiError>()(
+export class AuthApiError extends Schema.TaggedError<AuthApiError>()(
   "AuthApiError",
   {
     message: Schema.String,

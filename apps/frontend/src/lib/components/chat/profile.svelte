@@ -13,9 +13,9 @@ let {
   size = 40,
   alt,
   class: className = "",
-}: Props = $props();
+}: Props = $props(),
 
-let imageFailed = $state(false);
+ imageFailed = $state(false);
 
 const initials = $derived.by(() => {
   const parts = name.trim().split(/\s+/u).filter(Boolean);
@@ -28,9 +28,9 @@ const initials = $derived.by(() => {
   }
 
   return `${parts[0]?.[0] ?? "U"}${parts[1]?.[0] ?? "n"}`.toUpperCase();
-});
+}),
 
-const hue = $derived.by(() => {
+ hue = $derived.by(() => {
   let hash = 0;
 
   for (const char of initials) {
@@ -38,11 +38,11 @@ const hue = $derived.by(() => {
   }
 
   return Math.abs(hash) % 360;
-});
+}),
 
-const showImage = $derived(Boolean(src) && !imageFailed);
+ showImage = $derived(Boolean(src) && !imageFailed),
 
-const styleVars = $derived(
+ styleVars = $derived(
   [
     `--avatar-size:${size}px`,
     `--avatar-font-size:${Math.max(12, Math.round(size * 0.36))}px`,

@@ -13,9 +13,9 @@ const SpaceStack = SpaceService.layer.pipe(
   Layer.provide(SpaceRepository.layer),
   Layer.provide(DatabaseClient.layer),
   Layer.provide(DBAndConfigLayer),
-);
+),
 
-const SpaceHttpLive = SpaceApiLive.pipe(HttpRouter.provideRequest(SpaceStack));
+ SpaceHttpLive = SpaceApiLive.pipe(HttpRouter.provideRequest(SpaceStack));
 
 export const Routes = Layer.mergeAll(
   MessagesRoute,

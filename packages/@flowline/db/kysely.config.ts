@@ -8,9 +8,9 @@ import { join } from "node:path";
 
 import { DatabasePool } from "./src/modules/pool/pool.service";
 
-const backendEnv = join(import.meta.dirname, "../../../apps/backend/.env");
+const backendEnv = join(import.meta.dirname, "../../../apps/backend/.env"),
 
-const FlowlineConfigLayer = AppConfig.layer.pipe(
+ FlowlineConfigLayer = AppConfig.layer.pipe(
   Layer.provide(
     ConfigProvider.layer(
       ConfigProvider.fromDotEnv({
@@ -19,15 +19,15 @@ const FlowlineConfigLayer = AppConfig.layer.pipe(
     ),
   ),
   Layer.provide(BunFileSystem.layer),
-);
+),
 
-const DatabasePoolLayer = Layer.provide(
+ DatabasePoolLayer = Layer.provide(
   DatabasePool.layer,
   FlowlineConfigLayer,
-);
+),
 
-const runtime = ManagedRuntime.make(DatabasePoolLayer);
-const pool = await runtime.runPromise(DatabasePool);
+ runtime = ManagedRuntime.make(DatabasePoolLayer),
+ pool = await runtime.runPromise(DatabasePool);
 
 export default defineConfig({
   dialect: "pg",

@@ -16,8 +16,8 @@ export const MessageHandlers = MessageRpcs.toLayer({
   SubscribeMessages: () =>
     Stream.unwrap(
       Effect.gen(function* () {
-        const chatService = yield* ChatPubSub;
-        const subscription = yield* PubSub.subscribe(chatService);
+        const chatService = yield* ChatPubSub,
+         subscription = yield* PubSub.subscribe(chatService);
         return Stream.fromSubscription(subscription);
       }),
     ),

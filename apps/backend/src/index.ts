@@ -9,8 +9,8 @@ import { Routes } from "./router";
 
 const CorsLive = Layer.unwrap(
   Effect.gen(function* () {
-    const config = yield* AppConfig;
-    const trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
+    const config = yield* AppConfig,
+     trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
       ? config.general.clientUrl.toString().slice(0, -1)
       : config.general.clientUrl.toString();
     return HttpRouter.cors({
@@ -18,14 +18,14 @@ const CorsLive = Layer.unwrap(
       credentials: true,
     });
   }),
-);
+),
 
-const RoutesWithCors = Routes.pipe(
+ RoutesWithCors = Routes.pipe(
   Layer.provide(CorsLive),
   Layer.provide(AppConfig.layer),
-);
+),
 
-const ServerLive = BunHttpServer.layer({ port: 3000 });
+ ServerLive = BunHttpServer.layer({ port: 3000 });
 HttpRouter.serve(RoutesWithCors).pipe(
   Layer.provide(ServerLive),
   Layer.provide(AppConfig.layer),

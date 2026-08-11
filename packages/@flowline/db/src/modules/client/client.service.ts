@@ -19,8 +19,8 @@ export class DatabaseClient extends Context.Service<DatabaseClient>()(
   "@flowline/db/client/DatabaseClient",
   {
     make: Effect.gen(function* () {
-      const pool = yield* DatabasePool;
-      const kysely = new Kysely<DB>({
+      const pool = yield* DatabasePool,
+       kysely = new Kysely<DB>({
         dialect: new PostgresDialect({ pool }),
       });
       return {

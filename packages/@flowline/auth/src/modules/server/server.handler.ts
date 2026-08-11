@@ -7,10 +7,10 @@ import { AuthEffect } from "../../lib/auth";
 import { AuthError, AuthUnknownError } from "../shared/auth.errors";
 
 export const AuthHandler = Effect.gen(function* () {
-  const request = yield* HttpServerRequest.HttpServerRequest;
-  const webRequest = yield* HttpServerRequest.toWeb(request);
-  const auth = yield* AuthEffect;
-  const handler = yield* Effect.tryPromise({
+  const request = yield* HttpServerRequest.HttpServerRequest,
+   webRequest = yield* HttpServerRequest.toWeb(request),
+   auth = yield* AuthEffect,
+   handler = yield* Effect.tryPromise({
     try: () => auth.handler(webRequest),
     catch: (e) => {
       if (e instanceof ba_BetterAuthError) {

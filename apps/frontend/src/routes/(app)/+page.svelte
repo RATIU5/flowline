@@ -14,9 +14,9 @@ import { onMount } from "svelte";
 import { PUBLIC_BASE_URL } from "$env/static/public";
 import MessagesDisplay from "$lib/components/chat/messages-display.svelte";
 
-let userMessage = $state("");
-let sendingMessages = $state<Array<string>>([]);
-let messageHistory = $state<Array<typeof Message.Type>>([]);
+let userMessage = $state(""),
+ sendingMessages = $state<Array<string>>([]),
+ messageHistory = $state<Array<typeof Message.Type>>([]);
 
 const ProtocolLive = RpcClient.layerProtocolSocket({
   retryTransientErrors: true,
@@ -42,10 +42,10 @@ const messageSubmitProgram = Effect.gen(function* () {
   if (userMessage.trim() === "") {
     return yield* Effect.void;
   }
-  const client = yield* RpcMessageClient;
-  const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
+  const client = yield* RpcMessageClient,
+   auth = yield* AuthClient(new URL(PUBLIC_BASE_URL)),
 
-  const session = yield* Effect.promise(() => auth.getSession());
+   session = yield* Effect.promise(() => auth.getSession());
 
   yield* client.PublishMessage({
     message: userMessage,
@@ -64,9 +64,9 @@ const messageSubmitProgram = Effect.gen(function* () {
   Effect.catch((error) =>
     Console.error(error).pipe(Effect.andThen(Effect.void)),
   ),
-);
+),
 
-const subscribeMessagesProgram = Effect.gen(function* () {
+ subscribeMessagesProgram = Effect.gen(function* () {
   const client = yield* RpcMessageClient;
   yield* client.SubscribeMessages().pipe(
     Stream.runForEach((m) => {
@@ -79,11 +79,11 @@ const subscribeMessagesProgram = Effect.gen(function* () {
   Effect.catch((error) =>
     Console.error(error).pipe(Effect.andThen(Effect.void)),
   ),
-);
+),
 
-const runtime = ManagedRuntime.make(RpcMessageClient.layer);
+ runtime = ManagedRuntime.make(RpcMessageClient.layer),
 
-const handleSubmit = (e: SubmitEvent) => {
+ handleSubmit = (e: SubmitEvent) => {
   e.preventDefault();
   messageSubmitProgram.pipe(runtime.runPromise);
 };

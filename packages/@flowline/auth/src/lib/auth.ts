@@ -4,10 +4,10 @@ import { betterAuth } from "better-auth";
 import * as Effect from "effect/Effect";
 
 export const AuthEffect = Effect.gen(function* () {
-  const pool = yield* DatabasePool;
-  const config = yield* AppConfig;
+  const pool = yield* DatabasePool,
+   config = yield* AppConfig,
 
-  const trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
+   trimmedUrlString = config.general.clientUrl.toString().endsWith("/")
     ? config.general.clientUrl.toString().slice(0, -1)
     : config.general.clientUrl.toString();
 

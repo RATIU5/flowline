@@ -1,6 +1,6 @@
 import * as Schema from "effect/Schema";
 
-export class DatabaseClientError extends Schema.TaggedErrorClass<DatabaseClientError>()(
+export class DatabaseClientError extends Schema.TaggedError<DatabaseClientError>()(
   "DatabaseClientError",
   {
     message: Schema.String,

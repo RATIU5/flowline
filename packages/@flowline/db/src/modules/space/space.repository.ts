@@ -69,8 +69,8 @@ export class SpaceRepository extends Context.Service<
       return {
         get: (spaceId, cols?: SpaceGetCols) =>
           Effect.gen(function* () {
-            const selectCols = cols ?? [];
-            const results = yield* client.execute((db) =>
+            const selectCols = cols ?? [],
+             results = yield* client.execute((db) =>
               db
                 .selectFrom("space")
                 .select(["id", ...selectCols])

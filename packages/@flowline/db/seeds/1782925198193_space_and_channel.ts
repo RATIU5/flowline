@@ -4,9 +4,9 @@ import type { Kysely } from "kysely";
 
 import type { DB } from "../src/types";
 
-// replace `any` with your database interface.
+// Replace `any` with your database interface.
 export async function seed(db: Kysely<DB>): Promise<void> {
-  // @ts-ignore
+  // @ts-expect-error
   const seedEmail = process.env.SEED_USER_EMAIL ?? "";
 
   if (seedEmail === "") {

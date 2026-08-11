@@ -4,12 +4,12 @@ import { goto } from "$app/navigation";
 import { PUBLIC_BASE_URL } from "$env/static/public";
 import { AuthClient } from "$lib/client/effects/auth";
 
-let name = $state("");
-let email = $state("");
-let password = $state("");
-let confirmPassword = $state("");
-let error = $state("");
-let loading = $state(false);
+let name = $state(""),
+ email = $state(""),
+ password = $state(""),
+ confirmPassword = $state(""),
+ error = $state(""),
+ loading = $state(false);
 
 const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
   function* (e: Event) {
@@ -54,9 +54,9 @@ const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
 
     return yield* Effect.void;
   },
-);
+),
 
-const handleSubmit = (e: Event) =>
+ handleSubmit = (e: Event) =>
   HandleSubmitEffect(e).pipe(Effect.runPromise);
 </script>
 

@@ -1,6 +1,6 @@
 import * as Schema from "effect/Schema";
 
-export class SpaceNotFound extends Schema.TaggedErrorClass<SpaceNotFound>()(
+export class SpaceNotFound extends Schema.TaggedError<SpaceNotFound>()(
   "SpaceNotFound",
   {
     message: Schema.String,
@@ -8,7 +8,7 @@ export class SpaceNotFound extends Schema.TaggedErrorClass<SpaceNotFound>()(
   { httpApiStatus: 404 },
 ) {}
 
-export class SpaceConflict extends Schema.TaggedErrorClass<SpaceConflict>()(
+export class SpaceConflict extends Schema.TaggedError<SpaceConflict>()(
   "SpaceConflict",
   {
     message: Schema.String,
@@ -18,7 +18,7 @@ export class SpaceConflict extends Schema.TaggedErrorClass<SpaceConflict>()(
   },
 ) {}
 
-export class SpaceInternalError extends Schema.TaggedErrorClass<SpaceInternalError>()(
+export class SpaceInternalError extends Schema.TaggedError<SpaceInternalError>()(
   "SpaceInternalError",
   {
     message: Schema.String,

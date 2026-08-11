@@ -10,8 +10,8 @@ interface Props {
 let { name, time, class: className = "" }: Props = $props();
 
 const calcDateSent = (utcTime: Utc | undefined) => {
-  const now = Date.now();
-  const diff = now - (utcTime?.epochMilliseconds ?? 0);
+  const now = Date.now(),
+   diff = now - (utcTime?.epochMilliseconds ?? 0);
 
   if (diff < 60_000) {
     return "Just now";

@@ -1,6 +1,6 @@
 import * as Schema from "effect/Schema";
 
-export class SpaceRepositoryError extends Schema.TaggedErrorClass<SpaceRepositoryError>()(
+export class SpaceRepositoryError extends Schema.TaggedError<SpaceRepositoryError>()(
   "SpaceRepositoryError",
   {
     message: Schema.String,
