@@ -12,9 +12,9 @@
     },
     "catalogs": {
       "lint": {
-        "@biomejs/biome": "2.5.7",
         "oxfmt": "0.63.0",
         "oxlint": "1.77.0",
+        "@oxlint/plugins": "1.78.0",
         "oxlint-tsgolint": "7.0.2001"
       },
       "typescript": {
@@ -46,13 +46,13 @@
         "sveltekit-effect-runtime": "1.3.0"
       },
       "effect": {
-        "effect": "4.0.0-beta.107",
-        "@effect/platform-bun": "4.0.0-beta.107",
-        "@effect/platform-browser": "4.0.0-beta.107",
+        "effect": "4.0.0-rc.110",
+        "@effect/platform-bun": "4.0.0-rc.110",
+        "@effect/platform-browser": "4.0.0-rc.110",
         "@effect/language-service": "^0.87.2",
-        "@effect/sql-pg": "4.0.0-beta.107",
-        "@effect/opentelemetry": "4.0.0-beta.107",
-        "@effect/vitest": "4.0.0-beta.107"
+        "@effect/sql-pg": "4.0.0-rc.110",
+        "@effect/opentelemetry": "4.0.0-rc.110",
+        "@effect/vitest": "4.0.0-rc.110"
       }
     }
   },
@@ -67,8 +67,8 @@
     "db:migrate": "bun run --elide-lines 0 --filter @flowline/db migrate",
     "db:seed": "bun run --elide-lines 0 --filter @flowline/db seed",
     "db:codegen": "bun run --elide-lines 0 --filter @flowline/db codegen",
-    "fmt:check": "oxfmt --check && biome format --verbose",
-    "fmt": "oxfmt --write && biome format --write",
+    "fmt:check": "oxfmt --check",
+    "fmt": "oxfmt --write",
     "lint:check": "oxlint",
     "lint": "oxlint --fix",
     "typecheck": "bun run --elide-lines 0 --filter '*' typecheck",
@@ -78,17 +78,17 @@
     "clean:packages": "rimraf node_modules apps/**/node_modules packages/**/node_modules bun.lock && echo 'Re-install required'"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:lint",
     "@effect/language-service": "catalog:effect",
     "@effect/tsgo": "catalog:typescript",
+    "@oxlint/plugins": "catalog:lint",
     "@types/bun": "latest",
     "oxfmt": "catalog:lint",
     "oxlint": "catalog:lint",
     "oxlint-tsgolint": "catalog:lint",
     "rimraf": "^6.1.3",
     "typescript": "catalog:typescript",
-    "vitest": "catalog:testing",
-    "typescript-legacy": "npm:typescript@6.0.3"
+    "typescript-legacy": "npm:typescript@6.0.3",
+    "vitest": "catalog:testing"
   },
   "packageManager": "bun@1.3.10",
   "patchedDependencies": {

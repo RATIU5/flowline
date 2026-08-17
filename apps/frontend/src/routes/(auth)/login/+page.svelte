@@ -1,59 +1,59 @@
 <script lang="ts">
-import * as Effect from "effect/Effect";
-import { goto } from "$app/navigation";
-import { PUBLIC_BASE_URL } from "$env/static/public";
-import { AuthClient } from "$lib/client/effects/auth";
+  import { goto } from "$app/navigation";
+  import { PUBLIC_BASE_URL } from "$env/static/public";
+  import { AuthClient } from "$lib/client/effects/auth";
+  import * as Effect from "effect/Effect";
 
-let email = $state(""),
-  password = $state(""),
-  error = $state(""),
-  loading = $state(false);
+  let email = $state(""),
+    password = $state(""),
+    error = $state(""),
+    loading = $state(false);
 
-const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
-    function* (e: Event) {
-      const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
+  const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
+      function* (e: Event) {
+        const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
 
-      e.preventDefault();
-      error = "";
+        e.preventDefault();
+        error = "";
 
-      loading = true;
+        loading = true;
 
-      const { error: authError } = yield* Effect.tryPromise(() =>
-        auth.signIn.email(
-          { email, password },
-          {
-            onSuccess: () => {
-              goto("/");
+        const { error: authError } = yield* Effect.tryPromise(() =>
+          auth.signIn.email(
+            { email, password },
+            {
+              onSuccess: () => {
+                goto("/");
+              },
             },
-          },
-        ),
-      ).pipe(
-        Effect.catchTag("UnknownError", () =>
-          Effect.succeed({
-            error: {
-              status: 500,
-              statusText: "An internal error occurred",
-              message: "An internal error occurred",
-            },
-          }),
-        ),
-      );
+          ),
+        ).pipe(
+          Effect.catchTag("UnknownError", () =>
+            Effect.succeed({
+              error: {
+                status: 500,
+                statusText: "An internal error occurred",
+                message: "An internal error occurred",
+              },
+            }),
+          ),
+        );
 
-      if (authError) {
-        error = authError.message ?? "Something went wrong.";
-      }
+        if (authError) {
+          error = authError.message ?? "Something went wrong.";
+        }
 
-      loading = false;
+        loading = false;
 
-      return yield* Effect.void;
-    },
-  ),
-  handleSubmit = (e: Event) => HandleSubmitEffect(e).pipe(Effect.runPromise);
+        return yield* Effect.void;
+      },
+    ),
+    handleSubmit = (e: Event) => HandleSubmitEffect(e).pipe(Effect.runPromise);
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
   <div
-    class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 p-8"
+    class="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm"
   >
     <div class="mb-8">
       <h1 class="text-2xl font-semibold text-gray-900">Create an account</h1>
@@ -74,8 +74,8 @@ const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
           autocomplete="email"
           placeholder="jane@example.com"
           class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400
-                 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-        >
+                 transition outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+        />
       </div>
 
       <!-- Password -->
@@ -92,14 +92,14 @@ const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
           autocomplete="new-password"
           placeholder="Min. 8 characters"
           class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400
-                 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-        >
+                 transition outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+        />
       </div>
 
       <!-- Error -->
       {#if error}
         <p
-          class="rounded-lg bg-red-50 border border-red-200 px-3.5 py-2.5 text-sm text-red-600"
+          class="rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-600"
         >
           {error}
         </p>
@@ -110,10 +110,10 @@ const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
         type="submit"
         disabled={loading}
         class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white
-               transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-               disabled:opacity-60 disabled:cursor-not-allowed"
+               transition hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none
+               disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? 'Signing in…' : 'Sign in'}
+        {loading ? "Signing in…" : "Sign in"}
       </button>
     </form>
 
@@ -121,8 +121,7 @@ const HandleSubmitEffect = Effect.fn("@flowline/backend/HandleSubmitEffect")(
       Don't have an account?
       <a
         href="/register"
-        class="font-medium text-indigo-600 hover:text-indigo-500"
-        >Sign up</a
+        class="font-medium text-indigo-600 hover:text-indigo-500">Sign up</a
       >
     </p>
   </div>

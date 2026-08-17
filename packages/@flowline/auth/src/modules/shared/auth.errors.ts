@@ -1,10 +1,7 @@
-import { BASE_ERROR_CODES, type APIErrorCode } from "better-auth";
+import { BASE_ERROR_CODES } from "better-auth";
 import * as Schema from "effect/Schema";
 
 import { objectKeys } from "../../lib/utils";
-
-export const isErrorCode = (code: unknown): code is APIErrorCode =>
-  typeof code === "string" && code in BASE_ERROR_CODES;
 
 export class AuthUnknownError extends Schema.TaggedError<AuthUnknownError>()(
   "AuthUnknownError",

@@ -11,7 +11,13 @@
   "arrowParens": "always",
   "endOfLine": "lf",
   "insertFinalNewline": true,
-  "ignorePatterns": ["**/*.svelte", "**/types/db.ts"],
+  "ignorePatterns": ["**/types/db.ts"],
+  "svelte": true,
+  "sortTailwindcss": {
+    "stylesheet": "./apps/frontend/src/routes/layout.css",
+    "functions": ["clsx", "cn"],
+    "preserveWhitespace": true
+  },
   "sortImports": {
     "groups": [
       "type-import",

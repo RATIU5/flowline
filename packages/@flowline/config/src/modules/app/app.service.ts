@@ -4,7 +4,7 @@ import * as Config from "effect/Config";
 import * as Context from "effect/Context";
 import * as Layer from "effect/Layer";
 
-export interface AppConfigShape {
+export interface AppSettings {
   readonly general: {
     readonly clientUrl: URL;
   };
@@ -22,7 +22,7 @@ export interface AppConfigShape {
   };
 }
 
-export class AppConfig extends Context.Service<AppConfig, AppConfigShape>()(
+export class AppConfig extends Context.Service<AppConfig, AppSettings>()(
   "@flowline/config/modules/app/app.service/AppConfig",
 ) {
   static readonly layer = Layer.effect(

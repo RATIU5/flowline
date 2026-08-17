@@ -1,12 +1,15 @@
 <script lang="ts">
-import "../layout.css";
-import type { LayoutProps } from "./$types";
+  import Sidebar from "$lib/components/interface/sidebar/sidebar.svelte";
+  import { ModeWatcher } from "mode-watcher";
 
-const { data, children }: LayoutProps = $props();
+  import "../layout.css";
+
+  import type { LayoutProps } from "./$types";
+
+  const { data, children }: LayoutProps = $props();
 </script>
 
-{#if data.spaces.length === 0}
-  <p>No spaces found</p>
-{:else}
-  {@render children()}
-{/if}
+<ModeWatcher />
+<main class="flex h-screen">
+  <Sidebar spaces={data.spaces} />
+</main>

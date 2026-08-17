@@ -33,12 +33,8 @@
       "formatter": { "language_server": { "name": "oxfmt" } }
     },
     "Svelte": {
-      "language_servers": ["svelte-language-server", "oxlint", "biome"],
-      "formatter": [
-        { "language_server": { "name": "biome" } },
-        { "code_action": "source.organizeImports.biome" },
-        { "code_action": "source.fixAll.biome" }
-      ]
+      "language_servers": ["svelte-language-server", "oxlint", "oxfmt"],
+      "formatter": [{ "language_server": { "name": "oxfmt" } }]
     },
     "JSON": {
       "language_servers": ["oxfmt", "json-language-server"],
