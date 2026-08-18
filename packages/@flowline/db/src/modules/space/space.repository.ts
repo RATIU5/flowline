@@ -4,7 +4,19 @@ import * as Layer from "effect/Layer";
 
 import { toPatch } from "../../utils";
 import { DatabaseClient, type DatabaseClientError } from "../client";
-import { SpaceRepositoryError } from "./space.errors";
+import {
+  NoCreateRows,
+  NoDeletedRows,
+  NoGetRows,
+  NoSpacesForUserId,
+  NoUpdateRows,
+  spaceError,
+  TooManyCreateRows,
+  TooManyDeletedRows,
+  TooManyGetRows,
+  TooManyUpdateRows,
+  type SpaceRepositoryErrorOf,
+} from "./space.errors";
 
 import type { DB, Selectable } from "../../types";
 import type {
@@ -30,7 +42,7 @@ export class SpaceRepository extends Context.Service<
       cols?: SpaceGetCols,
     ) => Effect.Effect<
       SpaceGetResponse,
-      DatabaseClientError | SpaceRepositoryError
+      DatabaseClientError | SpaceRepositoryErrorOf<NoGetRows | TooManyGetRows>
     >;
 
     /*
@@ -41,7 +53,7 @@ export class SpaceRepository extends Context.Service<
       cols?: SpaceGetCols,
     ) => Effect.Effect<
       Array<SpaceGetResponse>,
-      DatabaseClientError | SpaceRepositoryError
+      DatabaseClientError | SpaceRepositoryErrorOf<NoSpacesForUserId>
     >;
 
     /*
@@ -52,7 +64,8 @@ export class SpaceRepository extends Context.Service<
       spaceName: string,
     ) => Effect.Effect<
       InsertResult,
-      DatabaseClientError | SpaceRepositoryError
+      | DatabaseClientError
+      | SpaceRepositoryErrorOf<NoCreateRows | TooManyCreateRows>
     >;
 
     /*
@@ -63,7 +76,8 @@ export class SpaceRepository extends Context.Service<
       cols: SpaceUpdateCols,
     ) => Effect.Effect<
       UpdateResult,
-      DatabaseClientError | SpaceRepositoryError
+      | DatabaseClientError
+      | SpaceRepositoryErrorOf<NoUpdateRows | TooManyUpdateRows>
     >;
 
     /*
@@ -73,7 +87,8 @@ export class SpaceRepository extends Context.Service<
       spaceId: string,
     ) => Effect.Effect<
       DeleteResult,
-      DatabaseClientError | SpaceRepositoryError
+      | DatabaseClientError
+      | SpaceRepositoryErrorOf<NoDeletedRows | TooManyDeletedRows>
     >;
   }
 >()("@flowline/db/modules/space/space.repository/SpaceRepository") {
@@ -93,17 +108,15 @@ export class SpaceRepository extends Context.Service<
             );
 
             if (results.length === 0) {
-              return yield* new SpaceRepositoryError({
-                function: "get",
-                name: "NoGetRows",
-                message: "Failed to get space row",
-              });
+              return yield* spaceError(
+                new NoGetRows({ message: "Failed to get space row" }),
+              );
             } else if (results.length > 1) {
-              return yield* new SpaceRepositoryError({
-                function: "get",
-                name: "TooManyGetRows",
-                message: "Too many rows returned from space get",
-              });
+              return yield* spaceError(
+                new TooManyGetRows({
+                  message: "Too many rows returned from space get",
+                }),
+              );
             }
 
             return results;
@@ -123,11 +136,11 @@ export class SpaceRepository extends Context.Service<
                 ),
             );
             if (results.length === 0) {
-              return yield* new SpaceRepositoryError({
-                function: "getByUserId",
-                name: "NoSpacesForUserId",
-                message: "No rows returned from space get by user id",
-              });
+              return yield* spaceError(
+                new NoSpacesForUserId({
+                  message: "No rows returned from space get by user id",
+                }),
+              );
             }
 
             return results;
@@ -143,17 +156,17 @@ export class SpaceRepository extends Context.Service<
             );
 
             if (results.length === 0) {
-              return yield* new SpaceRepositoryError({
-                function: "create",
-                name: "NoCreateRows",
-                message: "Failed to create new space row",
-              });
+              return yield* spaceError(
+                new NoCreateRows({
+                  message: "Failed to create new space row",
+                }),
+              );
             } else if (results.length > 1) {
-              return yield* new SpaceRepositoryError({
-                function: "create",
-                name: "TooManyCreateRows",
-                message: "Too many rows returned from space create",
-              });
+              return yield* spaceError(
+                new TooManyCreateRows({
+                  message: "Too many rows returned from space create",
+                }),
+              );
             }
 
             return results;
@@ -169,17 +182,17 @@ export class SpaceRepository extends Context.Service<
             );
 
             if (results.length === 0) {
-              return yield* new SpaceRepositoryError({
-                function: "update",
-                name: "NoUpdateRows",
-                message: "Failed to update space row",
-              });
+              return yield* spaceError(
+                new NoUpdateRows({
+                  message: "Failed to update space row",
+                }),
+              );
             } else if (results.length > 1) {
-              return yield* new SpaceRepositoryError({
-                function: "update",
-                name: "TooManyUpdateRows",
-                message: "Too many rows returned from space update",
-              });
+              return yield* spaceError(
+                new TooManyUpdateRows({
+                  message: "Too many rows returned from space update",
+                }),
+              );
             }
 
             return results;
@@ -192,17 +205,17 @@ export class SpaceRepository extends Context.Service<
             );
 
             if (results.length === 0) {
-              return yield* new SpaceRepositoryError({
-                function: "delete",
-                name: "NoDeletedRows",
-                message: "Failed to delete space row",
-              });
+              return yield* spaceError(
+                new NoDeletedRows({
+                  message: "Failed to delete space row",
+                }),
+              );
             } else if (results.length > 1) {
-              return yield* new SpaceRepositoryError({
-                function: "delete",
-                name: "TooManyDeletedRows",
-                message: "Too many rows returned from space delete",
-              });
+              return yield* spaceError(
+                new TooManyDeletedRows({
+                  message: "Too many rows returned from space delete",
+                }),
+              );
             }
 
             return results;

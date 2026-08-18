@@ -47,30 +47,38 @@ export class SpaceService extends Context.Service<
                   : undefined,
               },
             })),
-            Effect.catchTags({
-              SpaceRepositoryError: (e) =>
-                e.name === "NoGetRows"
-                  ? Effect.fail(
-                      new apiV1.SpaceNotFound({
-                        message: "No spaces found",
-                      }),
-                    )
-                  : Effect.fail(
-                      new apiV1.SpaceConflict({
-                        message: "Multiple spaces found",
-                      }),
-                    ),
-              DatabaseClientError: (e) =>
-                Effect.logWarning(e.message).pipe(
-                  Effect.andThen(
-                    Effect.fail(
-                      new apiV1.SpaceInternalError({
-                        message: "Internal server error",
-                      }),
-                    ),
+            Effect.catchReasons(
+              "SpaceRepositoryError",
+              {
+                NoGetRows: () =>
+                  Effect.fail(
+                    new apiV1.SpaceNotFound({ message: "No spaces found" }),
+                  ),
+                TooManyGetRows: () =>
+                  Effect.fail(
+                    new apiV1.SpaceConflict({
+                      message: "Multiple spaces found",
+                    }),
+                  ),
+              },
+              () =>
+                Effect.fail(
+                  new apiV1.SpaceInternalError({
+                    message: "Internal server error",
+                  }),
+                ),
+            ),
+            Effect.catchTag("DatabaseClientError", (e) =>
+              Effect.logWarning(e.message).pipe(
+                Effect.andThen(
+                  Effect.fail(
+                    new apiV1.SpaceInternalError({
+                      message: "Internal server error",
+                    }),
                   ),
                 ),
-            }),
+              ),
+            ),
           ),
 
         getSpacesByUser: (userId) =>
@@ -83,30 +91,34 @@ export class SpaceService extends Context.Service<
                   : undefined,
               })),
             })),
-            Effect.catchTags({
-              SpaceRepositoryError: (e) =>
-                e.name === "NoSpacesForUserId"
-                  ? Effect.fail(
-                      new apiV1.NoSpacesForUserError({
-                        message: "No spaces for user found",
-                      }),
-                    )
-                  : Effect.fail(
-                      new apiV1.SpaceInternalError({
-                        message: "Unknown spaces for user found error",
-                      }),
-                    ),
-              DatabaseClientError: (e) =>
-                Effect.logWarning(e.message).pipe(
-                  Effect.andThen(
-                    Effect.fail(
-                      new apiV1.SpaceInternalError({
-                        message: "Internal server error",
-                      }),
-                    ),
+            Effect.catchReasons(
+              "SpaceRepositoryError",
+              {
+                NoSpacesForUserId: () =>
+                  Effect.fail(
+                    new apiV1.NoSpacesForUserError({
+                      message: "No spaces for user found",
+                    }),
+                  ),
+              },
+              () =>
+                Effect.fail(
+                  new apiV1.SpaceInternalError({
+                    message: "Internal server error",
+                  }),
+                ),
+            ),
+            Effect.catchTag("DatabaseClientError", (e) =>
+              Effect.logWarning(e.message).pipe(
+                Effect.andThen(
+                  Effect.fail(
+                    new apiV1.SpaceInternalError({
+                      message: "Internal server error",
+                    }),
                   ),
                 ),
-            }),
+              ),
+            ),
           ),
 
         createSpace: (ownerId, spaceName) =>
@@ -114,30 +126,40 @@ export class SpaceService extends Context.Service<
             Effect.map((r) => ({
               data: { id: `${r.insertId}` },
             })),
-            Effect.catchTags({
-              SpaceRepositoryError: (e) =>
-                e.name === "MissingPayload"
-                  ? Effect.fail(
-                      new apiV1.MissingPayload({
-                        message: "Invalid payload for endpoint",
-                      }),
-                    )
-                  : Effect.fail(
-                      new apiV1.SpaceInternalError({
-                        message: "Unknown spaces for user found error",
-                      }),
-                    ),
-              DatabaseClientError: (e) =>
-                Effect.logWarning(e.message).pipe(
-                  Effect.andThen(
-                    Effect.fail(
-                      new apiV1.SpaceInternalError({
-                        message: "Internal server error",
-                      }),
-                    ),
+            Effect.catchReasons(
+              "SpaceRepositoryError",
+              {
+                NoCreateRows: () =>
+                  Effect.fail(
+                    new apiV1.SpaceInternalError({
+                      message: "Failed to create space",
+                    }),
+                  ),
+                TooManyCreateRows: () =>
+                  Effect.fail(
+                    new apiV1.SpaceInternalError({
+                      message: "Multiple spaces created",
+                    }),
+                  ),
+              },
+              () =>
+                Effect.fail(
+                  new apiV1.SpaceInternalError({
+                    message: "Internal server error",
+                  }),
+                ),
+            ),
+            Effect.catchTag("DatabaseClientError", (e) =>
+              Effect.logWarning(e.message).pipe(
+                Effect.andThen(
+                  Effect.fail(
+                    new apiV1.SpaceInternalError({
+                      message: "Internal server error",
+                    }),
                   ),
                 ),
-            }),
+              ),
+            ),
           ),
       };
     }),
