@@ -21,21 +21,31 @@ export class SpaceService extends Context.Service<
       apiV1.SpacesSchemaGetResponse,
       typeof apiV1.SpaceGetByUserErrors.Type
     >;
+
+    createSpace: (
+      ownerId: string,
+      spaceName: string,
+    ) => Effect.Effect<
+      apiV1.SpacesSchemaCreateResponse,
+      typeof apiV1.SpaceCreateErrors.Type
+    >;
   }
 >()("backend/modules/space/space.service/SpaceService") {
   static readonly layer = Layer.effect(
     this,
     Effect.gen(function* () {
-      const { get, getByUserId } = yield* SpaceRepository;
+      const { get, getByUserId, create } = yield* SpaceRepository;
 
       return {
         getSpace: (id) =>
           get(id).pipe(
             Effect.map((r) => ({
-              ...r,
-              createdAt: r.createdAt
-                ? DateTime.fromDateUnsafe(r.createdAt)
-                : undefined,
+              data: {
+                ...r,
+                createdAt: r.createdAt
+                  ? DateTime.fromDateUnsafe(r.createdAt)
+                  : undefined,
+              },
             })),
             Effect.catchTags({
               SpaceRepositoryError: (e) =>
@@ -66,7 +76,7 @@ export class SpaceService extends Context.Service<
         getSpacesByUser: (userId) =>
           getByUserId(userId).pipe(
             Effect.map((r) => ({
-              spaces: r.map((r2) => ({
+              data: r.map((r2) => ({
                 ...r2,
                 createdAt: r2.createdAt
                   ? DateTime.fromDateUnsafe(r2.createdAt)
@@ -79,6 +89,37 @@ export class SpaceService extends Context.Service<
                   ? Effect.fail(
                       new apiV1.NoSpacesForUserError({
                         message: "No spaces for user found",
+                      }),
+                    )
+                  : Effect.fail(
+                      new apiV1.SpaceInternalError({
+                        message: "Unknown spaces for user found error",
+                      }),
+                    ),
+              DatabaseClientError: (e) =>
+                Effect.logWarning(e.message).pipe(
+                  Effect.andThen(
+                    Effect.fail(
+                      new apiV1.SpaceInternalError({
+                        message: "Internal server error",
+                      }),
+                    ),
+                  ),
+                ),
+            }),
+          ),
+
+        createSpace: (ownerId, spaceName) =>
+          create(ownerId, spaceName).pipe(
+            Effect.map((r) => ({
+              data: { id: `${r.insertId}` },
+            })),
+            Effect.catchTags({
+              SpaceRepositoryError: (e) =>
+                e.name === "MissingPayload"
+                  ? Effect.fail(
+                      new apiV1.MissingPayload({
+                        message: "Invalid payload for endpoint",
                       }),
                     )
                   : Effect.fail(

@@ -48,8 +48,8 @@ export class SpaceRepository extends Context.Service<
      * Create a new space on the database
      */
     create: (
-      spaceName: string,
       ownerId: string,
+      spaceName: string,
     ) => Effect.Effect<
       InsertResult,
       DatabaseClientError | SpaceRepositoryError
@@ -133,7 +133,7 @@ export class SpaceRepository extends Context.Service<
             return results;
           }),
 
-        create: (spaceName, ownerId) =>
+        create: (ownerId, spaceName) =>
           Effect.gen(function* () {
             const results = yield* client.execute((db) =>
               db.insertInto("space").values({

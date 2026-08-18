@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" effect>
   import { PUBLIC_BASE_URL } from "$env/static/public";
   import MessagesDisplay from "$lib/components/chat/messages-display.svelte";
   import { BrowserSocket } from "@effect/platform-browser";

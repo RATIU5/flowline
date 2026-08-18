@@ -2,26 +2,21 @@ import type { Handle } from "@sveltejs/kit";
 
 import { PUBLIC_BASE_URL } from "$env/static/public";
 import { AuthClient } from "$lib/client/effects/auth";
-import { runtime } from "$lib/shared/effects/runtime";
 import * as Effect from "effect/Effect";
+import { Handler } from "svelte-effect-runtime/server";
 
-export const handle: Handle = runtime.handle(({ event, resolve }) =>
-  Effect.gen(function* () {
-    const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL)),
-      { data, error } = yield* Effect.promise(() =>
-        auth.getSession({
-          fetchOptions: {
-            headers: event.request.headers,
-          },
-        }),
-      );
+export const handle = Handler<Handle>(function* ({ event, resolve }) {
+  const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));
 
-    if (!error) {
-      event.locals.user = data ? data.user : undefined;
-    } else {
-      yield* Effect.logDebug(error.message);
-    }
+  const { data, error } = yield* Effect.promise(() =>
+    auth.getSession({ fetchOptions: { headers: event.request.headers } }),
+  );
 
-    return yield* Effect.promise(() => Promise.resolve(resolve(event)));
-  }),
-);
+  if (error) {
+    yield* Effect.logDebug(error.message);
+  } else {
+    event.locals.user = data?.user;
+  }
+
+  return yield* Effect.promise(() => Promise.resolve(resolve(event)));
+});

@@ -3,16 +3,18 @@ import * as Schema from "effect/Schema";
 export class SpaceSchemaGetResponse extends Schema.Class<SpaceSchemaGetResponse>(
   "SpaceSchemaGetResponse",
 )({
-  id: Schema.String,
-  name: Schema.optional(Schema.String),
-  createdAt: Schema.optional(Schema.DateTimeUtcFromString),
-  ownerId: Schema.optional(Schema.String),
+  data: Schema.Struct({
+    id: Schema.String,
+    name: Schema.optional(Schema.String),
+    createdAt: Schema.optional(Schema.DateTimeUtcFromString),
+    ownerId: Schema.optional(Schema.String),
+  }),
 }) {}
 
 export class SpacesSchemaGetResponse extends Schema.Class<SpacesSchemaGetResponse>(
   "SpacesSchemaGetResponse",
 )({
-  spaces: Schema.Array(
+  data: Schema.Array(
     Schema.Struct({
       id: Schema.String,
       name: Schema.optional(Schema.String),
@@ -20,4 +22,12 @@ export class SpacesSchemaGetResponse extends Schema.Class<SpacesSchemaGetRespons
       ownerId: Schema.optional(Schema.String),
     }),
   ),
+}) {}
+
+export class SpacesSchemaCreateResponse extends Schema.Class<SpacesSchemaCreateResponse>(
+  "SpacesSchemaCreateResponse",
+)({
+  data: Schema.Struct({
+    id: Schema.String,
+  }),
 }) {}

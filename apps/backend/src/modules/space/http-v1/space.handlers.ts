@@ -20,5 +20,11 @@ export const SpaceHandlers = HttpApiBuilder.group(
           const svc = yield* SpaceService;
           return yield* svc.getSpacesByUser(params.userId);
         }),
+      )
+      .handle("createSpace", ({ payload }) =>
+        Effect.gen(function* () {
+          const svc = yield* SpaceService;
+          return yield* svc.createSpace(payload.ownerId, payload.name);
+        }),
       ),
 );

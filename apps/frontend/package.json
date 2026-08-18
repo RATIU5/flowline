@@ -20,7 +20,7 @@
     "@flowline/rpc": "workspace:*",
     "effect": "catalog:effect",
     "mode-watcher": "^1.1.0",
-    "sveltekit-effect-runtime": "catalog:svelte"
+    "svelte-effect-runtime": "^4.2.4"
   },
   "devDependencies": {
     "@fontsource-variable/inter": "^5.3.0",
@@ -37,6 +37,7 @@
     "shadcn-svelte": "^1.5.0",
     "svelte": "catalog:svelte",
     "svelte-check": "catalog:svelte",
+    "svelte-plugin-composer": "^1.0.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.3.1",
     "tailwindcss": "catalog:tailwindcss",

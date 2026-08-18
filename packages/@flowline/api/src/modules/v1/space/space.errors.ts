@@ -38,6 +38,16 @@ export class NoSpacesForUserError extends Schema.TaggedError<NoSpacesForUserErro
   },
 ) {}
 
+export class MissingPayload extends Schema.TaggedError<MissingPayload>()(
+  "MissingPayload",
+  {
+    message: Schema.String,
+  },
+  {
+    httpApiStatus: 422,
+  },
+) {}
+
 export const SpaceGetErrors = Schema.Union([
   SpaceNotFound,
   SpaceConflict,
@@ -48,4 +58,9 @@ export const SpaceGetErrors = Schema.Union([
 export const SpaceGetByUserErrors = Schema.Union([
   SpaceInternalError,
   NoSpacesForUserError,
+]);
+
+export const SpaceCreateErrors = Schema.Union([
+  SpaceInternalError,
+  MissingPayload,
 ]);

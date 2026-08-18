@@ -33,7 +33,11 @@
       "formatter": { "language_server": { "name": "oxfmt" } }
     },
     "Svelte": {
-      "language_servers": ["svelte-language-server", "oxlint", "oxfmt"],
+      "language_servers": [
+        "svelte-effect-runtime-language-server",
+        "oxlint",
+        "oxfmt"
+      ],
       "formatter": [{ "language_server": { "name": "oxfmt" } }]
     },
     "JSON": {
