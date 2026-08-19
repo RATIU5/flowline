@@ -1,6 +1,4 @@
 <script lang="ts">
-  import type { LayoutServerData } from "../../../../routes/(app)/$types";
-
   import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
@@ -12,14 +10,14 @@
   import { CreateSpaceInput } from "../../../../routes/(app)/spaces.schema";
   import ThemeSwitcher from "./theme-switcher.svelte";
 
+  import type { LayoutServerData } from "../../../../routes/(app)/$types";
+
   let { spaces }: { spaces: LayoutServerData["spaces"] } = $props();
 
   let open = $state(false);
 
-  // Same schema client-side (instant issues, no round trip) and server-side.
   const form = createSpace.preflight(CreateSpaceInput);
 
-  // Close only on success; invalid submissions leave the dialog up with issues.
   const formProps = form.enhance(({ submit }) =>
     Effect.gen(function* () {
       yield* submit();
@@ -42,8 +40,6 @@
         <span class="sr-only">New space</span>
       </Dialog.Trigger>
       <Dialog.Content>
-        <!-- The form lives inside the portalled content so its inputs are
-             actually inside the <form> element. -->
         <form {...formProps} class="grid gap-4">
           <Dialog.Header>
             <Dialog.Title>New Space</Dialog.Title>
@@ -54,12 +50,9 @@
 
           <div class="grid gap-3">
             <Label for="space-name">Space Name</Label>
-            <!-- ponytail: plain name= rather than fields.name.as("text") — the
-                 shadcn Input takes `value` as its own $bindable, so the
-                 accessor's setter never round-trips. DOM is the source of truth. -->
             <Input
               id="space-name"
-              name="name"
+              name="space-name"
               placeholder="SuperSpace"
               aria-invalid={form.fields.name.issues() !== undefined}
             />
