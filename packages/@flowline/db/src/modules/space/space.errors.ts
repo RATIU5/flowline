@@ -10,16 +10,8 @@ export class TooManyGetRows extends Schema.TaggedError<TooManyGetRows>()(
   "TooManyGetRows",
   fields,
 ) {}
-export class NoSpacesForUserId extends Schema.TaggedError<NoSpacesForUserId>()(
-  "NoSpacesForUserId",
-  fields,
-) {}
 export class NoCreateRows extends Schema.TaggedError<NoCreateRows>()(
   "NoCreateRows",
-  fields,
-) {}
-export class TooManyCreateRows extends Schema.TaggedError<TooManyCreateRows>()(
-  "TooManyCreateRows",
   fields,
 ) {}
 export class NoUpdateRows extends Schema.TaggedError<NoUpdateRows>()(
@@ -42,9 +34,7 @@ export class TooManyDeletedRows extends Schema.TaggedError<TooManyDeletedRows>()
 export const SpaceReason = Schema.Union([
   NoGetRows,
   TooManyGetRows,
-  NoSpacesForUserId,
   NoCreateRows,
-  TooManyCreateRows,
   NoUpdateRows,
   TooManyUpdateRows,
   NoDeletedRows,

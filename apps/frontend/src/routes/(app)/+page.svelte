@@ -90,11 +90,11 @@
   });
 </script>
 
-<div class="h-full min-h-screen w-full bg-neutral-100">
+<div class="h-full min-h-screen w-full bg-background">
   <div class="p-4"><MessagesDisplay messages={messageHistory} /></div>
   <div class="fixed bottom-4 left-1/2 w-full max-w-xl -translate-x-1/2">
     <form
-      class="flex h-12 w-full flex-row items-center justify-between overflow-hidden border border-solid border-neutral-300 bg-white pr-0.75 focus:border-blue-400 focus:outline-none has-focus-within:border-blue-400"
+      class="flex h-12 w-full flex-row items-center justify-between overflow-hidden border border-solid border-border bg-card pr-0.75 focus:border-primary focus:outline-none has-focus-within:border-primary"
       onsubmit={handleSubmit}
     >
       <input
@@ -107,7 +107,7 @@
       <button
         type="submit"
         aria-label="Send"
-        class="flex h-full max-h-10 w-full max-w-10 items-center justify-center bg-neutral-100 text-neutral-600 hover:bg-blue-100 hover:text-blue-700"
+        class="flex h-full max-h-10 w-full max-w-10 items-center justify-center bg-muted text-primary hover:bg-primary hover:text-muted"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

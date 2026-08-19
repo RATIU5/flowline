@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./api": "./src/index.ts"
+    "./api": "./src/index.ts",
+    "./space": "./src/modules/v1/space/space.schema.ts"
   },
   "scripts": {
     "dev": "bun run --watch src/index.ts",

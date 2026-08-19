@@ -1,18 +1,9 @@
-import { AuthEffect } from "@flowline/auth/shared";
-import { AppConfig } from "@flowline/config/app";
-import * as Cause from "effect/Cause";
-import * as Effect from "effect/Effect";
+import { Auth } from "@flowline/auth/shared";
 import * as Layer from "effect/Layer";
 
-import { DBAndConfigLayer } from "./layers";
+import { DBAndConfigLayer, FlowlineConfigLayer } from "./layers";
 
-const AuthAndConfigLayers = Layer.mergeAll(AppConfig.layer, DBAndConfigLayer);
-
-export default await Effect.runPromise(
-  AuthEffect.pipe(
-    Effect.provide(AuthAndConfigLayers),
-    Effect.catchTag("ConfigError", (e) =>
-      Effect.logError(Cause.pretty(Cause.fail(e))).pipe(Effect.orDie),
-    ),
-  ),
+/** One better-auth instance (and one database pool) for the whole server. */
+export const AuthLive = Auth.layer.pipe(
+  Layer.provide([DBAndConfigLayer, FlowlineConfigLayer]),
 );

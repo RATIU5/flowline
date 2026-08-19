@@ -12,4 +12,7 @@
 <ModeWatcher />
 <main class="flex h-screen">
   <Sidebar spaces={data.spaces} />
+  <div>
+    {@render children()}
+  </div>
 </main>

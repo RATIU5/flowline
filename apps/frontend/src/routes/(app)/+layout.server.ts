@@ -1,7 +1,7 @@
-import type { apiV1 } from "@flowline/api/api";
-
 import { ApiClient } from "$lib/client/effects/api-client";
+import { Space } from "@flowline/api/space";
 import * as Effect from "effect/Effect";
+import * as Schema from "effect/Schema";
 import {
   Error,
   Handler,
@@ -23,13 +23,11 @@ export const load = Handler<LayoutServerLoad>(() =>
       );
     }
 
-    const userSpaces = yield* ApiClient.pipe(
-      Effect.flatMap((client) =>
-        client.space.getSpacesByUser({ params: { userId: user.id } }),
-      ),
-      Effect.catchTag("NoSpacesForUserError", () =>
-        Effect.succeed<apiV1.SpacesSchemaGetResponse>({ spaces: [] }),
-      ),
+    const spaces = yield* Effect.gen(function* () {
+      const client = yield* ApiClient;
+      return yield* client.space.listSpaces();
+    }).pipe(
+      // Transport, decode and 401 failures all mean the same thing here.
       Effect.catch((cause) =>
         Effect.logError(cause).pipe(
           Effect.andThen(Error("InternalServerError", "Could not load spaces")),
@@ -37,6 +35,13 @@ export const load = Handler<LayoutServerLoad>(() =>
       ),
     );
 
-    return { user, spaces: userSpaces.spaces };
-  }).pipe(Effect.provide(ApiClient.layer)),
+    // `Space` is a Schema.Class (and `createdAt` a DateTime) — neither survives
+    // SvelteKit's POJO-only load serialization, so hand the client the encoded form.
+    return {
+      user,
+      spaces: yield* Schema.encodeUnknownEffect(Schema.Array(Space))(spaces).pipe(
+        Effect.orDie,
+      ),
+    };
+  }),
 );

@@ -1,9 +1,15 @@
 import type { Handle } from "@sveltejs/kit";
 
 import { PUBLIC_BASE_URL } from "$env/static/public";
+import { ApiClient } from "$lib/client/effects/api-client";
 import { AuthClient } from "$lib/client/effects/auth";
 import * as Effect from "effect/Effect";
+import { ServerRuntime } from "svelte-effect-runtime";
 import { Handler } from "svelte-effect-runtime/server";
+
+export const init = () => {
+  ServerRuntime.make(ApiClient.layer);
+};
 
 export const handle = Handler<Handle>(function* ({ event, resolve }) {
   const auth = yield* AuthClient(new URL(PUBLIC_BASE_URL));

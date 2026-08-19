@@ -8,10 +8,8 @@ import {
   NoCreateRows,
   NoDeletedRows,
   NoGetRows,
-  NoSpacesForUserId,
   NoUpdateRows,
   spaceError,
-  TooManyCreateRows,
   TooManyDeletedRows,
   TooManyGetRows,
   TooManyUpdateRows,
@@ -19,16 +17,9 @@ import {
 } from "./space.errors";
 
 import type { DB, Selectable } from "../../types";
-import type {
-  InsertResult,
-  UpdateResult,
-  DeleteResult,
-  Nullable,
-} from "../../types/utils";
+import type { UpdateResult, DeleteResult, Nullable } from "../../types/utils";
 
 type SpaceRow = Selectable<DB["space"]>;
-type SpaceGetCols = Array<keyof Omit<SpaceRow, "id">>;
-type SpaceGetResponse = Pick<SpaceRow, "id"> & Partial<Omit<SpaceRow, "id">>;
 type SpaceUpdateCols = Nullable<Omit<SpaceRow, "createdAt" | "id" | "spaceId">>;
 
 export class SpaceRepository extends Context.Service<
@@ -39,9 +30,8 @@ export class SpaceRepository extends Context.Service<
      */
     get: (
       spaceId: string,
-      cols?: SpaceGetCols,
     ) => Effect.Effect<
-      SpaceGetResponse,
+      SpaceRow,
       DatabaseClientError | SpaceRepositoryErrorOf<NoGetRows | TooManyGetRows>
     >;
 
@@ -50,11 +40,7 @@ export class SpaceRepository extends Context.Service<
      */
     getByUserId: (
       userId: string,
-      cols?: SpaceGetCols,
-    ) => Effect.Effect<
-      Array<SpaceGetResponse>,
-      DatabaseClientError | SpaceRepositoryErrorOf<NoSpacesForUserId>
-    >;
+    ) => Effect.Effect<Array<SpaceRow>, DatabaseClientError>;
 
     /*
      * Create a new space on the database
@@ -63,9 +49,8 @@ export class SpaceRepository extends Context.Service<
       ownerId: string,
       spaceName: string,
     ) => Effect.Effect<
-      InsertResult,
-      | DatabaseClientError
-      | SpaceRepositoryErrorOf<NoCreateRows | TooManyCreateRows>
+      SpaceRow,
+      DatabaseClientError | SpaceRepositoryErrorOf<NoCreateRows>
     >;
 
     /*
@@ -97,14 +82,10 @@ export class SpaceRepository extends Context.Service<
     Effect.gen(function* () {
       const client = yield* DatabaseClient;
       return {
-        get: (spaceId, cols?: SpaceGetCols) =>
+        get: (spaceId) =>
           Effect.gen(function* () {
-            const selectCols = cols ?? [];
             const results = yield* client.execute((db) =>
-              db
-                .selectFrom("space")
-                .select(["id", ...selectCols])
-                .where("id", "=", spaceId),
+              db.selectFrom("space").selectAll().where("id", "=", spaceId),
             );
 
             if (results.length === 0) {
@@ -119,40 +100,24 @@ export class SpaceRepository extends Context.Service<
               );
             }
 
-            return results;
-          }).pipe(Effect.map((r) => r[0])),
-
-        getByUserId: (userId, cols?: SpaceGetCols) =>
-          Effect.gen(function* () {
-            const selectCols = cols ?? [];
-            const results = yield* client.execute((db) =>
-              db
-                .selectFrom("space")
-                .select(["space.id", ...selectCols])
-                .leftJoin("user", (join) =>
-                  join
-                    .onRef("space.ownerId", "=", "user.id")
-                    .on("user.id", "=", userId),
-                ),
-            );
-            if (results.length === 0) {
-              return yield* spaceError(
-                new NoSpacesForUserId({
-                  message: "No rows returned from space get by user id",
-                }),
-              );
-            }
-
-            return results;
+            return results[0];
           }),
+
+        getByUserId: (userId) =>
+          client.execute((db) =>
+            db
+              .selectFrom("space")
+              .selectAll()
+              .where("space.ownerId", "=", userId),
+          ),
 
         create: (ownerId, spaceName) =>
           Effect.gen(function* () {
             const results = yield* client.execute((db) =>
-              db.insertInto("space").values({
-                name: spaceName,
-                ownerId,
-              }),
+              db
+                .insertInto("space")
+                .values({ name: spaceName, ownerId })
+                .returningAll(),
             );
 
             if (results.length === 0) {
@@ -161,16 +126,10 @@ export class SpaceRepository extends Context.Service<
                   message: "Failed to create new space row",
                 }),
               );
-            } else if (results.length > 1) {
-              return yield* spaceError(
-                new TooManyCreateRows({
-                  message: "Too many rows returned from space create",
-                }),
-              );
             }
 
-            return results;
-          }).pipe(Effect.map((u) => u[0])),
+            return results[0];
+          }),
 
         update: (spaceId, cols) =>
           Effect.gen(function* () {

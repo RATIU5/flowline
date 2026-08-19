@@ -1,7 +1,9 @@
 import { AppConfig } from "@flowline/config/app";
 import { DatabasePool } from "@flowline/db/pool";
 import { betterAuth } from "better-auth";
+import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
 
 export const AuthEffect = Effect.gen(function* () {
   const pool = yield* DatabasePool,
@@ -21,3 +23,10 @@ export const AuthEffect = Effect.gen(function* () {
     database: pool,
   });
 });
+
+export class Auth extends Context.Service<
+  Auth,
+  Effect.Success<typeof AuthEffect>
+>()("@flowline/auth/lib/auth/Auth") {
+  static readonly layer = Layer.effect(this, AuthEffect.pipe(Effect.orDie));
+}
